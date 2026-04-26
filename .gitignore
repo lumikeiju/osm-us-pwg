@@ -1,6 +1,11 @@
+# Project
+osm-us-pwg.code-workspace
+local-storage/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Dev
 .cache/
 .venv/
-local-storage/
-.DS_Store
-osm-us-pwg.code-workspace
-*.wip
