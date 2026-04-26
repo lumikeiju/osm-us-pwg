@@ -168,7 +168,7 @@ If you have access to high-quality imagery and want to map pedestrian infrastruc
 * {{Value|partial}} - Tactile paving is present '''at only one curb'''
 |-
 | {{Tag|surface}}
-| {{IconWay}}{{IconNode}}
+| {{IconWay}}
 |
 | colspan="3" | Required in the Silver tier. Example values include:
 * {{Value|concrete}}
@@ -185,7 +185,7 @@ If you have access to high-quality imagery and want to map pedestrian infrastruc
 | colspan="2" |Indicate presence: {{Value|yes}} or {{Value|no}}
 |-
 | {{Tag|width}}
-| {{IconWay}}{{IconNode}}
+| {{IconWay}}
 | colspan="2" |
 | colspan="2" | Required in the Gold tier.
 |-
