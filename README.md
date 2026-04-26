@@ -1,3 +1,5 @@
+<!-- @format -->
+
 # OSM-US-PWG
 
 **(Unofficial)** Repository for things related to the [OpenStreetMap US Pedestrian Working Group](https://wiki.openstreetmap.org/wiki/Foundation/Local_Chapters/United_States/Pedestrian_Working_Group).
