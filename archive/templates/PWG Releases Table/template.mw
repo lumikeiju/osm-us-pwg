@@ -49,6 +49,10 @@
 ! Date
 ! Changelog
 |-
+| [[Foundation/Local Chapters/United States/Pedestrian Working Group/Schema/1.0.1|1.0.1]]
+| {{Date|2026-03-28|iso}}
+| • Fix inclusion of surface and width tags on crossing nodes
+|-
 | [[Foundation/Local Chapters/United States/Pedestrian Working Group/Schema/1.0.0|1.0.0]]
 | {{Date|2025-11-19|iso}}
 | • Initial release
