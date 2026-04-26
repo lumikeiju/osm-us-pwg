@@ -1,0 +1,147 @@
+{{Ambox
+| type = caution
+| text = This schema document is still under active construction - consider other Wiki pages to be more authoritative in cases of conflicting information!
+}}
+
+This is a work-in-progress draft of a quick-start guide for pedestrian infrastructure mapping developed by the [[Foundation/Local_Chapters/United_States/Pedestrian_Working_Group|Pedestrian Working Group]].
+
+A work-in-progress draft of a full tagging schema for pedestrian infrastructure mapping is available [[Draft:Foundation/Local Chapters/United States/Pedestrian Working Group/Schema|here]].
+
+----
+
+== Anatomy of a Sidewalk ==
+
+Our end-goal is mapping for a sidewalk network for navigation.
+
+== Tiers ==
+
+A tier-based system is used to communicate which features and tags are possible with various resources and necessary for which use cases, as follows, with further details below:
+
+{| class="wikitable"
+! Icon !! Name !! Description !! Use Cases !! Required Resources
+|-
+| [[File:PWG - Bronze.svg|32px|frameless|none|alt=Circular icon containing a pedestrian symbol with a bronze-colored background.]] || Bronze || Basic geometry and essential tags || Basic everyday pedestrian navigation || (Older) Low-quality aerial imagery
+|-
+| [[File:PWG - Silver.svg|32px|frameless|none|alt=Circular icon containing a pedestrian symbol with a silver-colored background.]] || Silver || Detailed geometry and tagging || Accessibility-focused applications || (Somewhat recent) Medium-quality aerial imagery and/or low-quality street-level imagery
+|-
+| [[File:PWG - Gold.svg|32px|frameless|none|alt=Circular icon containing a pedestrian symbol with a gold-colored background.]] || Gold || Micromapping and advanced tagging || Advanced routers and visualizations || (Recent) High-quality aerial and/or street-level imagery or in-person survey
+|}
+
+If, for example, you want to map pedestrian infrastructure so that it can be used for basic everyday routing and only have low-quality aerial imagery available, you would include only the features and tags marked with a [[File:PWG - Bronze.svg|16px|text-bottom|frameless]] Bronze Tier symbol.
+
+If you have access to high-quality imagery and want to map pedestrian infrastructure so that it can be used by accessibility-focused routers, you would include all features and tags marked with a [[File:PWG - Bronze.svg|16px|text-bottom|frameless]] Bronze Tier symbol or a [[File:PWG - Silver.svg|16px|text-bottom|frameless]] Silver Tier symbol.
+
+== Mapping Guidelines ==
+
+=== Sidewalks ===
+* {{IconWay}} Sidewalk Way Mapping:
+: [[File:PWG - Bronze.svg|16px|text-bottom|frameless]] {{Tag|highway|footway}} + {{Tag|footway|sidewalk}} - Representational mapping of sidewalk centerline.
+
+=== Crossings ===
+* {{IconWay}} Crossing Way Mapping
+: [[File:PWG - Bronze.svg|16px|text-bottom|frameless]] {{Tag|highway|footway}} + {{Tag|footway|crossing}} - Representational mapping of crossing centerline.
+
+=== Connectors (exact tagging schema pending) ===
+* {{IconWay}} Connector Way Mapping:
+: [[File:PWG - Bronze.svg|16px|text-bottom|frameless]] {{Tag|highway|?}} + {{Tag|?|?}} - Connecting sidewalk centerlines and curb nodes, bridging representational mapping of centerlines and literal mapping of curb locations.
+
+=== Curbs ===
+* {{IconNode}} Curb Node Mapping:
+: [[File:PWG - Bronze.svg|16px|text-bottom|frameless]] {{Tag|barrier|kerb}} - Literal mapping of curb locations.
+
+== Elements ==
+
+Included below are the [[File:PWG - Bronze.svg|16px|text-bottom|frameless]] Bronze Tier and [[File:PWG - Silver.svg|16px|text-bottom|frameless]] Silver Tier tags, which represent a good level of detail to aim for while balancing the amount of work required to map pedestrian infrastructure in detail.
+
+For a full listing of tags and their tier classifications, refer to the full schema [[Draft:Foundation/Local Chapters/United States/Pedestrian Working Group/Schema|here]].
+
+=== Sidewalks ===
+
+* {{IconWay}} Sidewalk Way Tagging:
+: [[File:PWG - Bronze.svg|16px|text-bottom|frameless]] {{Tag|highway|footway}} + {{Tag|footway|sidewalk}} - Indicate sidewalk location
+:: [[File:PWG - Silver.svg|16px|text-bottom|frameless]] {{Tag|surface}} - Sidewalk surface material
+::: [[File:PWG - Silver.svg|16px|text-bottom|frameless]] {{Tag|surface|concrete}} - Concrete surface material
+::: [[File:PWG - Silver.svg|16px|text-bottom|frameless]] {{Tag|surface|asphalt}} - Asphalt surface material
+::: [[File:PWG - Silver.svg|16px|text-bottom|frameless]] {{Tag|surface}} - Any other applicable value
+
+=== Crossings ===
+
+* {{IconNode}}{{IconWay}} Crossing Node and Way Tagging:
+: [[File:PWG - Bronze.svg|16px|text-bottom|frameless]] {{Tag|crossing:markings}} - Specify presence and type of markings
+:: [[File:PWG - Bronze.svg|16px|text-bottom|frameless]] {{Tag|crossing:markings|no}} - No markings
+:: [[File:PWG - Bronze.svg|16px|text-bottom|frameless]] {{Tag|crossing:markings|yes}} - Markings present, type unspecified
+:: [[File:PWG - Silver.svg|16px|text-bottom|frameless]] {{Tag|crossing:markings||zebra}} - Zebra markings
+:: [[File:PWG - Silver.svg|16px|text-bottom|frameless]] {{Tag|crossing:markings||lines}} - Lines markings
+:: [[File:PWG - Silver.svg|16px|text-bottom|frameless]] {{Tag|crossing:markings}} - Any other applicable value
+
+: [[File:PWG - Bronze.svg|16px|text-bottom|frameless]] {{Tag|crossing:signals}} - Specify presence and type of signalization
+:: [[File:PWG - Bronze.svg|16px|text-bottom|frameless]] {{Tag|crossing:signals|no}} - No signals
+:: [[File:PWG - Bronze.svg|16px|text-bottom|frameless]] {{Tag|crossing:signals|yes}} - Signals present, type unspecified
+:: [[File:PWG - Silver.svg|16px|text-bottom|frameless]] {{Tag|crossing:signals||shared}} - Vehicle traffic lights only
+:: [[File:PWG - Silver.svg|16px|text-bottom|frameless]] {{Tag|crossing:signals||dedicated}} - Dedicated pedestrian traffic signals
+
+: [[File:PWG - Silver.svg|16px|text-bottom|frameless]] {{Tag|crossing:island}} - Presence of pedestrian island
+
+: [[File:PWG - Silver.svg|16px|text-bottom|frameless]] {{Tag|surface}} - Crossing surface material
+:: [[File:PWG - Silver.svg|16px|text-bottom|frameless]] {{Tag|surface|concrete}} - Concrete surface material
+:: [[File:PWG - Silver.svg|16px|text-bottom|frameless]] {{Tag|surface|asphalt}} - Asphalt surface material
+:: [[File:PWG - Silver.svg|16px|text-bottom|frameless]] {{Tag|surface}} - Any other applicable value
+
+* {{IconNode}} Crossing Way Tagging Only:
+: [[File:PWG - Bronze.svg|16px|text-bottom|frameless]] {{Tag|highway|crossing}} - Indicate crossing location
+:: [[File:PWG - Silver.svg|16px|text-bottom|frameless]] {{Tag|tactile_paving}} - Specify tactile paving presence '''along crossing way'''
+::: [[File:PWG - Silver.svg|16px|text-bottom|frameless]] {{Tag|tactile_paving|yes}} - Tactile paving is present '''along the entire way'''
+::: [[File:PWG - Silver.svg|16px|text-bottom|frameless]] {{Tag|tactile_paving|no}} - Tactile paving is not present '''along the entire way'''
+
+* {{IconWay}} Crossing Node Tagging Only:
+: [[File:PWG - Bronze.svg|16px|text-bottom|frameless]] {{Tag|highway|footway}} + {{Tag|footway|crossing}} - Indicate crossing location
+:: [[File:PWG - Silver.svg|16px|text-bottom|frameless]] {{Tag|tactile_paving}} - Specify tactile paving presence '''at curb nodes'''
+::: [[File:PWG - Silver.svg|16px|text-bottom|frameless]] {{Tag|tactile_paving|yes}} - Tactile paving is present '''at both curbs'''
+::: [[File:PWG - Silver.svg|16px|text-bottom|frameless]] {{Tag|tactile_paving|partial}} - Tactile paving is present '''at only one curb'''
+::: [[File:PWG - Silver.svg|16px|text-bottom|frameless]] {{Tag|tactile_paving|no}} - Tactile paving is not present '''at either curb'''
+
+=== Curbs ===
+
+* {{IconNode}} Curb Node Tagging:
+: [[File:PWG - Silver.svg|16px|text-bottom|frameless]] {{Tag|barrier|kerb}} - Indicate curb location
+
+:: [[File:PWG - Silver.svg|16px|text-bottom|frameless]] {{Tag|kerb}} - Specify curb type:
+::: [[File:PWG - Silver.svg|16px|text-bottom|frameless]] {{Tag|kerb|raised}} - Raised curb
+::: [[File:PWG - Silver.svg|16px|text-bottom|frameless]] {{Tag|kerb|lowered}} - Curb ramp
+::: [[File:PWG - Silver.svg|16px|text-bottom|frameless]] {{Tag|kerb|flush}} - Flush curb
+
+:: [[File:PWG - Silver.svg|16px|text-bottom|frameless]] {{Tag|tactile_paving}} - Specify tactile paving presence
+::: [[File:PWG - Silver.svg|16px|text-bottom|frameless]] {{Tag|tactile_paving|yes}} - Tactile paving is present
+::: [[File:PWG - Silver.svg|16px|text-bottom|frameless]] {{Tag|tactile_paving|no}} - Tactile paving is not present
+
+===Islands===
+
+* {{IconWay}} Traffic Island Way Tagging:
+: [[File:PWG - Bronze.svg|16px|text-bottom|frameless]] {{Tag|highway|footway}} + {{Tag|footway|traffic_island}} - Indicate traffic island location
+:: [[File:PWG - Silver.svg|16px|text-bottom|frameless]] {{Tag|surface}} - Traffic island surface material
+::: [[File:PWG - Silver.svg|16px|text-bottom|frameless]] {{Tag|surface|concrete}} - Concrete surface material
+::: [[File:PWG - Silver.svg|16px|text-bottom|frameless]] {{Tag|surface|asphalt}} - Asphalt surface material
+::: [[File:PWG - Silver.svg|16px|text-bottom|frameless]] {{Tag|surface}} - Any other applicable value
+
+===Access Aisles===
+
+* {{IconWay}} Access Aisle Way Tagging:
+: [[File:PWG - Bronze.svg|16px|text-bottom|frameless]] {{Tag|highway|footway}} + {{Tag|footway|access_aisle}} - Indicate access aisle location
+:: [[File:PWG - Bronze.svg|16px|text-bottom|frameless]] {{Tag|access_aisle:markings}} - Specify presence and type of markings
+::: [[File:PWG - Bronze.svg|16px|text-bottom|frameless]] {{Tag|access_aisle:markings|no}} - No markings
+::: [[File:PWG - Bronze.svg|16px|text-bottom|frameless]] {{Tag|access_aisle:markings|yes}} - Markings present, type unspecified
+::: [[File:PWG - Silver.svg|16px|text-bottom|frameless]] {{Tag|access_aisle:markings||zebra}} - Zebra markings
+::: [[File:PWG - Silver.svg|16px|text-bottom|frameless]] {{Tag|access_aisle:markings||ladder:skewed}} - Skewed ladder markings
+::: [[File:PWG - Silver.svg|16px|text-bottom|frameless]] {{Tag|access_aisle:markings}} - Any other applicable value
+:: [[File:PWG - Silver.svg|16px|text-bottom|frameless]] {{Tag|surface}} - Access aisle surface material
+::: [[File:PWG - Silver.svg|16px|text-bottom|frameless]] {{Tag|surface|concrete}} - Concrete surface material
+::: [[File:PWG - Silver.svg|16px|text-bottom|frameless]] {{Tag|surface|asphalt}} - Asphalt surface material
+::: [[File:PWG - Silver.svg|16px|text-bottom|frameless]] {{Tag|surface}} - Any other applicable value
+
+=== Roadways ===
+
+* {{IconWay}} Roadway Way Tagging:
+: [[File:PWG - Bronze.svg|16px|text-bottom|frameless]] {{Tag|highway}} - Indicate roadway location
+:: [[File:PWG - Bronze.svg|16px|text-bottom|frameless]] {{Tag|sidewalk:{{Tagvariable|side}}}} ({{Tag|sidewalk:left}} | {{Tag|sidewalk:right}} | {{Tag|sidewalk:both}})
+::: [[File:PWG - Bronze.svg|16px|text-bottom|frameless]] {{Tag|sidewalk:{{Tagvariable|side}}||no}} - No associated sidewalk present
+::: [[File:PWG - Bronze.svg|16px|text-bottom|frameless]] {{Tag|sidewalk:{{Tagvariable|side}}||separate}} - Associated sidewalk is present '''and''' mapped as separate geometry

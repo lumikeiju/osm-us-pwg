@@ -1,0 +1,12 @@
+<noinclude>{{Documentation}}</noinclude>
+<includeonly>
+{{#switch: {{{type|}}}
+| main-page = {{Ambox|type=notice|style=margin-top:0em;|lang=en|text='''[[PWG]] Main Page''': Latest release - '''do not edit'''! Direct comments to the Draft Talk ''([[Talk:Draft:Foundation/Local_Chapters/United_States/Pedestrian_Working_Group/Guide|Guide]], [[Talk:Draft:Foundation/Local Chapters/United States/Pedestrian Working Group/Schema|Schema]])'' pages!}}
+| main-talk = {{Ambox|type=warning|style=margin-top:0em;|lang=en|text='''[[PWG]] Main Talk''': '''Do not edit'''! Direct comments to the Draft Talk ''([[Talk:Draft:Foundation/Local_Chapters/United_States/Pedestrian_Working_Group/Guide|Guide]], [[Talk:Draft:Foundation/Local Chapters/United States/Pedestrian Working Group/Schema|Schema]])'' pages!}}
+| draft-page = {{Ambox|type=notice|style=margin-top:0em;|lang=en|text='''[[PWG]] Draft Page''': Continually open work-in-progress page for proposed changes for the next release. Edits are welcome, after discussion on the corresponding Draft Talk ''([[Talk:Draft:Foundation/Local_Chapters/United_States/Pedestrian_Working_Group/Guide|Guide]], [[Talk:Draft:Foundation/Local Chapters/United States/Pedestrian Working Group/Schema|Schema]])'' page and/or during PWG meetings.}}
+| draft-talk = {{Ambox|type=notice|style=margin-top:0em;|lang=en|text='''[[PWG]] Draft Talk''': Continually open work-in-progress page for discussion of proposed changes for the next release. Edits are welcome, especially by users who are not otherwise PWG participators!}}
+| release-page = {{Ambox|type=caution|style=margin-top:0em;|lang=en|text='''[[PWG]] Release Page''': "Snapshot" page created for each release. '''Do not edit'''! Direct comments to the Draft Talk ''([[Talk:Draft:Foundation/Local_Chapters/United_States/Pedestrian_Working_Group/Guide|Guide]], [[Talk:Draft:Foundation/Local Chapters/United States/Pedestrian Working Group/Schema|Schema]])'' pages!}}
+| release-talk = {{Ambox|type=warning|style=margin-top:0em;|lang=en|text='''[[PWG]] Release Talk''': Talk page for an individual "snapshot" Release page. '''Do not edit'''! Direct comments to the Draft Talk ''([[Talk:Draft:Foundation/Local_Chapters/United_States/Pedestrian_Working_Group/Guide|Guide]], [[Talk:Draft:Foundation/Local Chapters/United States/Pedestrian Working Group/Schema|Schema]])'' pages!}}
+| #default = {{Ambox|type=caution|style=margin-top:0em;|lang=en|text='''[[PWG]] Page''': Please specify the type parameter.}}
+}}
+</includeonly>
