@@ -1,0 +1,1290 @@
+{
+  "nodes": [
+    {
+      "id": "schema",
+      "type": "schema",
+      "label": "PWG Schema 1.0.1"
+    },
+    {
+      "id": "tier:bronze",
+      "type": "tier",
+      "label": "Bronze",
+      "order": 1
+    },
+    {
+      "id": "tier:silver",
+      "type": "tier",
+      "label": "Silver",
+      "order": 2
+    },
+    {
+      "id": "tier:gold",
+      "type": "tier",
+      "label": "Gold",
+      "order": 3
+    },
+    {
+      "id": "tier:diamond",
+      "type": "tier",
+      "label": "Diamond",
+      "order": 4
+    },
+    {
+      "id": "feature:sidewalk",
+      "type": "feature",
+      "label": "Sidewalk",
+      "elements": [
+        "way"
+      ],
+      "minTier": "bronze"
+    },
+    {
+      "id": "tag:sidewalk:surface",
+      "type": "tag",
+      "label": "surface",
+      "keys": [
+        "surface"
+      ],
+      "minTier": "silver",
+      "requirement": "required"
+    },
+    {
+      "id": "tag:sidewalk:lit",
+      "type": "tag",
+      "label": "lit",
+      "keys": [
+        "lit"
+      ],
+      "minTier": "gold",
+      "requirement": "required"
+    },
+    {
+      "id": "tag:sidewalk:width",
+      "type": "tag",
+      "label": "width",
+      "keys": [
+        "width"
+      ],
+      "minTier": "gold",
+      "requirement": "required"
+    },
+    {
+      "id": "tag:sidewalk:incline",
+      "type": "tag",
+      "label": "incline",
+      "keys": [
+        "incline"
+      ],
+      "minTier": "gold",
+      "requirement": "conditional"
+    },
+    {
+      "id": "tag:sidewalk:incline:across",
+      "type": "tag",
+      "label": "incline:across",
+      "keys": [
+        "incline:across"
+      ],
+      "minTier": "diamond",
+      "requirement": "required"
+    },
+    {
+      "id": "tag:sidewalk:tactile_paving",
+      "type": "tag",
+      "label": "tactile_paving",
+      "keys": [
+        "tactile_paving"
+      ],
+      "minTier": "diamond",
+      "requirement": "required"
+    },
+    {
+      "id": "tag:sidewalk:tactile_paving:colour",
+      "type": "tag",
+      "label": "tactile_paving:colour",
+      "keys": [
+        "tactile_paving:colour"
+      ],
+      "minTier": "diamond",
+      "requirement": "conditional"
+    },
+    {
+      "id": "feature:crossing_way",
+      "type": "feature",
+      "label": "Crossing (way)",
+      "elements": [
+        "way"
+      ],
+      "minTier": "bronze"
+    },
+    {
+      "id": "tag:crossing_way:crossing:markings",
+      "type": "tag",
+      "label": "crossing:markings",
+      "keys": [
+        "crossing:markings"
+      ],
+      "minTier": "bronze",
+      "requirement": "required"
+    },
+    {
+      "id": "tag:crossing_way:crossing:signals",
+      "type": "tag",
+      "label": "crossing:signals",
+      "keys": [
+        "crossing:signals"
+      ],
+      "minTier": "bronze",
+      "requirement": "required"
+    },
+    {
+      "id": "tag:crossing_way:surface",
+      "type": "tag",
+      "label": "surface",
+      "keys": [
+        "surface"
+      ],
+      "minTier": "silver",
+      "requirement": "required"
+    },
+    {
+      "id": "tag:crossing_way:crossing:island",
+      "type": "tag",
+      "label": "crossing:island",
+      "keys": [
+        "crossing:island"
+      ],
+      "minTier": "silver",
+      "requirement": "required"
+    },
+    {
+      "id": "tag:crossing_way:crossing:signed",
+      "type": "tag",
+      "label": "crossing:signed",
+      "keys": [
+        "crossing:signed"
+      ],
+      "minTier": "gold",
+      "requirement": "required"
+    },
+    {
+      "id": "tag:crossing_way:width",
+      "type": "tag",
+      "label": "width",
+      "keys": [
+        "width"
+      ],
+      "minTier": "gold",
+      "requirement": "required"
+    },
+    {
+      "id": "tag:crossing_way:button_operated",
+      "type": "tag",
+      "label": "button_operated",
+      "keys": [
+        "button_operated"
+      ],
+      "minTier": "gold",
+      "requirement": "conditional"
+    },
+    {
+      "id": "tag:crossing_way:traffic_signals:arrow",
+      "type": "tag",
+      "label": "traffic_signals:arrow",
+      "keys": [
+        "traffic_signals:arrow"
+      ],
+      "minTier": "gold",
+      "requirement": "conditional"
+    },
+    {
+      "id": "tag:crossing_way:traffic_signals:vibration",
+      "type": "tag",
+      "label": "traffic_signals:vibration",
+      "keys": [
+        "traffic_signals:vibration"
+      ],
+      "minTier": "gold",
+      "requirement": "conditional"
+    },
+    {
+      "id": "tag:crossing_way:traffic_signals:sound",
+      "type": "tag",
+      "label": "traffic_signals:sound",
+      "keys": [
+        "traffic_signals:sound"
+      ],
+      "minTier": "gold",
+      "requirement": "conditional"
+    },
+    {
+      "id": "tag:crossing_way:traffic_signals:minimap",
+      "type": "tag",
+      "label": "traffic_signals:minimap",
+      "keys": [
+        "traffic_signals:minimap"
+      ],
+      "minTier": "diamond",
+      "requirement": "conditional"
+    },
+    {
+      "id": "tag:crossing_way:crossing:flags",
+      "type": "tag",
+      "label": "crossing:flags",
+      "keys": [
+        "crossing:flags"
+      ],
+      "minTier": "diamond",
+      "requirement": "required"
+    },
+    {
+      "id": "tag:crossing_way:tactile_paving",
+      "type": "tag",
+      "label": "tactile_paving",
+      "keys": [
+        "tactile_paving"
+      ],
+      "minTier": "diamond",
+      "requirement": "required"
+    },
+    {
+      "id": "tag:crossing_way:tactile_paving:colour",
+      "type": "tag",
+      "label": "tactile_paving:colour",
+      "keys": [
+        "tactile_paving:colour"
+      ],
+      "minTier": "diamond",
+      "requirement": "conditional"
+    },
+    {
+      "id": "feature:crossing_node",
+      "type": "feature",
+      "label": "Crossing (node)",
+      "elements": [
+        "node"
+      ],
+      "minTier": "bronze"
+    },
+    {
+      "id": "tag:crossing_node:crossing:markings",
+      "type": "tag",
+      "label": "crossing:markings",
+      "keys": [
+        "crossing:markings"
+      ],
+      "minTier": "bronze",
+      "requirement": "required"
+    },
+    {
+      "id": "tag:crossing_node:crossing:signals",
+      "type": "tag",
+      "label": "crossing:signals",
+      "keys": [
+        "crossing:signals"
+      ],
+      "minTier": "bronze",
+      "requirement": "required"
+    },
+    {
+      "id": "tag:crossing_node:tactile_paving",
+      "type": "tag",
+      "label": "tactile_paving",
+      "keys": [
+        "tactile_paving"
+      ],
+      "minTier": "silver",
+      "requirement": "required"
+    },
+    {
+      "id": "tag:crossing_node:crossing:island",
+      "type": "tag",
+      "label": "crossing:island",
+      "keys": [
+        "crossing:island"
+      ],
+      "minTier": "silver",
+      "requirement": "required"
+    },
+    {
+      "id": "tag:crossing_node:crossing:signed",
+      "type": "tag",
+      "label": "crossing:signed",
+      "keys": [
+        "crossing:signed"
+      ],
+      "minTier": "gold",
+      "requirement": "required"
+    },
+    {
+      "id": "tag:crossing_node:button_operated",
+      "type": "tag",
+      "label": "button_operated",
+      "keys": [
+        "button_operated"
+      ],
+      "minTier": "gold",
+      "requirement": "conditional"
+    },
+    {
+      "id": "tag:crossing_node:traffic_signals:arrow",
+      "type": "tag",
+      "label": "traffic_signals:arrow",
+      "keys": [
+        "traffic_signals:arrow"
+      ],
+      "minTier": "gold",
+      "requirement": "conditional"
+    },
+    {
+      "id": "tag:crossing_node:traffic_signals:vibration",
+      "type": "tag",
+      "label": "traffic_signals:vibration",
+      "keys": [
+        "traffic_signals:vibration"
+      ],
+      "minTier": "gold",
+      "requirement": "conditional"
+    },
+    {
+      "id": "tag:crossing_node:traffic_signals:sound",
+      "type": "tag",
+      "label": "traffic_signals:sound",
+      "keys": [
+        "traffic_signals:sound"
+      ],
+      "minTier": "gold",
+      "requirement": "conditional"
+    },
+    {
+      "id": "tag:crossing_node:traffic_signals:minimap",
+      "type": "tag",
+      "label": "traffic_signals:minimap",
+      "keys": [
+        "traffic_signals:minimap"
+      ],
+      "minTier": "diamond",
+      "requirement": "conditional"
+    },
+    {
+      "id": "tag:crossing_node:crossing:flags",
+      "type": "tag",
+      "label": "crossing:flags",
+      "keys": [
+        "crossing:flags"
+      ],
+      "minTier": "diamond",
+      "requirement": "required"
+    },
+    {
+      "id": "tag:crossing_node:tactile_paving:colour",
+      "type": "tag",
+      "label": "tactile_paving:colour",
+      "keys": [
+        "tactile_paving:colour"
+      ],
+      "minTier": "diamond",
+      "requirement": "conditional"
+    },
+    {
+      "id": "feature:curb",
+      "type": "feature",
+      "label": "Curb",
+      "elements": [
+        "node"
+      ],
+      "minTier": "silver"
+    },
+    {
+      "id": "tag:curb:kerb",
+      "type": "tag",
+      "label": "kerb",
+      "keys": [
+        "kerb"
+      ],
+      "minTier": "silver",
+      "requirement": "required"
+    },
+    {
+      "id": "tag:curb:tactile_paving",
+      "type": "tag",
+      "label": "tactile_paving",
+      "keys": [
+        "tactile_paving"
+      ],
+      "minTier": "silver",
+      "requirement": "required"
+    },
+    {
+      "id": "tag:curb:kerb:height",
+      "type": "tag",
+      "label": "kerb:height",
+      "keys": [
+        "kerb:height"
+      ],
+      "minTier": "gold",
+      "requirement": "conditional"
+    },
+    {
+      "id": "tag:curb:tactile_paving:colour",
+      "type": "tag",
+      "label": "tactile_paving:colour",
+      "keys": [
+        "tactile_paving:colour"
+      ],
+      "minTier": "diamond",
+      "requirement": "conditional"
+    },
+    {
+      "id": "feature:traffic_island",
+      "type": "feature",
+      "label": "Traffic Island",
+      "elements": [
+        "way"
+      ],
+      "minTier": "silver"
+    },
+    {
+      "id": "tag:traffic_island:surface",
+      "type": "tag",
+      "label": "surface",
+      "keys": [
+        "surface"
+      ],
+      "minTier": "silver",
+      "requirement": "required"
+    },
+    {
+      "id": "tag:traffic_island:lit",
+      "type": "tag",
+      "label": "lit",
+      "keys": [
+        "lit"
+      ],
+      "minTier": "gold",
+      "requirement": "required"
+    },
+    {
+      "id": "tag:traffic_island:width",
+      "type": "tag",
+      "label": "width",
+      "keys": [
+        "width"
+      ],
+      "minTier": "gold",
+      "requirement": "required"
+    },
+    {
+      "id": "tag:traffic_island:incline",
+      "type": "tag",
+      "label": "incline",
+      "keys": [
+        "incline"
+      ],
+      "minTier": "gold",
+      "requirement": "conditional"
+    },
+    {
+      "id": "tag:traffic_island:incline:across",
+      "type": "tag",
+      "label": "incline:across",
+      "keys": [
+        "incline:across"
+      ],
+      "minTier": "diamond",
+      "requirement": "required"
+    },
+    {
+      "id": "tag:traffic_island:tactile_paving",
+      "type": "tag",
+      "label": "tactile_paving",
+      "keys": [
+        "tactile_paving"
+      ],
+      "minTier": "diamond",
+      "requirement": "required"
+    },
+    {
+      "id": "tag:traffic_island:tactile_paving:colour",
+      "type": "tag",
+      "label": "tactile_paving:colour",
+      "keys": [
+        "tactile_paving:colour"
+      ],
+      "minTier": "diamond",
+      "requirement": "conditional"
+    },
+    {
+      "id": "feature:access_aisle",
+      "type": "feature",
+      "label": "Access Aisle",
+      "elements": [
+        "way"
+      ],
+      "minTier": "silver"
+    },
+    {
+      "id": "tag:access_aisle:access_aisle:markings",
+      "type": "tag",
+      "label": "access_aisle:markings",
+      "keys": [
+        "access_aisle:markings"
+      ],
+      "minTier": "silver",
+      "requirement": "required"
+    },
+    {
+      "id": "tag:access_aisle:surface",
+      "type": "tag",
+      "label": "surface",
+      "keys": [
+        "surface"
+      ],
+      "minTier": "silver",
+      "requirement": "required"
+    },
+    {
+      "id": "tag:access_aisle:lit",
+      "type": "tag",
+      "label": "lit",
+      "keys": [
+        "lit"
+      ],
+      "minTier": "gold",
+      "requirement": "required"
+    },
+    {
+      "id": "tag:access_aisle:width",
+      "type": "tag",
+      "label": "width",
+      "keys": [
+        "width"
+      ],
+      "minTier": "gold",
+      "requirement": "required"
+    },
+    {
+      "id": "tag:access_aisle:incline",
+      "type": "tag",
+      "label": "incline",
+      "keys": [
+        "incline"
+      ],
+      "minTier": "gold",
+      "requirement": "conditional"
+    },
+    {
+      "id": "tag:access_aisle:incline:across",
+      "type": "tag",
+      "label": "incline:across",
+      "keys": [
+        "incline:across"
+      ],
+      "minTier": "diamond",
+      "requirement": "required"
+    },
+    {
+      "id": "tag:access_aisle:tactile_paving",
+      "type": "tag",
+      "label": "tactile_paving",
+      "keys": [
+        "tactile_paving"
+      ],
+      "minTier": "diamond",
+      "requirement": "required"
+    },
+    {
+      "id": "tag:access_aisle:tactile_paving:colour",
+      "type": "tag",
+      "label": "tactile_paving:colour",
+      "keys": [
+        "tactile_paving:colour"
+      ],
+      "minTier": "diamond",
+      "requirement": "conditional"
+    },
+    {
+      "id": "feature:footway_area",
+      "type": "feature",
+      "label": "Footway Area",
+      "elements": [
+        "way",
+        "relation"
+      ],
+      "minTier": "gold"
+    },
+    {
+      "id": "feature:roadway",
+      "type": "feature",
+      "label": "Roadway",
+      "elements": [
+        "way"
+      ],
+      "minTier": "bronze"
+    },
+    {
+      "id": "tag:roadway:sidewalk:SIDE",
+      "type": "tag",
+      "label": "sidewalk:SIDE",
+      "keys": [
+        "sidewalk:left",
+        "sidewalk:right",
+        "sidewalk:both"
+      ],
+      "minTier": "bronze",
+      "requirement": "required"
+    },
+    {
+      "id": "tag:roadway:maxspeed",
+      "type": "tag",
+      "label": "maxspeed",
+      "keys": [
+        "maxspeed"
+      ],
+      "minTier": "gold",
+      "requirement": "required"
+    }
+  ],
+  "edges": [
+    {
+      "source": "schema",
+      "target": "tier:bronze",
+      "type": "defines-tier"
+    },
+    {
+      "source": "schema",
+      "target": "tier:silver",
+      "type": "defines-tier"
+    },
+    {
+      "source": "schema",
+      "target": "tier:gold",
+      "type": "defines-tier"
+    },
+    {
+      "source": "schema",
+      "target": "tier:diamond",
+      "type": "defines-tier"
+    },
+    {
+      "source": "schema",
+      "target": "feature:sidewalk",
+      "type": "defines-feature"
+    },
+    {
+      "source": "feature:sidewalk",
+      "target": "tier:bronze",
+      "type": "starts-at"
+    },
+    {
+      "source": "feature:sidewalk",
+      "target": "tag:sidewalk:surface",
+      "type": "has-tag"
+    },
+    {
+      "source": "tag:sidewalk:surface",
+      "target": "tier:silver",
+      "type": "introduced-at"
+    },
+    {
+      "source": "feature:sidewalk",
+      "target": "tag:sidewalk:lit",
+      "type": "has-tag"
+    },
+    {
+      "source": "tag:sidewalk:lit",
+      "target": "tier:gold",
+      "type": "introduced-at"
+    },
+    {
+      "source": "feature:sidewalk",
+      "target": "tag:sidewalk:width",
+      "type": "has-tag"
+    },
+    {
+      "source": "tag:sidewalk:width",
+      "target": "tier:gold",
+      "type": "introduced-at"
+    },
+    {
+      "source": "feature:sidewalk",
+      "target": "tag:sidewalk:incline",
+      "type": "has-tag"
+    },
+    {
+      "source": "tag:sidewalk:incline",
+      "target": "tier:gold",
+      "type": "introduced-at"
+    },
+    {
+      "source": "feature:sidewalk",
+      "target": "tag:sidewalk:incline:across",
+      "type": "has-tag"
+    },
+    {
+      "source": "tag:sidewalk:incline:across",
+      "target": "tier:diamond",
+      "type": "introduced-at"
+    },
+    {
+      "source": "feature:sidewalk",
+      "target": "tag:sidewalk:tactile_paving",
+      "type": "has-tag"
+    },
+    {
+      "source": "tag:sidewalk:tactile_paving",
+      "target": "tier:diamond",
+      "type": "introduced-at"
+    },
+    {
+      "source": "feature:sidewalk",
+      "target": "tag:sidewalk:tactile_paving:colour",
+      "type": "has-tag"
+    },
+    {
+      "source": "tag:sidewalk:tactile_paving:colour",
+      "target": "tier:diamond",
+      "type": "introduced-at"
+    },
+    {
+      "source": "schema",
+      "target": "feature:crossing_way",
+      "type": "defines-feature"
+    },
+    {
+      "source": "feature:crossing_way",
+      "target": "tier:bronze",
+      "type": "starts-at"
+    },
+    {
+      "source": "feature:crossing_way",
+      "target": "tag:crossing_way:crossing:markings",
+      "type": "has-tag"
+    },
+    {
+      "source": "tag:crossing_way:crossing:markings",
+      "target": "tier:bronze",
+      "type": "introduced-at"
+    },
+    {
+      "source": "feature:crossing_way",
+      "target": "tag:crossing_way:crossing:signals",
+      "type": "has-tag"
+    },
+    {
+      "source": "tag:crossing_way:crossing:signals",
+      "target": "tier:bronze",
+      "type": "introduced-at"
+    },
+    {
+      "source": "feature:crossing_way",
+      "target": "tag:crossing_way:surface",
+      "type": "has-tag"
+    },
+    {
+      "source": "tag:crossing_way:surface",
+      "target": "tier:silver",
+      "type": "introduced-at"
+    },
+    {
+      "source": "feature:crossing_way",
+      "target": "tag:crossing_way:crossing:island",
+      "type": "has-tag"
+    },
+    {
+      "source": "tag:crossing_way:crossing:island",
+      "target": "tier:silver",
+      "type": "introduced-at"
+    },
+    {
+      "source": "feature:crossing_way",
+      "target": "tag:crossing_way:crossing:signed",
+      "type": "has-tag"
+    },
+    {
+      "source": "tag:crossing_way:crossing:signed",
+      "target": "tier:gold",
+      "type": "introduced-at"
+    },
+    {
+      "source": "feature:crossing_way",
+      "target": "tag:crossing_way:width",
+      "type": "has-tag"
+    },
+    {
+      "source": "tag:crossing_way:width",
+      "target": "tier:gold",
+      "type": "introduced-at"
+    },
+    {
+      "source": "feature:crossing_way",
+      "target": "tag:crossing_way:button_operated",
+      "type": "has-tag"
+    },
+    {
+      "source": "tag:crossing_way:button_operated",
+      "target": "tier:gold",
+      "type": "introduced-at"
+    },
+    {
+      "source": "feature:crossing_way",
+      "target": "tag:crossing_way:traffic_signals:arrow",
+      "type": "has-tag"
+    },
+    {
+      "source": "tag:crossing_way:traffic_signals:arrow",
+      "target": "tier:gold",
+      "type": "introduced-at"
+    },
+    {
+      "source": "feature:crossing_way",
+      "target": "tag:crossing_way:traffic_signals:vibration",
+      "type": "has-tag"
+    },
+    {
+      "source": "tag:crossing_way:traffic_signals:vibration",
+      "target": "tier:gold",
+      "type": "introduced-at"
+    },
+    {
+      "source": "feature:crossing_way",
+      "target": "tag:crossing_way:traffic_signals:sound",
+      "type": "has-tag"
+    },
+    {
+      "source": "tag:crossing_way:traffic_signals:sound",
+      "target": "tier:gold",
+      "type": "introduced-at"
+    },
+    {
+      "source": "feature:crossing_way",
+      "target": "tag:crossing_way:traffic_signals:minimap",
+      "type": "has-tag"
+    },
+    {
+      "source": "tag:crossing_way:traffic_signals:minimap",
+      "target": "tier:diamond",
+      "type": "introduced-at"
+    },
+    {
+      "source": "feature:crossing_way",
+      "target": "tag:crossing_way:crossing:flags",
+      "type": "has-tag"
+    },
+    {
+      "source": "tag:crossing_way:crossing:flags",
+      "target": "tier:diamond",
+      "type": "introduced-at"
+    },
+    {
+      "source": "feature:crossing_way",
+      "target": "tag:crossing_way:tactile_paving",
+      "type": "has-tag"
+    },
+    {
+      "source": "tag:crossing_way:tactile_paving",
+      "target": "tier:diamond",
+      "type": "introduced-at"
+    },
+    {
+      "source": "feature:crossing_way",
+      "target": "tag:crossing_way:tactile_paving:colour",
+      "type": "has-tag"
+    },
+    {
+      "source": "tag:crossing_way:tactile_paving:colour",
+      "target": "tier:diamond",
+      "type": "introduced-at"
+    },
+    {
+      "source": "schema",
+      "target": "feature:crossing_node",
+      "type": "defines-feature"
+    },
+    {
+      "source": "feature:crossing_node",
+      "target": "tier:bronze",
+      "type": "starts-at"
+    },
+    {
+      "source": "feature:crossing_node",
+      "target": "tag:crossing_node:crossing:markings",
+      "type": "has-tag"
+    },
+    {
+      "source": "tag:crossing_node:crossing:markings",
+      "target": "tier:bronze",
+      "type": "introduced-at"
+    },
+    {
+      "source": "feature:crossing_node",
+      "target": "tag:crossing_node:crossing:signals",
+      "type": "has-tag"
+    },
+    {
+      "source": "tag:crossing_node:crossing:signals",
+      "target": "tier:bronze",
+      "type": "introduced-at"
+    },
+    {
+      "source": "feature:crossing_node",
+      "target": "tag:crossing_node:tactile_paving",
+      "type": "has-tag"
+    },
+    {
+      "source": "tag:crossing_node:tactile_paving",
+      "target": "tier:silver",
+      "type": "introduced-at"
+    },
+    {
+      "source": "feature:crossing_node",
+      "target": "tag:crossing_node:crossing:island",
+      "type": "has-tag"
+    },
+    {
+      "source": "tag:crossing_node:crossing:island",
+      "target": "tier:silver",
+      "type": "introduced-at"
+    },
+    {
+      "source": "feature:crossing_node",
+      "target": "tag:crossing_node:crossing:signed",
+      "type": "has-tag"
+    },
+    {
+      "source": "tag:crossing_node:crossing:signed",
+      "target": "tier:gold",
+      "type": "introduced-at"
+    },
+    {
+      "source": "feature:crossing_node",
+      "target": "tag:crossing_node:button_operated",
+      "type": "has-tag"
+    },
+    {
+      "source": "tag:crossing_node:button_operated",
+      "target": "tier:gold",
+      "type": "introduced-at"
+    },
+    {
+      "source": "feature:crossing_node",
+      "target": "tag:crossing_node:traffic_signals:arrow",
+      "type": "has-tag"
+    },
+    {
+      "source": "tag:crossing_node:traffic_signals:arrow",
+      "target": "tier:gold",
+      "type": "introduced-at"
+    },
+    {
+      "source": "feature:crossing_node",
+      "target": "tag:crossing_node:traffic_signals:vibration",
+      "type": "has-tag"
+    },
+    {
+      "source": "tag:crossing_node:traffic_signals:vibration",
+      "target": "tier:gold",
+      "type": "introduced-at"
+    },
+    {
+      "source": "feature:crossing_node",
+      "target": "tag:crossing_node:traffic_signals:sound",
+      "type": "has-tag"
+    },
+    {
+      "source": "tag:crossing_node:traffic_signals:sound",
+      "target": "tier:gold",
+      "type": "introduced-at"
+    },
+    {
+      "source": "feature:crossing_node",
+      "target": "tag:crossing_node:traffic_signals:minimap",
+      "type": "has-tag"
+    },
+    {
+      "source": "tag:crossing_node:traffic_signals:minimap",
+      "target": "tier:diamond",
+      "type": "introduced-at"
+    },
+    {
+      "source": "feature:crossing_node",
+      "target": "tag:crossing_node:crossing:flags",
+      "type": "has-tag"
+    },
+    {
+      "source": "tag:crossing_node:crossing:flags",
+      "target": "tier:diamond",
+      "type": "introduced-at"
+    },
+    {
+      "source": "feature:crossing_node",
+      "target": "tag:crossing_node:tactile_paving:colour",
+      "type": "has-tag"
+    },
+    {
+      "source": "tag:crossing_node:tactile_paving:colour",
+      "target": "tier:diamond",
+      "type": "introduced-at"
+    },
+    {
+      "source": "schema",
+      "target": "feature:curb",
+      "type": "defines-feature"
+    },
+    {
+      "source": "feature:curb",
+      "target": "tier:silver",
+      "type": "starts-at"
+    },
+    {
+      "source": "feature:curb",
+      "target": "tag:curb:kerb",
+      "type": "has-tag"
+    },
+    {
+      "source": "tag:curb:kerb",
+      "target": "tier:silver",
+      "type": "introduced-at"
+    },
+    {
+      "source": "feature:curb",
+      "target": "tag:curb:tactile_paving",
+      "type": "has-tag"
+    },
+    {
+      "source": "tag:curb:tactile_paving",
+      "target": "tier:silver",
+      "type": "introduced-at"
+    },
+    {
+      "source": "feature:curb",
+      "target": "tag:curb:kerb:height",
+      "type": "has-tag"
+    },
+    {
+      "source": "tag:curb:kerb:height",
+      "target": "tier:gold",
+      "type": "introduced-at"
+    },
+    {
+      "source": "feature:curb",
+      "target": "tag:curb:tactile_paving:colour",
+      "type": "has-tag"
+    },
+    {
+      "source": "tag:curb:tactile_paving:colour",
+      "target": "tier:diamond",
+      "type": "introduced-at"
+    },
+    {
+      "source": "schema",
+      "target": "feature:traffic_island",
+      "type": "defines-feature"
+    },
+    {
+      "source": "feature:traffic_island",
+      "target": "tier:silver",
+      "type": "starts-at"
+    },
+    {
+      "source": "feature:traffic_island",
+      "target": "tag:traffic_island:surface",
+      "type": "has-tag"
+    },
+    {
+      "source": "tag:traffic_island:surface",
+      "target": "tier:silver",
+      "type": "introduced-at"
+    },
+    {
+      "source": "feature:traffic_island",
+      "target": "tag:traffic_island:lit",
+      "type": "has-tag"
+    },
+    {
+      "source": "tag:traffic_island:lit",
+      "target": "tier:gold",
+      "type": "introduced-at"
+    },
+    {
+      "source": "feature:traffic_island",
+      "target": "tag:traffic_island:width",
+      "type": "has-tag"
+    },
+    {
+      "source": "tag:traffic_island:width",
+      "target": "tier:gold",
+      "type": "introduced-at"
+    },
+    {
+      "source": "feature:traffic_island",
+      "target": "tag:traffic_island:incline",
+      "type": "has-tag"
+    },
+    {
+      "source": "tag:traffic_island:incline",
+      "target": "tier:gold",
+      "type": "introduced-at"
+    },
+    {
+      "source": "feature:traffic_island",
+      "target": "tag:traffic_island:incline:across",
+      "type": "has-tag"
+    },
+    {
+      "source": "tag:traffic_island:incline:across",
+      "target": "tier:diamond",
+      "type": "introduced-at"
+    },
+    {
+      "source": "feature:traffic_island",
+      "target": "tag:traffic_island:tactile_paving",
+      "type": "has-tag"
+    },
+    {
+      "source": "tag:traffic_island:tactile_paving",
+      "target": "tier:diamond",
+      "type": "introduced-at"
+    },
+    {
+      "source": "feature:traffic_island",
+      "target": "tag:traffic_island:tactile_paving:colour",
+      "type": "has-tag"
+    },
+    {
+      "source": "tag:traffic_island:tactile_paving:colour",
+      "target": "tier:diamond",
+      "type": "introduced-at"
+    },
+    {
+      "source": "schema",
+      "target": "feature:access_aisle",
+      "type": "defines-feature"
+    },
+    {
+      "source": "feature:access_aisle",
+      "target": "tier:silver",
+      "type": "starts-at"
+    },
+    {
+      "source": "feature:access_aisle",
+      "target": "tag:access_aisle:access_aisle:markings",
+      "type": "has-tag"
+    },
+    {
+      "source": "tag:access_aisle:access_aisle:markings",
+      "target": "tier:silver",
+      "type": "introduced-at"
+    },
+    {
+      "source": "feature:access_aisle",
+      "target": "tag:access_aisle:surface",
+      "type": "has-tag"
+    },
+    {
+      "source": "tag:access_aisle:surface",
+      "target": "tier:silver",
+      "type": "introduced-at"
+    },
+    {
+      "source": "feature:access_aisle",
+      "target": "tag:access_aisle:lit",
+      "type": "has-tag"
+    },
+    {
+      "source": "tag:access_aisle:lit",
+      "target": "tier:gold",
+      "type": "introduced-at"
+    },
+    {
+      "source": "feature:access_aisle",
+      "target": "tag:access_aisle:width",
+      "type": "has-tag"
+    },
+    {
+      "source": "tag:access_aisle:width",
+      "target": "tier:gold",
+      "type": "introduced-at"
+    },
+    {
+      "source": "feature:access_aisle",
+      "target": "tag:access_aisle:incline",
+      "type": "has-tag"
+    },
+    {
+      "source": "tag:access_aisle:incline",
+      "target": "tier:gold",
+      "type": "introduced-at"
+    },
+    {
+      "source": "feature:access_aisle",
+      "target": "tag:access_aisle:incline:across",
+      "type": "has-tag"
+    },
+    {
+      "source": "tag:access_aisle:incline:across",
+      "target": "tier:diamond",
+      "type": "introduced-at"
+    },
+    {
+      "source": "feature:access_aisle",
+      "target": "tag:access_aisle:tactile_paving",
+      "type": "has-tag"
+    },
+    {
+      "source": "tag:access_aisle:tactile_paving",
+      "target": "tier:diamond",
+      "type": "introduced-at"
+    },
+    {
+      "source": "feature:access_aisle",
+      "target": "tag:access_aisle:tactile_paving:colour",
+      "type": "has-tag"
+    },
+    {
+      "source": "tag:access_aisle:tactile_paving:colour",
+      "target": "tier:diamond",
+      "type": "introduced-at"
+    },
+    {
+      "source": "schema",
+      "target": "feature:footway_area",
+      "type": "defines-feature"
+    },
+    {
+      "source": "feature:footway_area",
+      "target": "tier:gold",
+      "type": "starts-at"
+    },
+    {
+      "source": "schema",
+      "target": "feature:roadway",
+      "type": "defines-feature"
+    },
+    {
+      "source": "feature:roadway",
+      "target": "tier:bronze",
+      "type": "starts-at"
+    },
+    {
+      "source": "feature:roadway",
+      "target": "tag:roadway:sidewalk:SIDE",
+      "type": "has-tag"
+    },
+    {
+      "source": "tag:roadway:sidewalk:SIDE",
+      "target": "tier:bronze",
+      "type": "introduced-at"
+    },
+    {
+      "source": "feature:roadway",
+      "target": "tag:roadway:maxspeed",
+      "type": "has-tag"
+    },
+    {
+      "source": "tag:roadway:maxspeed",
+      "target": "tier:gold",
+      "type": "introduced-at"
+    }
+  ]
+}

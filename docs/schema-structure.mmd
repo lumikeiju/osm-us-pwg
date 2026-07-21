@@ -1,0 +1,140 @@
+flowchart LR
+  schema["PWG Schema 1.0.1"]
+  schema --> tiers["Tiers"]
+  schema --> features["Features"]
+  tiers --> tier_bronze["Bronze"]
+  tiers --> tier_silver["Silver"]
+  tiers --> tier_gold["Gold"]
+  tiers --> tier_diamond["Diamond"]
+  features --> feature_sidewalk["Sidewalk\nway\nstarts: Bronze"]
+  feature_sidewalk --> sidewalk_identifier["identifier\nhighway=footway + footway=sidewalk"]
+  feature_sidewalk -. starts at .-> tier_bronze
+  feature_sidewalk --> tag_sidewalk_surface["surface\nSilver"]
+  tag_sidewalk_surface -. introduced at .-> tier_silver
+  feature_sidewalk --> tag_sidewalk_lit["lit\nGold"]
+  tag_sidewalk_lit -. introduced at .-> tier_gold
+  feature_sidewalk --> tag_sidewalk_width["width\nGold"]
+  tag_sidewalk_width -. introduced at .-> tier_gold
+  feature_sidewalk --> tag_sidewalk_incline["incline\nGold"]
+  tag_sidewalk_incline -. introduced at .-> tier_gold
+  feature_sidewalk --> tag_sidewalk_incline_across["incline:across\nDiamond"]
+  tag_sidewalk_incline_across -. introduced at .-> tier_diamond
+  feature_sidewalk --> tag_sidewalk_tactile_paving["tactile_paving\nDiamond"]
+  tag_sidewalk_tactile_paving -. introduced at .-> tier_diamond
+  feature_sidewalk --> tag_sidewalk_tactile_paving_colour["tactile_paving:colour\nDiamond"]
+  tag_sidewalk_tactile_paving_colour -. introduced at .-> tier_diamond
+  features --> feature_crossing_way["Crossing (way)\nway\nstarts: Bronze"]
+  feature_crossing_way --> crossing_way_identifier["identifier\nhighway=footway + footway=crossing"]
+  feature_crossing_way -. starts at .-> tier_bronze
+  feature_crossing_way --> tag_crossing_way_crossing_markings["crossing:markings\nBronze"]
+  tag_crossing_way_crossing_markings -. introduced at .-> tier_bronze
+  feature_crossing_way --> tag_crossing_way_crossing_signals["crossing:signals\nBronze"]
+  tag_crossing_way_crossing_signals -. introduced at .-> tier_bronze
+  feature_crossing_way --> tag_crossing_way_surface["surface\nSilver"]
+  tag_crossing_way_surface -. introduced at .-> tier_silver
+  feature_crossing_way --> tag_crossing_way_crossing_island["crossing:island\nSilver"]
+  tag_crossing_way_crossing_island -. introduced at .-> tier_silver
+  feature_crossing_way --> tag_crossing_way_crossing_signed["crossing:signed\nGold"]
+  tag_crossing_way_crossing_signed -. introduced at .-> tier_gold
+  feature_crossing_way --> tag_crossing_way_width["width\nGold"]
+  tag_crossing_way_width -. introduced at .-> tier_gold
+  feature_crossing_way --> tag_crossing_way_button_operated["button_operated\nGold"]
+  tag_crossing_way_button_operated -. introduced at .-> tier_gold
+  feature_crossing_way --> tag_crossing_way_traffic_signals_arrow["traffic_signals:arrow\nGold"]
+  tag_crossing_way_traffic_signals_arrow -. introduced at .-> tier_gold
+  feature_crossing_way --> tag_crossing_way_traffic_signals_vibration["traffic_signals:vibration\nGold"]
+  tag_crossing_way_traffic_signals_vibration -. introduced at .-> tier_gold
+  feature_crossing_way --> tag_crossing_way_traffic_signals_sound["traffic_signals:sound\nGold"]
+  tag_crossing_way_traffic_signals_sound -. introduced at .-> tier_gold
+  feature_crossing_way --> tag_crossing_way_traffic_signals_minimap["traffic_signals:minimap\nDiamond"]
+  tag_crossing_way_traffic_signals_minimap -. introduced at .-> tier_diamond
+  feature_crossing_way --> tag_crossing_way_crossing_flags["crossing:flags\nDiamond"]
+  tag_crossing_way_crossing_flags -. introduced at .-> tier_diamond
+  feature_crossing_way --> tag_crossing_way_tactile_paving["tactile_paving\nDiamond"]
+  tag_crossing_way_tactile_paving -. introduced at .-> tier_diamond
+  feature_crossing_way --> tag_crossing_way_tactile_paving_colour["tactile_paving:colour\nDiamond"]
+  tag_crossing_way_tactile_paving_colour -. introduced at .-> tier_diamond
+  features --> feature_crossing_node["Crossing (node)\nnode\nstarts: Bronze"]
+  feature_crossing_node --> crossing_node_identifier["identifier\nhighway=crossing + not footway"]
+  feature_crossing_node -. starts at .-> tier_bronze
+  feature_crossing_node --> tag_crossing_node_crossing_markings["crossing:markings\nBronze"]
+  tag_crossing_node_crossing_markings -. introduced at .-> tier_bronze
+  feature_crossing_node --> tag_crossing_node_crossing_signals["crossing:signals\nBronze"]
+  tag_crossing_node_crossing_signals -. introduced at .-> tier_bronze
+  feature_crossing_node --> tag_crossing_node_tactile_paving["tactile_paving\nSilver"]
+  tag_crossing_node_tactile_paving -. introduced at .-> tier_silver
+  feature_crossing_node --> tag_crossing_node_crossing_island["crossing:island\nSilver"]
+  tag_crossing_node_crossing_island -. introduced at .-> tier_silver
+  feature_crossing_node --> tag_crossing_node_crossing_signed["crossing:signed\nGold"]
+  tag_crossing_node_crossing_signed -. introduced at .-> tier_gold
+  feature_crossing_node --> tag_crossing_node_button_operated["button_operated\nGold"]
+  tag_crossing_node_button_operated -. introduced at .-> tier_gold
+  feature_crossing_node --> tag_crossing_node_traffic_signals_arrow["traffic_signals:arrow\nGold"]
+  tag_crossing_node_traffic_signals_arrow -. introduced at .-> tier_gold
+  feature_crossing_node --> tag_crossing_node_traffic_signals_vibration["traffic_signals:vibration\nGold"]
+  tag_crossing_node_traffic_signals_vibration -. introduced at .-> tier_gold
+  feature_crossing_node --> tag_crossing_node_traffic_signals_sound["traffic_signals:sound\nGold"]
+  tag_crossing_node_traffic_signals_sound -. introduced at .-> tier_gold
+  feature_crossing_node --> tag_crossing_node_traffic_signals_minimap["traffic_signals:minimap\nDiamond"]
+  tag_crossing_node_traffic_signals_minimap -. introduced at .-> tier_diamond
+  feature_crossing_node --> tag_crossing_node_crossing_flags["crossing:flags\nDiamond"]
+  tag_crossing_node_crossing_flags -. introduced at .-> tier_diamond
+  feature_crossing_node --> tag_crossing_node_tactile_paving_colour["tactile_paving:colour\nDiamond"]
+  tag_crossing_node_tactile_paving_colour -. introduced at .-> tier_diamond
+  features --> feature_curb["Curb\nnode\nstarts: Silver"]
+  feature_curb --> curb_identifier["identifier\nbarrier=kerb"]
+  feature_curb -. starts at .-> tier_silver
+  feature_curb --> tag_curb_kerb["kerb\nSilver"]
+  tag_curb_kerb -. introduced at .-> tier_silver
+  feature_curb --> tag_curb_tactile_paving["tactile_paving\nSilver"]
+  tag_curb_tactile_paving -. introduced at .-> tier_silver
+  feature_curb --> tag_curb_kerb_height["kerb:height\nGold"]
+  tag_curb_kerb_height -. introduced at .-> tier_gold
+  feature_curb --> tag_curb_tactile_paving_colour["tactile_paving:colour\nDiamond"]
+  tag_curb_tactile_paving_colour -. introduced at .-> tier_diamond
+  features --> feature_traffic_island["Traffic Island\nway\nstarts: Silver"]
+  feature_traffic_island --> traffic_island_identifier["identifier\nhighway=footway + footway=traffic_island"]
+  feature_traffic_island -. starts at .-> tier_silver
+  feature_traffic_island --> tag_traffic_island_surface["surface\nSilver"]
+  tag_traffic_island_surface -. introduced at .-> tier_silver
+  feature_traffic_island --> tag_traffic_island_lit["lit\nGold"]
+  tag_traffic_island_lit -. introduced at .-> tier_gold
+  feature_traffic_island --> tag_traffic_island_width["width\nGold"]
+  tag_traffic_island_width -. introduced at .-> tier_gold
+  feature_traffic_island --> tag_traffic_island_incline["incline\nGold"]
+  tag_traffic_island_incline -. introduced at .-> tier_gold
+  feature_traffic_island --> tag_traffic_island_incline_across["incline:across\nDiamond"]
+  tag_traffic_island_incline_across -. introduced at .-> tier_diamond
+  feature_traffic_island --> tag_traffic_island_tactile_paving["tactile_paving\nDiamond"]
+  tag_traffic_island_tactile_paving -. introduced at .-> tier_diamond
+  feature_traffic_island --> tag_traffic_island_tactile_paving_colour["tactile_paving:colour\nDiamond"]
+  tag_traffic_island_tactile_paving_colour -. introduced at .-> tier_diamond
+  features --> feature_access_aisle["Access Aisle\nway\nstarts: Silver"]
+  feature_access_aisle --> access_aisle_identifier["identifier\nhighway=footway + footway=access_aisle"]
+  feature_access_aisle -. starts at .-> tier_silver
+  feature_access_aisle --> tag_access_aisle_access_aisle_markings["access_aisle:markings\nSilver"]
+  tag_access_aisle_access_aisle_markings -. introduced at .-> tier_silver
+  feature_access_aisle --> tag_access_aisle_surface["surface\nSilver"]
+  tag_access_aisle_surface -. introduced at .-> tier_silver
+  feature_access_aisle --> tag_access_aisle_lit["lit\nGold"]
+  tag_access_aisle_lit -. introduced at .-> tier_gold
+  feature_access_aisle --> tag_access_aisle_width["width\nGold"]
+  tag_access_aisle_width -. introduced at .-> tier_gold
+  feature_access_aisle --> tag_access_aisle_incline["incline\nGold"]
+  tag_access_aisle_incline -. introduced at .-> tier_gold
+  feature_access_aisle --> tag_access_aisle_incline_across["incline:across\nDiamond"]
+  tag_access_aisle_incline_across -. introduced at .-> tier_diamond
+  feature_access_aisle --> tag_access_aisle_tactile_paving["tactile_paving\nDiamond"]
+  tag_access_aisle_tactile_paving -. introduced at .-> tier_diamond
+  feature_access_aisle --> tag_access_aisle_tactile_paving_colour["tactile_paving:colour\nDiamond"]
+  tag_access_aisle_tactile_paving_colour -. introduced at .-> tier_diamond
+  features --> feature_footway_area["Footway Area\nway, relation\nstarts: Gold"]
+  feature_footway_area --> footway_area_identifier["identifier\narea:highway=footway"]
+  feature_footway_area -. starts at .-> tier_gold
+  features --> feature_roadway["Roadway\nway\nstarts: Bronze"]
+  feature_roadway --> roadway_identifier["identifier\nhighway=* + not footway"]
+  feature_roadway -. starts at .-> tier_bronze
+  feature_roadway --> tag_roadway_sidewalk_side["sidewalk:left, sidewalk:right, sidewalk:both\nBronze"]
+  tag_roadway_sidewalk_side -. introduced at .-> tier_bronze
+  feature_roadway --> tag_roadway_maxspeed["maxspeed\nGold"]
+  tag_roadway_maxspeed -. introduced at .-> tier_gold

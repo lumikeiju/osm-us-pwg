@@ -1,0 +1,220 @@
+flowchart LR
+  tier_bronze["Bronze"]
+  tier_silver["Silver"]
+  tier_gold["Gold"]
+  tier_diamond["Diamond"]
+  tier_bronze --> tier_silver
+  tier_silver --> tier_gold
+  tier_gold --> tier_diamond
+  feature_sidewalk["Sidewalk"]
+  tier_bronze --> feature_sidewalk
+  rel_sidewalk_surface["surface\nrequired"]
+  tier_silver --> rel_sidewalk_surface
+  feature_sidewalk --> rel_sidewalk_surface
+  rel_sidewalk_lit["lit\nrequired"]
+  tier_gold --> rel_sidewalk_lit
+  feature_sidewalk --> rel_sidewalk_lit
+  rel_sidewalk_width["width\nrequired"]
+  tier_gold --> rel_sidewalk_width
+  feature_sidewalk --> rel_sidewalk_width
+  rel_sidewalk_incline["incline\nmanual review: for hilly areas"]
+  tier_gold --> rel_sidewalk_incline
+  feature_sidewalk --> rel_sidewalk_incline
+  rel_sidewalk_incline_across["incline:across\nrequired"]
+  tier_diamond --> rel_sidewalk_incline_across
+  feature_sidewalk --> rel_sidewalk_incline_across
+  rel_sidewalk_tactile_paving["tactile_paving\nrequired"]
+  tier_diamond --> rel_sidewalk_tactile_paving
+  feature_sidewalk --> rel_sidewalk_tactile_paving
+  rel_sidewalk_tactile_paving_colour["tactile_paving:colour\nconditional"]
+  tier_diamond --> rel_sidewalk_tactile_paving_colour
+  feature_sidewalk --> rel_sidewalk_tactile_paving_colour
+  dep_sidewalk_tactile_paving["tactile_paving"]
+  dep_sidewalk_tactile_paving -. appliesWhen .-> rel_sidewalk_tactile_paving_colour
+  feature_crossing_way["Crossing (way)"]
+  tier_bronze --> feature_crossing_way
+  rel_crossing_way_crossing_markings["crossing:markings\nrequired"]
+  tier_bronze --> rel_crossing_way_crossing_markings
+  feature_crossing_way --> rel_crossing_way_crossing_markings
+  rel_crossing_way_crossing_signals["crossing:signals\nrequired"]
+  tier_bronze --> rel_crossing_way_crossing_signals
+  feature_crossing_way --> rel_crossing_way_crossing_signals
+  rel_crossing_way_surface["surface\nrequired"]
+  tier_silver --> rel_crossing_way_surface
+  feature_crossing_way --> rel_crossing_way_surface
+  rel_crossing_way_crossing_island["crossing:island\nrequired"]
+  tier_silver --> rel_crossing_way_crossing_island
+  feature_crossing_way --> rel_crossing_way_crossing_island
+  rel_crossing_way_crossing_signed["crossing:signed\nrequired"]
+  tier_gold --> rel_crossing_way_crossing_signed
+  feature_crossing_way --> rel_crossing_way_crossing_signed
+  rel_crossing_way_width["width\nrequired"]
+  tier_gold --> rel_crossing_way_width
+  feature_crossing_way --> rel_crossing_way_width
+  rel_crossing_way_button_operated["button_operated\nconditional"]
+  tier_gold --> rel_crossing_way_button_operated
+  feature_crossing_way --> rel_crossing_way_button_operated
+  dep_crossing_way_crossing_signals["crossing:signals"]
+  dep_crossing_way_crossing_signals -. appliesWhen .-> rel_crossing_way_button_operated
+  rel_crossing_way_traffic_signals_arrow["traffic_signals:arrow\nconditional"]
+  tier_gold --> rel_crossing_way_traffic_signals_arrow
+  feature_crossing_way --> rel_crossing_way_traffic_signals_arrow
+  dep_crossing_way_crossing_signals["crossing:signals"]
+  dep_crossing_way_crossing_signals -. appliesWhen .-> rel_crossing_way_traffic_signals_arrow
+  rel_crossing_way_traffic_signals_vibration["traffic_signals:vibration\nconditional"]
+  tier_gold --> rel_crossing_way_traffic_signals_vibration
+  feature_crossing_way --> rel_crossing_way_traffic_signals_vibration
+  dep_crossing_way_crossing_signals["crossing:signals"]
+  dep_crossing_way_crossing_signals -. appliesWhen .-> rel_crossing_way_traffic_signals_vibration
+  rel_crossing_way_traffic_signals_sound["traffic_signals:sound\nconditional"]
+  tier_gold --> rel_crossing_way_traffic_signals_sound
+  feature_crossing_way --> rel_crossing_way_traffic_signals_sound
+  dep_crossing_way_crossing_signals["crossing:signals"]
+  dep_crossing_way_crossing_signals -. appliesWhen .-> rel_crossing_way_traffic_signals_sound
+  rel_crossing_way_traffic_signals_minimap["traffic_signals:minimap\nconditional"]
+  tier_diamond --> rel_crossing_way_traffic_signals_minimap
+  feature_crossing_way --> rel_crossing_way_traffic_signals_minimap
+  dep_crossing_way_crossing_signals["crossing:signals"]
+  dep_crossing_way_crossing_signals -. appliesWhen .-> rel_crossing_way_traffic_signals_minimap
+  rel_crossing_way_crossing_flags["crossing:flags\nrequired"]
+  tier_diamond --> rel_crossing_way_crossing_flags
+  feature_crossing_way --> rel_crossing_way_crossing_flags
+  rel_crossing_way_tactile_paving["tactile_paving\nrequired"]
+  tier_diamond --> rel_crossing_way_tactile_paving
+  feature_crossing_way --> rel_crossing_way_tactile_paving
+  rel_crossing_way_tactile_paving_colour["tactile_paving:colour\nconditional"]
+  tier_diamond --> rel_crossing_way_tactile_paving_colour
+  feature_crossing_way --> rel_crossing_way_tactile_paving_colour
+  dep_crossing_way_tactile_paving["tactile_paving"]
+  dep_crossing_way_tactile_paving -. appliesWhen .-> rel_crossing_way_tactile_paving_colour
+  feature_crossing_node["Crossing (node)"]
+  tier_bronze --> feature_crossing_node
+  rel_crossing_node_crossing_markings["crossing:markings\nrequired"]
+  tier_bronze --> rel_crossing_node_crossing_markings
+  feature_crossing_node --> rel_crossing_node_crossing_markings
+  rel_crossing_node_crossing_signals["crossing:signals\nrequired"]
+  tier_bronze --> rel_crossing_node_crossing_signals
+  feature_crossing_node --> rel_crossing_node_crossing_signals
+  rel_crossing_node_tactile_paving["tactile_paving\nrequired"]
+  tier_silver --> rel_crossing_node_tactile_paving
+  feature_crossing_node --> rel_crossing_node_tactile_paving
+  rel_crossing_node_crossing_island["crossing:island\nrequired"]
+  tier_silver --> rel_crossing_node_crossing_island
+  feature_crossing_node --> rel_crossing_node_crossing_island
+  rel_crossing_node_crossing_signed["crossing:signed\nrequired"]
+  tier_gold --> rel_crossing_node_crossing_signed
+  feature_crossing_node --> rel_crossing_node_crossing_signed
+  rel_crossing_node_button_operated["button_operated\nconditional"]
+  tier_gold --> rel_crossing_node_button_operated
+  feature_crossing_node --> rel_crossing_node_button_operated
+  dep_crossing_node_crossing_signals["crossing:signals"]
+  dep_crossing_node_crossing_signals -. appliesWhen .-> rel_crossing_node_button_operated
+  rel_crossing_node_traffic_signals_arrow["traffic_signals:arrow\nconditional"]
+  tier_gold --> rel_crossing_node_traffic_signals_arrow
+  feature_crossing_node --> rel_crossing_node_traffic_signals_arrow
+  dep_crossing_node_crossing_signals["crossing:signals"]
+  dep_crossing_node_crossing_signals -. appliesWhen .-> rel_crossing_node_traffic_signals_arrow
+  rel_crossing_node_traffic_signals_vibration["traffic_signals:vibration\nconditional"]
+  tier_gold --> rel_crossing_node_traffic_signals_vibration
+  feature_crossing_node --> rel_crossing_node_traffic_signals_vibration
+  dep_crossing_node_crossing_signals["crossing:signals"]
+  dep_crossing_node_crossing_signals -. appliesWhen .-> rel_crossing_node_traffic_signals_vibration
+  rel_crossing_node_traffic_signals_sound["traffic_signals:sound\nconditional"]
+  tier_gold --> rel_crossing_node_traffic_signals_sound
+  feature_crossing_node --> rel_crossing_node_traffic_signals_sound
+  dep_crossing_node_crossing_signals["crossing:signals"]
+  dep_crossing_node_crossing_signals -. appliesWhen .-> rel_crossing_node_traffic_signals_sound
+  rel_crossing_node_traffic_signals_minimap["traffic_signals:minimap\nconditional"]
+  tier_diamond --> rel_crossing_node_traffic_signals_minimap
+  feature_crossing_node --> rel_crossing_node_traffic_signals_minimap
+  dep_crossing_node_crossing_signals["crossing:signals"]
+  dep_crossing_node_crossing_signals -. appliesWhen .-> rel_crossing_node_traffic_signals_minimap
+  rel_crossing_node_crossing_flags["crossing:flags\nrequired"]
+  tier_diamond --> rel_crossing_node_crossing_flags
+  feature_crossing_node --> rel_crossing_node_crossing_flags
+  rel_crossing_node_tactile_paving_colour["tactile_paving:colour\nconditional"]
+  tier_diamond --> rel_crossing_node_tactile_paving_colour
+  feature_crossing_node --> rel_crossing_node_tactile_paving_colour
+  dep_crossing_node_tactile_paving["tactile_paving"]
+  dep_crossing_node_tactile_paving -. appliesWhen .-> rel_crossing_node_tactile_paving_colour
+  feature_curb["Curb"]
+  tier_silver --> feature_curb
+  rel_curb_kerb["kerb\nrequired"]
+  tier_silver --> rel_curb_kerb
+  feature_curb --> rel_curb_kerb
+  rel_curb_tactile_paving["tactile_paving\nrequired"]
+  tier_silver --> rel_curb_tactile_paving
+  feature_curb --> rel_curb_tactile_paving
+  rel_curb_kerb_height["kerb:height\nconditional"]
+  tier_gold --> rel_curb_kerb_height
+  feature_curb --> rel_curb_kerb_height
+  dep_curb_kerb["kerb"]
+  dep_curb_kerb -. appliesWhen .-> rel_curb_kerb_height
+  rel_curb_tactile_paving_colour["tactile_paving:colour\nconditional"]
+  tier_diamond --> rel_curb_tactile_paving_colour
+  feature_curb --> rel_curb_tactile_paving_colour
+  dep_curb_tactile_paving["tactile_paving"]
+  dep_curb_tactile_paving -. appliesWhen .-> rel_curb_tactile_paving_colour
+  feature_traffic_island["Traffic Island"]
+  tier_silver --> feature_traffic_island
+  rel_traffic_island_surface["surface\nrequired"]
+  tier_silver --> rel_traffic_island_surface
+  feature_traffic_island --> rel_traffic_island_surface
+  rel_traffic_island_lit["lit\nrequired"]
+  tier_gold --> rel_traffic_island_lit
+  feature_traffic_island --> rel_traffic_island_lit
+  rel_traffic_island_width["width\nrequired"]
+  tier_gold --> rel_traffic_island_width
+  feature_traffic_island --> rel_traffic_island_width
+  rel_traffic_island_incline["incline\nmanual review: for hilly areas"]
+  tier_gold --> rel_traffic_island_incline
+  feature_traffic_island --> rel_traffic_island_incline
+  rel_traffic_island_incline_across["incline:across\nrequired"]
+  tier_diamond --> rel_traffic_island_incline_across
+  feature_traffic_island --> rel_traffic_island_incline_across
+  rel_traffic_island_tactile_paving["tactile_paving\nrequired"]
+  tier_diamond --> rel_traffic_island_tactile_paving
+  feature_traffic_island --> rel_traffic_island_tactile_paving
+  rel_traffic_island_tactile_paving_colour["tactile_paving:colour\nconditional"]
+  tier_diamond --> rel_traffic_island_tactile_paving_colour
+  feature_traffic_island --> rel_traffic_island_tactile_paving_colour
+  dep_traffic_island_tactile_paving["tactile_paving"]
+  dep_traffic_island_tactile_paving -. appliesWhen .-> rel_traffic_island_tactile_paving_colour
+  feature_access_aisle["Access Aisle"]
+  tier_silver --> feature_access_aisle
+  rel_access_aisle_access_aisle_markings["access_aisle:markings\nrequired"]
+  tier_silver --> rel_access_aisle_access_aisle_markings
+  feature_access_aisle --> rel_access_aisle_access_aisle_markings
+  rel_access_aisle_surface["surface\nrequired"]
+  tier_silver --> rel_access_aisle_surface
+  feature_access_aisle --> rel_access_aisle_surface
+  rel_access_aisle_lit["lit\nrequired"]
+  tier_gold --> rel_access_aisle_lit
+  feature_access_aisle --> rel_access_aisle_lit
+  rel_access_aisle_width["width\nrequired"]
+  tier_gold --> rel_access_aisle_width
+  feature_access_aisle --> rel_access_aisle_width
+  rel_access_aisle_incline["incline\nmanual review: for hilly areas"]
+  tier_gold --> rel_access_aisle_incline
+  feature_access_aisle --> rel_access_aisle_incline
+  rel_access_aisle_incline_across["incline:across\nrequired"]
+  tier_diamond --> rel_access_aisle_incline_across
+  feature_access_aisle --> rel_access_aisle_incline_across
+  rel_access_aisle_tactile_paving["tactile_paving\nrequired"]
+  tier_diamond --> rel_access_aisle_tactile_paving
+  feature_access_aisle --> rel_access_aisle_tactile_paving
+  rel_access_aisle_tactile_paving_colour["tactile_paving:colour\nconditional"]
+  tier_diamond --> rel_access_aisle_tactile_paving_colour
+  feature_access_aisle --> rel_access_aisle_tactile_paving_colour
+  dep_access_aisle_tactile_paving["tactile_paving"]
+  dep_access_aisle_tactile_paving -. appliesWhen .-> rel_access_aisle_tactile_paving_colour
+  feature_footway_area["Footway Area"]
+  tier_gold --> feature_footway_area
+  feature_roadway["Roadway"]
+  tier_bronze --> feature_roadway
+  rel_roadway_sidewalk_side["sidewalk:left, sidewalk:right, sidewalk:both\nrequired"]
+  tier_bronze --> rel_roadway_sidewalk_side
+  feature_roadway --> rel_roadway_sidewalk_side
+  rel_roadway_maxspeed["maxspeed\nrequired"]
+  tier_gold --> rel_roadway_maxspeed
+  feature_roadway --> rel_roadway_maxspeed

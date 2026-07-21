@@ -1,0 +1,778 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://openstreetmap.us/pwg/schema/1.0.1.json",
+    "title": "OSM US Pedestrian Working Group Tagging Schema",
+    "version": "1.0.1",
+    "sourceDocument": "schema/1.0.1.mw",
+    "description": "Machine-readable representation of the OSM US Pedestrian Working Group (PWG) tagging schema, version 1.0.1. This document encodes the wiki schema in structure and records approved machine-readable rules where the source table does not express them.",
+
+    "$usage": {
+        "tierOrder": ["bronze", "silver", "gold", "diamond"],
+        "semantics": {
+            "minTier": "The lowest tier at which a tag is introduced. The tag is required at minTier and at every higher tier (tiers are cumulative).",
+            "requirement": {
+                "required": "The tag must be present (with a value satisfying the tier-active valueSpec) for the object to qualify for the tier (and any higher tier).",
+                "conditional": "The tag is required ONLY when its precondition is met. If the precondition is not met (per the object's other tags or the documented real-world condition), the tag's absence does not disqualify the object from the tier."
+            },
+            "appliesWhen": "Optional precondition that must be true (in the object's tag set) for a 'conditional' tag to be required. Encoded as { allOf: [ { key, value? } ... ] }. If 'value' is omitted, the key need only be present. A 'oneOf' clause may list multiple acceptable values.",
+            "condition": "Free-text description of a real-world condition (not derivable from tags) that gates a 'conditional' tag. Used when the wiki gates a tag on physical reality the schema cannot inspect (e.g. 'for hilly areas').",
+            "elements": "OSM element types the feature may be applied to. 'element' is kept for compact human reading; 'elements' is the canonical machine-readable array used by generators.",
+            "josmTypes": "Optional JOSM preset type override when the OSM element types need a JOSM-specific surface, such as closedway for area features.",
+            "visualization": "Optional rendering hints for schema-generated visualizations. These hints do not change the tagging requirements.",
+            "keySet": "Optional rule for templated keys. mode='oneOf' means one listed key set must be present and valid; this is used for alternatives such as sidewalk:both versus sidewalk:left plus sidewalk:right.",
+            "valueSpec": {
+                "enum": "Closed list. Only the listed values are valid.",
+                "openEnum": "Open list. The listed values are common/recommended examples; other valid OSM values are permitted unless listed in notValues.",
+                "free": "Free-form text; no enumeration.",
+                "numeric": "Numeric value (no unit implied).",
+                "length": "OSM length value (e.g. '1.5', '1.5 m').",
+                "percent": "Percent value (e.g. '15%').",
+                "incline": "An incline value: 'up', 'down', a signed or unsigned percent (e.g. '15%' or '-3%'), or degrees (e.g. '8°' or '-3°').",
+                "boolean": "yes or no."
+            },
+            "valueSpecByTier": "Tier-specific value rules. Consumers should use the nearest rule at or below the tier being evaluated, falling back to valueSpec if no tier-specific rule exists.",
+            "notValues": "Values that are explicitly not valid for a valueSpec at that tier, even when valueSpec.type is openEnum. Used when the wiki says a tag becomes more specific at a higher tier."
+        },
+        "exampleQueries": {
+            "tierOf": {
+                "question": "Given an object's tag set, at what tier is it mapped?",
+                "algorithm": [
+                    "1. Identify the feature: find any feature whose 'identifier' matches the tag set.",
+                    "2. Verify the feature's identifier.minTier; the object cannot exceed any tier lower than that.",
+                    "3. For each tier T in tierOrder (lowest to highest), starting at the feature's identifier.minTier, collect all tag entries with minTier <= T.",
+                    "4. For each such entry: if requirement is 'required', the tag must be present with a value satisfying the tier-active valueSpec. If requirement is 'conditional' AND its appliesWhen precondition is satisfied by the object's other tags, the same rule applies; otherwise the entry is skipped. (Conditionals gated only by 'condition' free-text — e.g. 'for hilly areas' — cannot be auto-validated and should be skipped or surfaced as a manual review item.)",
+                    "5. The object's tier is the highest T for which all applicable tags pass."
+                ]
+            },
+            "tagsForTier": {
+                "question": "What tags do I need to map a <feature> at <tier>?",
+                "algorithm": [
+                    "1. Look up features[feature]. If features[feature].identifier.minTier > <tier>, the feature does not exist at <tier>.",
+                    "2. Return identifier tags PLUS every entry in tags[] where minTier is at or below the target tier, applying the nearest valueSpecByTier rule at or below the target tier when present (else valueSpec). Expand keyTemplate entries and keep keySet metadata so consumers know whether all keys or one key set is required.",
+                    "3. Mark each entry with whether it is unconditionally required or conditional (and on what)."
+                ]
+            },
+            "gapToTier": {
+                "question": "What tags must I add or change to bring this object to <tier>?",
+                "algorithm": [
+                    "1. Compute the set of tags expected at <tier> via 'tagsForTier'.",
+                    "2. For each expected tag: if 'required', report missing if absent or value-mismatch if value does not satisfy the tier-active valueSpec. If 'conditional' with appliesWhen satisfied, apply the same rule. If 'conditional' gated only by 'condition' (real-world), surface as a manual review item rather than a blocker."
+                ]
+            },
+            "josmPresetGeneration": {
+                "question": "How do I generate a JOSM preset from this schema?",
+                "algorithm": [
+                    "1. Emit one preset 'item' per feature, keyed on its identifier tags.",
+                    "2. For each tag entry, emit a JOSM preset element by valueSpec.type: 'enum' -> <combo> with closed values; 'openEnum' -> <combo> with editable=true; 'boolean' -> <check>; 'length'/'numeric'/'percent'/'incline'/'free' -> <text>.",
+                    "3. Use the feature's top-level 'elements' to set the preset 'type' attribute (node/way/closedway/relation).",
+                    "4. Use minTier to group/label sections (e.g. 'Silver tier additions'). For keyTemplate entries, emit one editable field per expanded key while preserving the keySet rule in documentation. Surface appliesWhen and condition text as field labels because JOSM presets cannot fully enforce all conditional logic."
+                ]
+            },
+            "visualizerTierRules": {
+                "question": "How do I build schema-generated Ultra tier styles from this schema?",
+                "algorithm": [
+                    "1. Emit one visual layer per feature and match objects with feature.identifier plus feature.elements.",
+                    "2. For each tier from highest to lowest, build a filter from all tag entries with minTier <= tier and the tier-active valueSpec. Required entries become hard filter checks. Conditional entries with appliesWhen become 'precondition false OR tag check passes'. Conditional entries with condition text only are manual-review checks and should not block automated tier coloring.",
+                    "3. For keySet.mode='oneOf', accept the object when any listed key set has all required keys with values satisfying the entry's valueSpec.",
+                    "4. Color objects by the first tier filter they satisfy. If they match the identifier but not the feature's identifier.minTier requirements, style them as below-schema or needs-review rather than Bronze."
+                ]
+            },
+            "qualityEvaluation": {
+                "question": "How do I evaluate the mapping quality of an area?",
+                "algorithm": [
+                    "1. For each OSM object in the area, attempt feature identification.",
+                    "2. For each identified feature, run 'tierOf' to determine its tier.",
+                    "3. Aggregate counts per feature per tier; report distribution and per-object gap-to-next-tier."
+                ]
+            }
+        },
+        "notes": [
+            "Tier classifications and value enumerations are extracted from the wiki tables in schema/1.0.1.mw. Where the wiki uses colspan to group tiers under the same description, every grouped tier is encoded as having the tag from its leftmost tier onward.",
+            "Per the source wiki: any tag listed in a tier's column is REQUIRED for that tier. The schema encodes only 'required' and 'conditional' requirements; there is no 'recommended' state.",
+            "'conditional' is used ONLY when the wiki gates a tag's applicability on either (a) another tag's value (encoded via 'appliesWhen') or (b) a real-world condition the schema cannot evaluate (encoded via 'condition' free-text).",
+            "Crossing signal-detail fields are conditionally required only when crossing:signals is yes, shared, or dedicated. This approved dependency is encoded with appliesWhen because the source table's layout is clear to human readers but does not express it in a machine-readable form.",
+            "Where a feature's identifier row in the wiki begins at a tier higher than Bronze (e.g. Curbs, Islands, Access Aisles), the feature itself is not part of Bronze-tier mapping; this is reflected in the identifier's 'minTier' field."
+        ]
+    },
+
+    "tiers": {
+        "bronze": {
+            "order": 1,
+            "name": "Bronze",
+            "icon": "PWG - Bronze.svg",
+            "shortDescription": "Basic geometry and essential tags",
+            "description": "Basic geometry and essential tags are present to form an independent navigable pedestrian network consisting of sidewalks and crossings.",
+            "useCases": "Basic everyday pedestrian navigation",
+            "requiredResources": "(Older) Low-quality aerial imagery"
+        },
+        "silver": {
+            "order": 2,
+            "name": "Silver",
+            "icon": "PWG - Silver.svg",
+            "shortDescription": "Detailed geometry and tagging",
+            "description": "Detailed geometry and tagging is present to enable accessibility-focused applications and basic visualizations.",
+            "useCases": "Accessibility-focused applications",
+            "requiredResources": "(Somewhat recent) Medium-quality aerial imagery and/or low-quality street-level imagery"
+        },
+        "gold": {
+            "order": 3,
+            "name": "Gold",
+            "icon": "PWG - Gold.svg",
+            "shortDescription": "Micromapping and advanced tagging",
+            "description": "Micromapping and highly detailed tagging is present, which enables router customization for various types of mobility-impaired users and for detailed representation of the environment for institutional use.",
+            "useCases": "Advanced routers and visualizations",
+            "requiredResources": "(Recent) High-quality aerial and/or street-level imagery or in-person survey"
+        },
+        "diamond": {
+            "order": 4,
+            "name": "Diamond",
+            "icon": "PWG - Diamond.svg",
+            "shortDescription": "Specialized, regional, or rare tags",
+            "description": "Tags and mapping methods that are on the line or just outside of the PWG Schema's scope but still recognized. These tags may require specialized tools or expertise to survey or calculate, or are only regionally specific, extremely uncommon, or still in a proposed state and without widespread usage.",
+            "useCases": "Specialized applications",
+            "requiredResources": "On-the-ground survey, or specialized tools"
+        }
+    },
+
+    "features": {
+        "sidewalk": {
+            "name": "Sidewalk",
+            "element": "way",
+            "elements": ["way"],
+            "identifier": {
+                "minTier": "bronze",
+                "allOf": [
+                    { "key": "highway", "value": "footway" },
+                    { "key": "footway", "value": "sidewalk" }
+                ]
+            },
+            "tags": [
+                {
+                    "key": "surface",
+                    "minTier": "silver",
+                    "requirement": "required",
+                    "valueSpec": {
+                        "type": "openEnum",
+                        "values": ["concrete", "asphalt"]
+                    }
+                },
+                {
+                    "key": "lit",
+                    "minTier": "gold",
+                    "requirement": "required",
+                    "valueSpec": { "type": "openEnum", "values": ["yes", "no"] }
+                },
+                {
+                    "key": "width",
+                    "minTier": "gold",
+                    "requirement": "required",
+                    "valueSpec": { "type": "length" }
+                },
+                {
+                    "key": "incline",
+                    "minTier": "gold",
+                    "requirement": "conditional",
+                    "condition": "for hilly areas",
+                    "valueSpec": { "type": "incline" }
+                },
+                {
+                    "key": "incline:across",
+                    "minTier": "diamond",
+                    "requirement": "required",
+                    "valueSpec": { "type": "incline" }
+                },
+                {
+                    "key": "tactile_paving",
+                    "minTier": "diamond",
+                    "requirement": "required",
+                    "valueSpec": { "type": "enum", "values": ["yes", "no"] }
+                },
+                {
+                    "key": "tactile_paving:colour",
+                    "minTier": "diamond",
+                    "requirement": "conditional",
+                    "appliesWhen": {
+                        "allOf": [{ "key": "tactile_paving", "oneOf": ["yes"] }]
+                    },
+                    "valueSpec": { "type": "free" }
+                }
+            ]
+        },
+
+        "crossing_way": {
+            "name": "Crossing (way)",
+            "element": "way",
+            "elements": ["way"],
+            "identifier": {
+                "minTier": "bronze",
+                "allOf": [
+                    { "key": "highway", "value": "footway" },
+                    { "key": "footway", "value": "crossing" }
+                ]
+            },
+            "tags": [
+                {
+                    "key": "crossing:markings",
+                    "minTier": "bronze",
+                    "requirement": "required",
+                    "valueSpecByTier": {
+                        "bronze": { "type": "enum", "values": ["yes", "no"] },
+                        "silver": {
+                            "type": "openEnum",
+                            "values": ["zebra", "lines", "no"],
+                            "notValues": ["yes"]
+                        }
+                    }
+                },
+                {
+                    "key": "crossing:signals",
+                    "minTier": "bronze",
+                    "requirement": "required",
+                    "valueSpecByTier": {
+                        "bronze": { "type": "enum", "values": ["yes", "no"] },
+                        "diamond": {
+                            "type": "enum",
+                            "values": ["no", "shared", "dedicated"]
+                        }
+                    }
+                },
+                {
+                    "key": "surface",
+                    "minTier": "silver",
+                    "requirement": "required",
+                    "valueSpec": {
+                        "type": "openEnum",
+                        "values": ["concrete", "asphalt"]
+                    }
+                },
+                {
+                    "key": "crossing:island",
+                    "minTier": "silver",
+                    "requirement": "required",
+                    "valueSpec": { "type": "enum", "values": ["yes", "no"] }
+                },
+                {
+                    "key": "crossing:signed",
+                    "minTier": "gold",
+                    "requirement": "required",
+                    "valueSpec": { "type": "enum", "values": ["yes", "no"] }
+                },
+                {
+                    "key": "width",
+                    "minTier": "gold",
+                    "requirement": "required",
+                    "valueSpec": { "type": "length" }
+                },
+                {
+                    "key": "button_operated",
+                    "minTier": "gold",
+                    "requirement": "conditional",
+                    "appliesWhen": {
+                        "allOf": [
+                            {
+                                "key": "crossing:signals",
+                                "oneOf": ["yes", "shared", "dedicated"]
+                            }
+                        ]
+                    },
+                    "valueSpec": { "type": "enum", "values": ["yes", "no"] }
+                },
+                {
+                    "key": "traffic_signals:arrow",
+                    "minTier": "gold",
+                    "requirement": "conditional",
+                    "appliesWhen": {
+                        "allOf": [
+                            {
+                                "key": "crossing:signals",
+                                "oneOf": ["yes", "shared", "dedicated"]
+                            }
+                        ]
+                    },
+                    "valueSpec": { "type": "enum", "values": ["yes", "no"] }
+                },
+                {
+                    "key": "traffic_signals:vibration",
+                    "minTier": "gold",
+                    "requirement": "conditional",
+                    "appliesWhen": {
+                        "allOf": [
+                            {
+                                "key": "crossing:signals",
+                                "oneOf": ["yes", "shared", "dedicated"]
+                            }
+                        ]
+                    },
+                    "valueSpec": { "type": "enum", "values": ["yes", "no"] }
+                },
+                {
+                    "key": "traffic_signals:sound",
+                    "minTier": "gold",
+                    "requirement": "conditional",
+                    "appliesWhen": {
+                        "allOf": [
+                            {
+                                "key": "crossing:signals",
+                                "oneOf": ["yes", "shared", "dedicated"]
+                            }
+                        ]
+                    },
+                    "valueSpecByTier": {
+                        "gold": { "type": "enum", "values": ["yes", "no"] },
+                        "diamond": {
+                            "type": "enum",
+                            "values": [
+                                "yes",
+                                "no",
+                                "locate",
+                                "walk",
+                                "locate;walk",
+                                "walk;locate"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "key": "traffic_signals:minimap",
+                    "minTier": "diamond",
+                    "requirement": "conditional",
+                    "appliesWhen": {
+                        "allOf": [
+                            {
+                                "key": "crossing:signals",
+                                "oneOf": ["yes", "shared", "dedicated"]
+                            }
+                        ]
+                    },
+                    "valueSpec": { "type": "enum", "values": ["yes", "no"] }
+                },
+                {
+                    "key": "crossing:flags",
+                    "minTier": "diamond",
+                    "requirement": "required",
+                    "valueSpec": { "type": "enum", "values": ["yes", "no"] }
+                },
+                {
+                    "key": "tactile_paving",
+                    "minTier": "diamond",
+                    "requirement": "required",
+                    "valueSpec": { "type": "enum", "values": ["yes", "no"] }
+                },
+                {
+                    "key": "tactile_paving:colour",
+                    "minTier": "diamond",
+                    "requirement": "conditional",
+                    "appliesWhen": {
+                        "allOf": [{ "key": "tactile_paving", "oneOf": ["yes"] }]
+                    },
+                    "valueSpec": { "type": "free" }
+                }
+            ]
+        },
+
+        "crossing_node": {
+            "name": "Crossing (node)",
+            "element": "node",
+            "elements": ["node"],
+            "identifier": {
+                "minTier": "bronze",
+                "allOf": [{ "key": "highway", "value": "crossing" }],
+                "noneOf": [{ "key": "footway" }]
+            },
+            "tags": [
+                {
+                    "key": "crossing:markings",
+                    "minTier": "bronze",
+                    "requirement": "required",
+                    "valueSpecByTier": {
+                        "bronze": { "type": "enum", "values": ["yes", "no"] },
+                        "silver": {
+                            "type": "openEnum",
+                            "values": ["zebra", "lines", "no"],
+                            "notValues": ["yes"]
+                        }
+                    }
+                },
+                {
+                    "key": "crossing:signals",
+                    "minTier": "bronze",
+                    "requirement": "required",
+                    "valueSpecByTier": {
+                        "bronze": { "type": "enum", "values": ["yes", "no"] },
+                        "diamond": {
+                            "type": "enum",
+                            "values": ["no", "shared", "dedicated"]
+                        }
+                    }
+                },
+                {
+                    "key": "tactile_paving",
+                    "minTier": "silver",
+                    "requirement": "required",
+                    "valueSpec": {
+                        "type": "enum",
+                        "values": ["yes", "no", "partial"]
+                    }
+                },
+                {
+                    "key": "crossing:island",
+                    "minTier": "silver",
+                    "requirement": "required",
+                    "valueSpec": { "type": "enum", "values": ["yes", "no"] }
+                },
+                {
+                    "key": "crossing:signed",
+                    "minTier": "gold",
+                    "requirement": "required",
+                    "valueSpec": { "type": "enum", "values": ["yes", "no"] }
+                },
+                {
+                    "key": "button_operated",
+                    "minTier": "gold",
+                    "requirement": "conditional",
+                    "appliesWhen": {
+                        "allOf": [
+                            {
+                                "key": "crossing:signals",
+                                "oneOf": ["yes", "shared", "dedicated"]
+                            }
+                        ]
+                    },
+                    "valueSpec": { "type": "enum", "values": ["yes", "no"] }
+                },
+                {
+                    "key": "traffic_signals:arrow",
+                    "minTier": "gold",
+                    "requirement": "conditional",
+                    "appliesWhen": {
+                        "allOf": [
+                            {
+                                "key": "crossing:signals",
+                                "oneOf": ["yes", "shared", "dedicated"]
+                            }
+                        ]
+                    },
+                    "valueSpec": { "type": "enum", "values": ["yes", "no"] }
+                },
+                {
+                    "key": "traffic_signals:vibration",
+                    "minTier": "gold",
+                    "requirement": "conditional",
+                    "appliesWhen": {
+                        "allOf": [
+                            {
+                                "key": "crossing:signals",
+                                "oneOf": ["yes", "shared", "dedicated"]
+                            }
+                        ]
+                    },
+                    "valueSpec": { "type": "enum", "values": ["yes", "no"] }
+                },
+                {
+                    "key": "traffic_signals:sound",
+                    "minTier": "gold",
+                    "requirement": "conditional",
+                    "appliesWhen": {
+                        "allOf": [
+                            {
+                                "key": "crossing:signals",
+                                "oneOf": ["yes", "shared", "dedicated"]
+                            }
+                        ]
+                    },
+                    "valueSpecByTier": {
+                        "gold": { "type": "enum", "values": ["yes", "no"] },
+                        "diamond": {
+                            "type": "enum",
+                            "values": [
+                                "yes",
+                                "no",
+                                "locate",
+                                "walk",
+                                "locate;walk",
+                                "walk;locate"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "key": "traffic_signals:minimap",
+                    "minTier": "diamond",
+                    "requirement": "conditional",
+                    "appliesWhen": {
+                        "allOf": [
+                            {
+                                "key": "crossing:signals",
+                                "oneOf": ["yes", "shared", "dedicated"]
+                            }
+                        ]
+                    },
+                    "valueSpec": { "type": "enum", "values": ["yes", "no"] }
+                },
+                {
+                    "key": "crossing:flags",
+                    "minTier": "diamond",
+                    "requirement": "required",
+                    "valueSpec": { "type": "enum", "values": ["yes", "no"] }
+                },
+                {
+                    "key": "tactile_paving:colour",
+                    "minTier": "diamond",
+                    "requirement": "conditional",
+                    "appliesWhen": {
+                        "allOf": [
+                            {
+                                "key": "tactile_paving",
+                                "oneOf": ["yes", "partial"]
+                            }
+                        ]
+                    },
+                    "valueSpec": { "type": "free" }
+                }
+            ]
+        },
+
+        "curb": {
+            "name": "Curb",
+            "element": "node",
+            "elements": ["node"],
+            "identifier": {
+                "minTier": "silver",
+                "allOf": [{ "key": "barrier", "value": "kerb" }]
+            },
+            "tags": [
+                {
+                    "key": "kerb",
+                    "minTier": "silver",
+                    "requirement": "required",
+                    "valueSpec": {
+                        "type": "enum",
+                        "values": ["raised", "lowered", "flush", "rolled", "no"]
+                    }
+                },
+                {
+                    "key": "tactile_paving",
+                    "minTier": "silver",
+                    "requirement": "required",
+                    "valueSpec": { "type": "enum", "values": ["yes", "no"] }
+                },
+                {
+                    "key": "kerb:height",
+                    "minTier": "gold",
+                    "requirement": "conditional",
+                    "appliesWhen": {
+                        "allOf": [{ "key": "kerb", "oneOf": ["raised"] }]
+                    },
+                    "valueSpec": { "type": "length" }
+                },
+                {
+                    "key": "tactile_paving:colour",
+                    "minTier": "diamond",
+                    "requirement": "conditional",
+                    "appliesWhen": {
+                        "allOf": [{ "key": "tactile_paving", "oneOf": ["yes"] }]
+                    },
+                    "valueSpec": { "type": "free" }
+                }
+            ]
+        },
+
+        "traffic_island": {
+            "name": "Traffic Island",
+            "element": "way",
+            "elements": ["way"],
+            "identifier": {
+                "minTier": "silver",
+                "allOf": [
+                    { "key": "highway", "value": "footway" },
+                    { "key": "footway", "value": "traffic_island" }
+                ]
+            },
+            "tags": [
+                {
+                    "key": "surface",
+                    "minTier": "silver",
+                    "requirement": "required",
+                    "valueSpec": {
+                        "type": "openEnum",
+                        "values": ["concrete", "asphalt"]
+                    }
+                },
+                {
+                    "key": "lit",
+                    "minTier": "gold",
+                    "requirement": "required",
+                    "valueSpec": { "type": "openEnum", "values": ["yes", "no"] }
+                },
+                {
+                    "key": "width",
+                    "minTier": "gold",
+                    "requirement": "required",
+                    "valueSpec": { "type": "length" }
+                },
+                {
+                    "key": "incline",
+                    "minTier": "gold",
+                    "requirement": "conditional",
+                    "condition": "for hilly areas",
+                    "valueSpec": { "type": "incline" }
+                },
+                {
+                    "key": "incline:across",
+                    "minTier": "diamond",
+                    "requirement": "required",
+                    "valueSpec": { "type": "incline" }
+                },
+                {
+                    "key": "tactile_paving",
+                    "minTier": "diamond",
+                    "requirement": "required",
+                    "valueSpec": { "type": "enum", "values": ["yes", "no"] }
+                },
+                {
+                    "key": "tactile_paving:colour",
+                    "minTier": "diamond",
+                    "requirement": "conditional",
+                    "appliesWhen": {
+                        "allOf": [{ "key": "tactile_paving", "oneOf": ["yes"] }]
+                    },
+                    "valueSpec": { "type": "free" }
+                }
+            ]
+        },
+
+        "access_aisle": {
+            "name": "Access Aisle",
+            "element": "way",
+            "elements": ["way"],
+            "identifier": {
+                "minTier": "silver",
+                "allOf": [
+                    { "key": "highway", "value": "footway" },
+                    { "key": "footway", "value": "access_aisle" }
+                ]
+            },
+            "tags": [
+                {
+                    "key": "access_aisle:markings",
+                    "minTier": "silver",
+                    "requirement": "required",
+                    "valueSpec": {
+                        "type": "openEnum",
+                        "values": ["no", "yes", "zebra", "ladder:skewed"]
+                    }
+                },
+
+                {
+                    "key": "surface",
+                    "minTier": "silver",
+                    "requirement": "required",
+                    "valueSpec": {
+                        "type": "openEnum",
+                        "values": ["concrete", "asphalt"]
+                    }
+                },
+                {
+                    "key": "lit",
+                    "minTier": "gold",
+                    "requirement": "required",
+                    "valueSpec": { "type": "openEnum", "values": ["yes", "no"] }
+                },
+                {
+                    "key": "width",
+                    "minTier": "gold",
+                    "requirement": "required",
+                    "valueSpec": { "type": "length" }
+                },
+                {
+                    "key": "incline",
+                    "minTier": "gold",
+                    "requirement": "conditional",
+                    "condition": "for hilly areas",
+                    "valueSpec": { "type": "incline" }
+                },
+                {
+                    "key": "incline:across",
+                    "minTier": "diamond",
+                    "requirement": "required",
+                    "valueSpec": { "type": "incline" }
+                },
+                {
+                    "key": "tactile_paving",
+                    "minTier": "diamond",
+                    "requirement": "required",
+                    "valueSpec": { "type": "enum", "values": ["yes", "no"] }
+                },
+                {
+                    "key": "tactile_paving:colour",
+                    "minTier": "diamond",
+                    "requirement": "conditional",
+                    "appliesWhen": {
+                        "allOf": [{ "key": "tactile_paving", "oneOf": ["yes"] }]
+                    },
+                    "valueSpec": { "type": "free" }
+                }
+            ]
+        },
+
+        "footway_area": {
+            "name": "Footway Area",
+            "element": "way",
+            "elements": ["way", "relation"],
+            "josmTypes": ["closedway", "relation"],
+            "visualization": {
+                "layerType": "fill",
+                "geometryType": "Polygon",
+                "opacity": 0.25
+            },
+            "identifier": {
+                "minTier": "gold",
+                "allOf": [{ "key": "area:highway", "value": "footway" }]
+            },
+            "sourceNote": "Gold tier implementation text: area representations of pedestrian features are mapped with area:highway=footway and require fallback path-of-travel ways at centerlines.",
+            "tags": []
+        },
+
+        "roadway": {
+            "name": "Roadway",
+            "element": "way",
+            "elements": ["way"],
+            "identifier": {
+                "minTier": "bronze",
+                "allOf": [{ "key": "highway" }],
+                "noneOf": [{ "key": "footway" }]
+            },
+            "tags": [
+                {
+                    "key": "sidewalk:SIDE",
+                    "keyTemplate": {
+                        "pattern": "sidewalk:{side}",
+                        "variables": {
+                            "side": { "values": ["left", "right", "both"] }
+                        }
+                    },
+                    "keySet": {
+                        "mode": "oneOf",
+                        "sets": [
+                            ["sidewalk:both"],
+                            ["sidewalk:left", "sidewalk:right"]
+                        ],
+                        "description": "Use sidewalk:both, or use both sidewalk:left and sidewalk:right. The preset may expose all three keys because existing OSM data uses each form."
+                    },
+                    "minTier": "bronze",
+                    "requirement": "required",
+                    "valueSpec": {
+                        "type": "enum",
+                        "values": ["no", "separate"]
+                    }
+                },
+                {
+                    "key": "maxspeed",
+                    "minTier": "gold",
+                    "requirement": "required",
+                    "valueSpec": { "type": "free" }
+                }
+            ]
+        }
+    }
+}
