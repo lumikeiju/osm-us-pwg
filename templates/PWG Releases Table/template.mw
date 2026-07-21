@@ -1,0 +1,64 @@
+<noinclude>{{Documentation}}</noinclude>
+<includeonly>
+== PWG Guide and PWG Schema Releases ==
+
+{| class="wikitable"
+|-
+! colspan="3" | PWG Guide Releases
+|-
+| [[Foundation/Local Chapters/United States/Pedestrian Working Group/Guide|Latest]]
+| colspan="2" | ''Permanent link to latest version:''<br>[https://wiki.osm.org/PWG_Guide wiki.osm.org/PWG_Guide]
+|-
+| [[Draft:Foundation/Local Chapters/United States/Pedestrian Working Group/Guide|Draft]]
+| colspan="2" | ''Permanent link to latest draft:''<br>[https://wiki.osm.org/PWG_Guide_Draft wiki.osm.org/PWG_Guide_Draft]
+|-
+| [[Talk:Draft:Foundation/Local Chapters/United States/Pedestrian Working Group/Guide|Talk]]
+| colspan="2" | ''Permanent link to talk page:''<br>[https://wiki.osm.org/PWG_Guide_Talk wiki.osm.org/PWG_Guide_Talk]
+|-
+! Version
+! Date
+! Changelog
+|-
+| [[Foundation/Local Chapters/United States/Pedestrian Working Group/Guide/1.0.1|1.0.1]]
+| {{Date|2026-01-30|iso}}
+| • Fix inclusion of footway tag on crossing nodes
+|-
+| [[Foundation/Local Chapters/United States/Pedestrian Working Group/Guide/1.0.0|1.0.0]]
+| {{Date|2025-11-19|iso}}
+| • Initial release
+|-
+| [[Foundation/Local Chapters/United States/Pedestrian Working Group/Guide/1.0.0-beta|1.0.0-beta]]
+| {{Date|2025-05-23|iso}}
+| • Initial pre-release
+|}
+
+{| class="wikitable"
+|-
+! colspan="3" | PWG Schema Releases
+|-
+| [[Foundation/Local Chapters/United States/Pedestrian Working Group/Schema|Latest]]
+| colspan="2" | ''Permanent link to latest version:''<br>[https://wiki.osm.org/PWG_Schema wiki.osm.org/PWG_Schema]
+|-
+| [[Draft:Foundation/Local Chapters/United States/Pedestrian Working Group/Schema|Draft]]
+| colspan="2" | ''Permanent link to latest draft:''<br>[https://wiki.osm.org/PWG_Schema_Draft wiki.osm.org/PWG_Schema_Draft]
+|-
+| [[Talk:Draft:Foundation/Local Chapters/United States/Pedestrian Working Group/Schema|Talk]]
+| colspan="2" | ''Permanent link to talk page:''<br>[https://wiki.osm.org/PWG_Schema_Talk wiki.osm.org/PWG_Schema_Talk]
+|-
+! Version
+! Date
+! Changelog
+|-
+| [[Foundation/Local Chapters/United States/Pedestrian Working Group/Schema/1.0.1|1.0.1]]
+| {{Date|2026-03-28|iso}}
+| • Fix inclusion of surface and width tags on crossing nodes
+|-
+| [[Foundation/Local Chapters/United States/Pedestrian Working Group/Schema/1.0.0|1.0.0]]
+| {{Date|2025-11-19|iso}}
+| • Initial release
+|-
+| [[Foundation/Local Chapters/United States/Pedestrian Working Group/Schema/1.0.0-beta|1.0.0-beta]]
+| {{Date|2025-05-23|iso}}
+| • Initial pre-release
+|}
+</includeonly>

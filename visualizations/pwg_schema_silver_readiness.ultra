@@ -1,0 +1,74 @@
+---
+title: PWG Schema Silver Readiness View
+description: Schema-generated Silver readiness visualization. #cccccc gray/silver features satisfy Silver tier requirements for accessibility-focused applications; #ff1744 red features match a PWG feature identifier but are not yet Silver-ready. Features introduced above Silver are omitted.
+style:
+  extends: https://styles.trailsta.sh/protomaps-black.json
+  layers:
+    - id: readiness-sidewalk
+      type: line
+      filter: ["all",["==",["geometry-type"],"LineString"],["all",["==",["get","highway"],"footway"],["==",["get","footway"],"sidewalk"]]]
+      paint:
+        line-color: ["case",["all",["all",["==",["get","highway"],"footway"],["==",["get","footway"],"sidewalk"]],[">",["length",["to-string",["get","surface"]]],0]],"#cccccc","#ff1744"]
+        line-width: ["interpolate",["linear"],["zoom"],13,["case",["all",["all",["==",["get","highway"],"footway"],["==",["get","footway"],"sidewalk"]],[">",["length",["to-string",["get","surface"]]],0]],1,2],17,["case",["all",["all",["==",["get","highway"],"footway"],["==",["get","footway"],"sidewalk"]],[">",["length",["to-string",["get","surface"]]],0]],3,6]]
+        line-opacity: ["case",["all",["all",["==",["get","highway"],"footway"],["==",["get","footway"],"sidewalk"]],[">",["length",["to-string",["get","surface"]]],0]],0.55,0.9]
+    - id: readiness-crossing_way
+      type: line
+      filter: ["all",["==",["geometry-type"],"LineString"],["all",["==",["get","highway"],"footway"],["==",["get","footway"],"crossing"]]]
+      paint:
+        line-color: ["case",["all",["all",["==",["get","highway"],"footway"],["==",["get","footway"],"crossing"]],["all",[">",["length",["to-string",["get","crossing:markings"]]],0],["!=",["to-string",["get","crossing:markings"]],"yes"]],["any",["==",["get","crossing:signals"],"yes"],["==",["get","crossing:signals"],"no"]],[">",["length",["to-string",["get","surface"]]],0],["any",["==",["get","crossing:island"],"yes"],["==",["get","crossing:island"],"no"]]],"#cccccc","#ff1744"]
+        line-width: ["interpolate",["linear"],["zoom"],13,["case",["all",["all",["==",["get","highway"],"footway"],["==",["get","footway"],"crossing"]],["all",[">",["length",["to-string",["get","crossing:markings"]]],0],["!=",["to-string",["get","crossing:markings"]],"yes"]],["any",["==",["get","crossing:signals"],"yes"],["==",["get","crossing:signals"],"no"]],[">",["length",["to-string",["get","surface"]]],0],["any",["==",["get","crossing:island"],"yes"],["==",["get","crossing:island"],"no"]]],1,2],17,["case",["all",["all",["==",["get","highway"],"footway"],["==",["get","footway"],"crossing"]],["all",[">",["length",["to-string",["get","crossing:markings"]]],0],["!=",["to-string",["get","crossing:markings"]],"yes"]],["any",["==",["get","crossing:signals"],"yes"],["==",["get","crossing:signals"],"no"]],[">",["length",["to-string",["get","surface"]]],0],["any",["==",["get","crossing:island"],"yes"],["==",["get","crossing:island"],"no"]]],3,6]]
+        line-opacity: ["case",["all",["all",["==",["get","highway"],"footway"],["==",["get","footway"],"crossing"]],["all",[">",["length",["to-string",["get","crossing:markings"]]],0],["!=",["to-string",["get","crossing:markings"]],"yes"]],["any",["==",["get","crossing:signals"],"yes"],["==",["get","crossing:signals"],"no"]],[">",["length",["to-string",["get","surface"]]],0],["any",["==",["get","crossing:island"],"yes"],["==",["get","crossing:island"],"no"]]],0.55,0.9]
+        line-dasharray: [1.2,1.2]
+    - id: readiness-crossing_node
+      type: circle
+      filter: ["all",["==",["geometry-type"],"Point"],["all",["==",["get","highway"],"crossing"],["!",["has","footway"]]]]
+      paint:
+        circle-color: ["case",["all",["all",["==",["get","highway"],"crossing"],["!",["has","footway"]]],["all",[">",["length",["to-string",["get","crossing:markings"]]],0],["!=",["to-string",["get","crossing:markings"]],"yes"]],["any",["==",["get","crossing:signals"],"yes"],["==",["get","crossing:signals"],"no"]],["any",["==",["get","tactile_paving"],"yes"],["==",["get","tactile_paving"],"no"],["==",["get","tactile_paving"],"partial"]],["any",["==",["get","crossing:island"],"yes"],["==",["get","crossing:island"],"no"]]],"#cccccc","#ff1744"]
+        circle-radius: ["interpolate",["linear"],["zoom"],13,["case",["all",["all",["==",["get","highway"],"crossing"],["!",["has","footway"]]],["all",[">",["length",["to-string",["get","crossing:markings"]]],0],["!=",["to-string",["get","crossing:markings"]],"yes"]],["any",["==",["get","crossing:signals"],"yes"],["==",["get","crossing:signals"],"no"]],["any",["==",["get","tactile_paving"],"yes"],["==",["get","tactile_paving"],"no"],["==",["get","tactile_paving"],"partial"]],["any",["==",["get","crossing:island"],"yes"],["==",["get","crossing:island"],"no"]]],1.5,3],17,["case",["all",["all",["==",["get","highway"],"crossing"],["!",["has","footway"]]],["all",[">",["length",["to-string",["get","crossing:markings"]]],0],["!=",["to-string",["get","crossing:markings"]],"yes"]],["any",["==",["get","crossing:signals"],"yes"],["==",["get","crossing:signals"],"no"]],["any",["==",["get","tactile_paving"],"yes"],["==",["get","tactile_paving"],"no"],["==",["get","tactile_paving"],"partial"]],["any",["==",["get","crossing:island"],"yes"],["==",["get","crossing:island"],"no"]]],4.5,9]]
+        circle-stroke-color: "#202020"
+        circle-stroke-width: ["case",["all",["all",["==",["get","highway"],"crossing"],["!",["has","footway"]]],["all",[">",["length",["to-string",["get","crossing:markings"]]],0],["!=",["to-string",["get","crossing:markings"]],"yes"]],["any",["==",["get","crossing:signals"],"yes"],["==",["get","crossing:signals"],"no"]],["any",["==",["get","tactile_paving"],"yes"],["==",["get","tactile_paving"],"no"],["==",["get","tactile_paving"],"partial"]],["any",["==",["get","crossing:island"],"yes"],["==",["get","crossing:island"],"no"]]],0.7,1.4]
+        circle-opacity: ["case",["all",["all",["==",["get","highway"],"crossing"],["!",["has","footway"]]],["all",[">",["length",["to-string",["get","crossing:markings"]]],0],["!=",["to-string",["get","crossing:markings"]],"yes"]],["any",["==",["get","crossing:signals"],"yes"],["==",["get","crossing:signals"],"no"]],["any",["==",["get","tactile_paving"],"yes"],["==",["get","tactile_paving"],"no"],["==",["get","tactile_paving"],"partial"]],["any",["==",["get","crossing:island"],"yes"],["==",["get","crossing:island"],"no"]]],0.55,0.95]
+    - id: readiness-curb
+      type: circle
+      filter: ["all",["==",["geometry-type"],"Point"],["==",["get","barrier"],"kerb"]]
+      paint:
+        circle-color: ["case",["all",["==",["get","barrier"],"kerb"],["any",["==",["get","kerb"],"raised"],["==",["get","kerb"],"lowered"],["==",["get","kerb"],"flush"],["==",["get","kerb"],"rolled"],["==",["get","kerb"],"no"]],["any",["==",["get","tactile_paving"],"yes"],["==",["get","tactile_paving"],"no"]]],"#cccccc","#ff1744"]
+        circle-radius: ["interpolate",["linear"],["zoom"],13,["case",["all",["==",["get","barrier"],"kerb"],["any",["==",["get","kerb"],"raised"],["==",["get","kerb"],"lowered"],["==",["get","kerb"],"flush"],["==",["get","kerb"],"rolled"],["==",["get","kerb"],"no"]],["any",["==",["get","tactile_paving"],"yes"],["==",["get","tactile_paving"],"no"]]],1.5,3],17,["case",["all",["==",["get","barrier"],"kerb"],["any",["==",["get","kerb"],"raised"],["==",["get","kerb"],"lowered"],["==",["get","kerb"],"flush"],["==",["get","kerb"],"rolled"],["==",["get","kerb"],"no"]],["any",["==",["get","tactile_paving"],"yes"],["==",["get","tactile_paving"],"no"]]],4.5,9]]
+        circle-stroke-color: "#202020"
+        circle-stroke-width: ["case",["all",["==",["get","barrier"],"kerb"],["any",["==",["get","kerb"],"raised"],["==",["get","kerb"],"lowered"],["==",["get","kerb"],"flush"],["==",["get","kerb"],"rolled"],["==",["get","kerb"],"no"]],["any",["==",["get","tactile_paving"],"yes"],["==",["get","tactile_paving"],"no"]]],0.7,1.4]
+        circle-opacity: ["case",["all",["==",["get","barrier"],"kerb"],["any",["==",["get","kerb"],"raised"],["==",["get","kerb"],"lowered"],["==",["get","kerb"],"flush"],["==",["get","kerb"],"rolled"],["==",["get","kerb"],"no"]],["any",["==",["get","tactile_paving"],"yes"],["==",["get","tactile_paving"],"no"]]],0.55,0.95]
+    - id: readiness-traffic_island
+      type: line
+      filter: ["all",["==",["geometry-type"],"LineString"],["all",["==",["get","highway"],"footway"],["==",["get","footway"],"traffic_island"]]]
+      paint:
+        line-color: ["case",["all",["all",["==",["get","highway"],"footway"],["==",["get","footway"],"traffic_island"]],[">",["length",["to-string",["get","surface"]]],0]],"#cccccc","#ff1744"]
+        line-width: ["interpolate",["linear"],["zoom"],13,["case",["all",["all",["==",["get","highway"],"footway"],["==",["get","footway"],"traffic_island"]],[">",["length",["to-string",["get","surface"]]],0]],1,2],17,["case",["all",["all",["==",["get","highway"],"footway"],["==",["get","footway"],"traffic_island"]],[">",["length",["to-string",["get","surface"]]],0]],3,6]]
+        line-opacity: ["case",["all",["all",["==",["get","highway"],"footway"],["==",["get","footway"],"traffic_island"]],[">",["length",["to-string",["get","surface"]]],0]],0.55,0.9]
+        line-dasharray: [4,2]
+    - id: readiness-access_aisle
+      type: line
+      filter: ["all",["==",["geometry-type"],"LineString"],["all",["==",["get","highway"],"footway"],["==",["get","footway"],"access_aisle"]]]
+      paint:
+        line-color: ["case",["all",["all",["==",["get","highway"],"footway"],["==",["get","footway"],"access_aisle"]],[">",["length",["to-string",["get","access_aisle:markings"]]],0],[">",["length",["to-string",["get","surface"]]],0]],"#cccccc","#ff1744"]
+        line-width: ["interpolate",["linear"],["zoom"],13,["case",["all",["all",["==",["get","highway"],"footway"],["==",["get","footway"],"access_aisle"]],[">",["length",["to-string",["get","access_aisle:markings"]]],0],[">",["length",["to-string",["get","surface"]]],0]],1,2],17,["case",["all",["all",["==",["get","highway"],"footway"],["==",["get","footway"],"access_aisle"]],[">",["length",["to-string",["get","access_aisle:markings"]]],0],[">",["length",["to-string",["get","surface"]]],0]],3,6]]
+        line-opacity: ["case",["all",["all",["==",["get","highway"],"footway"],["==",["get","footway"],"access_aisle"]],[">",["length",["to-string",["get","access_aisle:markings"]]],0],[">",["length",["to-string",["get","surface"]]],0]],0.55,0.9]
+        line-dasharray: [0.6,1.3]
+    - id: readiness-roadway
+      type: line
+      filter: ["all",["==",["geometry-type"],"LineString"],["all",["has","highway"],["!",["has","footway"]]]]
+      paint:
+        line-color: ["case",["all",["all",["has","highway"],["!",["has","footway"]]],["any",["any",["==",["get","sidewalk:both"],"no"],["==",["get","sidewalk:both"],"separate"]],["all",["any",["==",["get","sidewalk:left"],"no"],["==",["get","sidewalk:left"],"separate"]],["any",["==",["get","sidewalk:right"],"no"],["==",["get","sidewalk:right"],"separate"]]]]],"#cccccc","#ff1744"]
+        line-width: ["interpolate",["linear"],["zoom"],13,["case",["all",["all",["has","highway"],["!",["has","footway"]]],["any",["any",["==",["get","sidewalk:both"],"no"],["==",["get","sidewalk:both"],"separate"]],["all",["any",["==",["get","sidewalk:left"],"no"],["==",["get","sidewalk:left"],"separate"]],["any",["==",["get","sidewalk:right"],"no"],["==",["get","sidewalk:right"],"separate"]]]]],0.4,0.8],17,["case",["all",["all",["has","highway"],["!",["has","footway"]]],["any",["any",["==",["get","sidewalk:both"],"no"],["==",["get","sidewalk:both"],"separate"]],["all",["any",["==",["get","sidewalk:left"],"no"],["==",["get","sidewalk:left"],"separate"]],["any",["==",["get","sidewalk:right"],"no"],["==",["get","sidewalk:right"],"separate"]]]]],1,2]]
+        line-opacity: ["case",["all",["all",["has","highway"],["!",["has","footway"]]],["any",["any",["==",["get","sidewalk:both"],"no"],["==",["get","sidewalk:both"],"separate"]],["all",["any",["==",["get","sidewalk:left"],"no"],["==",["get","sidewalk:left"],"separate"]],["any",["==",["get","sidewalk:right"],"no"],["==",["get","sidewalk:right"],"separate"]]]]],0.55,0.9]
+        line-dasharray: [3,2]
+---
+[bbox:{{bbox}}];
+(
+  way[highway=footway][footway~"^(sidewalk|crossing|traffic_island|access_aisle)$"];
+  way["area:highway"=footway];
+  relation["area:highway"=footway];
+  node[highway=crossing];
+  node[barrier=kerb];
+  way[highway][!footway];
+);
+out geom;

@@ -1,0 +1,238 @@
+{
+    "schema": "../schema/1.0.1.json",
+    "description": "Machine-readable examples for the PWG schema query use cases.",
+    "examples": [
+        {
+            "name": "tierOf sidewalk mapped to Gold",
+            "command": "node scripts/query-schema.js tier-of --element way --tags highway=footway,footway=sidewalk,surface=concrete,lit=yes,width=1.5",
+            "query": "tierOf",
+            "element": "way",
+            "tags": {
+                "highway": "footway",
+                "footway": "sidewalk",
+                "surface": "concrete",
+                "lit": "yes",
+                "width": "1.5"
+            },
+            "expected": {
+                "featureId": "sidewalk",
+                "tier": "gold",
+                "manualReviewKeys": ["incline"]
+            }
+        },
+        {
+            "name": "tagsForTier crossing way Diamond",
+            "command": "node scripts/query-schema.js tags-for-tier --feature crossing_way --tier diamond",
+            "query": "tagsForTier",
+            "featureId": "crossing_way",
+            "tier": "diamond",
+            "expected": {
+                "identifier": ["highway=footway", "footway=crossing"],
+                "includesKeys": [
+                    "crossing:markings",
+                    "crossing:signals",
+                    "surface",
+                    "crossing:island",
+                    "crossing:signed",
+                    "width",
+                    "button_operated",
+                    "traffic_signals:arrow",
+                    "traffic_signals:vibration",
+                    "traffic_signals:sound",
+                    "traffic_signals:minimap",
+                    "crossing:flags",
+                    "tactile_paving",
+                    "tactile_paving:colour"
+                ]
+            }
+        },
+        {
+            "name": "tagsForTier rejects a tier below a feature's minimum tier",
+            "query": "tagsForTier",
+            "featureId": "curb",
+            "tier": "bronze",
+            "expected": {
+                "errorIncludes": "not defined at tier bronze"
+            }
+        },
+        {
+            "name": "tagsForTier rejects an unknown tier",
+            "query": "tagsForTier",
+            "featureId": "crossing_way",
+            "tier": "platinum",
+            "expected": {
+                "errorIncludes": "Unknown tier: platinum"
+            }
+        },
+        {
+            "name": "gapToTier curb Diamond with raised curb missing height and tactile color",
+            "command": "node scripts/query-schema.js gap-to-tier --feature curb --tier diamond --tags barrier=kerb,kerb=raised,tactile_paving=yes",
+            "query": "gapToTier",
+            "featureId": "curb",
+            "tier": "diamond",
+            "tags": {
+                "barrier": "kerb",
+                "kerb": "raised",
+                "tactile_paving": "yes"
+            },
+            "expected": {
+                "passes": false,
+                "missingOrInvalidKeys": ["kerb:height", "tactile_paving:colour"]
+            }
+        },
+        {
+            "name": "gapToTier curb Silver requires the curb identifier",
+            "command": "node scripts/query-schema.js gap-to-tier --feature curb --tier silver --tags kerb=raised,tactile_paving=yes",
+            "query": "gapToTier",
+            "featureId": "curb",
+            "tier": "silver",
+            "tags": {
+                "kerb": "raised",
+                "tactile_paving": "yes"
+            },
+            "expected": {
+                "passes": false,
+                "missingOrInvalidKeys": ["barrier"]
+            }
+        },
+        {
+            "name": "roadway sidewalk key set accepts left plus right",
+            "command": "node scripts/query-schema.js gap-to-tier --feature roadway --tier bronze --tags highway=residential,sidewalk:left=separate,sidewalk:right=no",
+            "query": "gapToTier",
+            "featureId": "roadway",
+            "tier": "bronze",
+            "tags": {
+                "highway": "residential",
+                "sidewalk:left": "separate",
+                "sidewalk:right": "no"
+            },
+            "expected": {
+                "passes": true,
+                "satisfiedKeySet": ["sidewalk:left", "sidewalk:right"]
+            }
+        },
+        {
+            "name": "tierOf unmarked unsignalized crossing way can reach Diamond",
+            "command": "node scripts/query-schema.js tier-of --element way --tags highway=footway,footway=crossing,crossing:markings=no,crossing:signals=no,surface=concrete,crossing:island=no,crossing:signed=no,width=3,button_operated=no,traffic_signals:arrow=no,traffic_signals:vibration=no,traffic_signals:sound=no,traffic_signals:minimap=no,crossing:flags=no,tactile_paving=no",
+            "query": "tierOf",
+            "element": "way",
+            "tags": {
+                "highway": "footway",
+                "footway": "crossing",
+                "crossing:markings": "no",
+                "crossing:signals": "no",
+                "surface": "concrete",
+                "crossing:island": "no",
+                "crossing:signed": "no",
+                "width": "3",
+                "button_operated": "no",
+                "traffic_signals:arrow": "no",
+                "traffic_signals:vibration": "no",
+                "traffic_signals:sound": "no",
+                "traffic_signals:minimap": "no",
+                "crossing:flags": "no",
+                "tactile_paving": "no"
+            },
+            "expected": {
+                "featureId": "crossing_way",
+                "tier": "diamond"
+            }
+        },
+        {
+            "name": "gapToTier crossing node Gold passes when unsignalized without signal detail negatives",
+            "command": "node scripts/query-schema.js gap-to-tier --feature crossing_node --tier gold --tags highway=crossing,crossing:markings=no,crossing:signals=no,tactile_paving=no,crossing:island=no,crossing:signed=no",
+            "query": "gapToTier",
+            "featureId": "crossing_node",
+            "tier": "gold",
+            "tags": {
+                "highway": "crossing",
+                "crossing:markings": "no",
+                "crossing:signals": "no",
+                "tactile_paving": "no",
+                "crossing:island": "no",
+                "crossing:signed": "no"
+            },
+            "expected": {
+                "passes": true
+            }
+        },
+        {
+            "name": "gapToTier crossing node Gold requires signal detail when signals are present",
+            "query": "gapToTier",
+            "featureId": "crossing_node",
+            "tier": "gold",
+            "tags": {
+                "highway": "crossing",
+                "crossing:markings": "no",
+                "crossing:signals": "yes",
+                "tactile_paving": "no",
+                "crossing:island": "no",
+                "crossing:signed": "no"
+            },
+            "expected": {
+                "passes": false,
+                "missingOrInvalidKeys": [
+                    "button_operated",
+                    "traffic_signals:arrow",
+                    "traffic_signals:vibration",
+                    "traffic_signals:sound"
+                ]
+            }
+        },
+        {
+            "name": "gapToTier sidewalk Diamond accepts degree incline values",
+            "query": "gapToTier",
+            "featureId": "sidewalk",
+            "tier": "diamond",
+            "tags": {
+                "highway": "footway",
+                "footway": "sidewalk",
+                "surface": "concrete",
+                "lit": "yes",
+                "width": "1.5 m",
+                "incline:across": "2°",
+                "tactile_paving": "no"
+            },
+            "expected": {
+                "passes": true
+            }
+        },
+        {
+            "name": "gapToTier sidewalk Diamond accepts signed percent incline values",
+            "query": "gapToTier",
+            "featureId": "sidewalk",
+            "tier": "diamond",
+            "tags": {
+                "highway": "footway",
+                "footway": "sidewalk",
+                "surface": "concrete",
+                "lit": "yes",
+                "width": "1.5 m",
+                "incline:across": "-3%",
+                "tactile_paving": "no"
+            },
+            "expected": {
+                "passes": true
+            }
+        },
+        {
+            "name": "gapToTier sidewalk Diamond rejects an invalid incline format",
+            "query": "gapToTier",
+            "featureId": "sidewalk",
+            "tier": "diamond",
+            "tags": {
+                "highway": "footway",
+                "footway": "sidewalk",
+                "surface": "concrete",
+                "lit": "yes",
+                "width": "1.5 m",
+                "incline:across": "steep",
+                "tactile_paving": "no"
+            },
+            "expected": {
+                "passes": false,
+                "missingOrInvalidKeys": ["incline:across"]
+            }
+        }
+    ]
+}

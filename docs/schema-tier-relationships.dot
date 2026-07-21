@@ -1,0 +1,333 @@
+digraph PWGTagTierRelationships {
+  rankdir=LR;
+  graph [fontname="Arial"];
+  node [shape=box, style=rounded, fontname="Arial"];
+  edge [fontname="Arial"];
+  "tier:bronze" [label="Bronze", shape=oval];
+  "tier:silver" [label="Silver", shape=oval];
+  "tier:gold" [label="Gold", shape=oval];
+  "tier:diamond" [label="Diamond", shape=oval];
+  "tier:bronze" -> "tier:silver" [label="cumulative"];
+  "tier:silver" -> "tier:gold" [label="cumulative"];
+  "tier:gold" -> "tier:diamond" [label="cumulative"];
+  "feature:sidewalk" [label="Sidewalk", shape=folder];
+  "tier:bronze" -> "feature:sidewalk" [label="introduces"];
+  "tag:sidewalk:surface" [label="surface
+required
+examples concrete/asphalt"];
+  "feature:sidewalk" -> "tag:sidewalk:surface" [label="requires"];
+  "tier:silver" -> "tag:sidewalk:surface" [label="tier"];
+  "tag:sidewalk:lit" [label="lit
+required
+examples yes/no"];
+  "feature:sidewalk" -> "tag:sidewalk:lit" [label="requires"];
+  "tier:gold" -> "tag:sidewalk:lit" [label="tier"];
+  "tag:sidewalk:width" [label="width
+required
+length"];
+  "feature:sidewalk" -> "tag:sidewalk:width" [label="requires"];
+  "tier:gold" -> "tag:sidewalk:width" [label="tier"];
+  "tag:sidewalk:incline" [label="incline
+manual review: for hilly areas
+up/down or number%/number°"];
+  "feature:sidewalk" -> "tag:sidewalk:incline" [label="requires"];
+  "tier:gold" -> "tag:sidewalk:incline" [label="tier"];
+  "tag:sidewalk:incline:across" [label="incline:across
+required
+up/down or number%/number°"];
+  "feature:sidewalk" -> "tag:sidewalk:incline:across" [label="requires"];
+  "tier:diamond" -> "tag:sidewalk:incline:across" [label="tier"];
+  "tag:sidewalk:tactile_paving" [label="tactile_paving
+required
+yes/no"];
+  "feature:sidewalk" -> "tag:sidewalk:tactile_paving" [label="requires"];
+  "tier:diamond" -> "tag:sidewalk:tactile_paving" [label="tier"];
+  "tag:sidewalk:tactile_paving:colour" [label="tactile_paving:colour
+conditional
+free"];
+  "feature:sidewalk" -> "tag:sidewalk:tactile_paving:colour" [label="requires"];
+  "tier:diamond" -> "tag:sidewalk:tactile_paving:colour" [label="tier"];
+  "dep:sidewalk:tactile_paving" [label="tactile_paving", shape=note];
+  "dep:sidewalk:tactile_paving" -> "tag:sidewalk:tactile_paving:colour" [label="appliesWhen", style=dashed];
+  "feature:crossing_way" [label="Crossing (way)", shape=folder];
+  "tier:bronze" -> "feature:crossing_way" [label="introduces"];
+  "tag:crossing_way:crossing:markings" [label="crossing:markings
+required
+yes/no"];
+  "feature:crossing_way" -> "tag:crossing_way:crossing:markings" [label="requires"];
+  "tier:bronze" -> "tag:crossing_way:crossing:markings" [label="tier"];
+  "tag:crossing_way:crossing:signals" [label="crossing:signals
+required
+yes/no"];
+  "feature:crossing_way" -> "tag:crossing_way:crossing:signals" [label="requires"];
+  "tier:bronze" -> "tag:crossing_way:crossing:signals" [label="tier"];
+  "tag:crossing_way:surface" [label="surface
+required
+examples concrete/asphalt"];
+  "feature:crossing_way" -> "tag:crossing_way:surface" [label="requires"];
+  "tier:silver" -> "tag:crossing_way:surface" [label="tier"];
+  "tag:crossing_way:crossing:island" [label="crossing:island
+required
+yes/no"];
+  "feature:crossing_way" -> "tag:crossing_way:crossing:island" [label="requires"];
+  "tier:silver" -> "tag:crossing_way:crossing:island" [label="tier"];
+  "tag:crossing_way:crossing:signed" [label="crossing:signed
+required
+yes/no"];
+  "feature:crossing_way" -> "tag:crossing_way:crossing:signed" [label="requires"];
+  "tier:gold" -> "tag:crossing_way:crossing:signed" [label="tier"];
+  "tag:crossing_way:width" [label="width
+required
+length"];
+  "feature:crossing_way" -> "tag:crossing_way:width" [label="requires"];
+  "tier:gold" -> "tag:crossing_way:width" [label="tier"];
+  "tag:crossing_way:button_operated" [label="button_operated
+conditional
+yes/no"];
+  "feature:crossing_way" -> "tag:crossing_way:button_operated" [label="requires"];
+  "tier:gold" -> "tag:crossing_way:button_operated" [label="tier"];
+  "dep:crossing_way:crossing:signals" [label="crossing:signals", shape=note];
+  "dep:crossing_way:crossing:signals" -> "tag:crossing_way:button_operated" [label="appliesWhen", style=dashed];
+  "tag:crossing_way:traffic_signals:arrow" [label="traffic_signals:arrow
+conditional
+yes/no"];
+  "feature:crossing_way" -> "tag:crossing_way:traffic_signals:arrow" [label="requires"];
+  "tier:gold" -> "tag:crossing_way:traffic_signals:arrow" [label="tier"];
+  "dep:crossing_way:crossing:signals" [label="crossing:signals", shape=note];
+  "dep:crossing_way:crossing:signals" -> "tag:crossing_way:traffic_signals:arrow" [label="appliesWhen", style=dashed];
+  "tag:crossing_way:traffic_signals:vibration" [label="traffic_signals:vibration
+conditional
+yes/no"];
+  "feature:crossing_way" -> "tag:crossing_way:traffic_signals:vibration" [label="requires"];
+  "tier:gold" -> "tag:crossing_way:traffic_signals:vibration" [label="tier"];
+  "dep:crossing_way:crossing:signals" [label="crossing:signals", shape=note];
+  "dep:crossing_way:crossing:signals" -> "tag:crossing_way:traffic_signals:vibration" [label="appliesWhen", style=dashed];
+  "tag:crossing_way:traffic_signals:sound" [label="traffic_signals:sound
+conditional
+yes/no"];
+  "feature:crossing_way" -> "tag:crossing_way:traffic_signals:sound" [label="requires"];
+  "tier:gold" -> "tag:crossing_way:traffic_signals:sound" [label="tier"];
+  "dep:crossing_way:crossing:signals" [label="crossing:signals", shape=note];
+  "dep:crossing_way:crossing:signals" -> "tag:crossing_way:traffic_signals:sound" [label="appliesWhen", style=dashed];
+  "tag:crossing_way:traffic_signals:minimap" [label="traffic_signals:minimap
+conditional
+yes/no"];
+  "feature:crossing_way" -> "tag:crossing_way:traffic_signals:minimap" [label="requires"];
+  "tier:diamond" -> "tag:crossing_way:traffic_signals:minimap" [label="tier"];
+  "dep:crossing_way:crossing:signals" [label="crossing:signals", shape=note];
+  "dep:crossing_way:crossing:signals" -> "tag:crossing_way:traffic_signals:minimap" [label="appliesWhen", style=dashed];
+  "tag:crossing_way:crossing:flags" [label="crossing:flags
+required
+yes/no"];
+  "feature:crossing_way" -> "tag:crossing_way:crossing:flags" [label="requires"];
+  "tier:diamond" -> "tag:crossing_way:crossing:flags" [label="tier"];
+  "tag:crossing_way:tactile_paving" [label="tactile_paving
+required
+yes/no"];
+  "feature:crossing_way" -> "tag:crossing_way:tactile_paving" [label="requires"];
+  "tier:diamond" -> "tag:crossing_way:tactile_paving" [label="tier"];
+  "tag:crossing_way:tactile_paving:colour" [label="tactile_paving:colour
+conditional
+free"];
+  "feature:crossing_way" -> "tag:crossing_way:tactile_paving:colour" [label="requires"];
+  "tier:diamond" -> "tag:crossing_way:tactile_paving:colour" [label="tier"];
+  "dep:crossing_way:tactile_paving" [label="tactile_paving", shape=note];
+  "dep:crossing_way:tactile_paving" -> "tag:crossing_way:tactile_paving:colour" [label="appliesWhen", style=dashed];
+  "feature:crossing_node" [label="Crossing (node)", shape=folder];
+  "tier:bronze" -> "feature:crossing_node" [label="introduces"];
+  "tag:crossing_node:crossing:markings" [label="crossing:markings
+required
+yes/no"];
+  "feature:crossing_node" -> "tag:crossing_node:crossing:markings" [label="requires"];
+  "tier:bronze" -> "tag:crossing_node:crossing:markings" [label="tier"];
+  "tag:crossing_node:crossing:signals" [label="crossing:signals
+required
+yes/no"];
+  "feature:crossing_node" -> "tag:crossing_node:crossing:signals" [label="requires"];
+  "tier:bronze" -> "tag:crossing_node:crossing:signals" [label="tier"];
+  "tag:crossing_node:tactile_paving" [label="tactile_paving
+required
+yes/no/partial"];
+  "feature:crossing_node" -> "tag:crossing_node:tactile_paving" [label="requires"];
+  "tier:silver" -> "tag:crossing_node:tactile_paving" [label="tier"];
+  "tag:crossing_node:crossing:island" [label="crossing:island
+required
+yes/no"];
+  "feature:crossing_node" -> "tag:crossing_node:crossing:island" [label="requires"];
+  "tier:silver" -> "tag:crossing_node:crossing:island" [label="tier"];
+  "tag:crossing_node:crossing:signed" [label="crossing:signed
+required
+yes/no"];
+  "feature:crossing_node" -> "tag:crossing_node:crossing:signed" [label="requires"];
+  "tier:gold" -> "tag:crossing_node:crossing:signed" [label="tier"];
+  "tag:crossing_node:button_operated" [label="button_operated
+conditional
+yes/no"];
+  "feature:crossing_node" -> "tag:crossing_node:button_operated" [label="requires"];
+  "tier:gold" -> "tag:crossing_node:button_operated" [label="tier"];
+  "dep:crossing_node:crossing:signals" [label="crossing:signals", shape=note];
+  "dep:crossing_node:crossing:signals" -> "tag:crossing_node:button_operated" [label="appliesWhen", style=dashed];
+  "tag:crossing_node:traffic_signals:arrow" [label="traffic_signals:arrow
+conditional
+yes/no"];
+  "feature:crossing_node" -> "tag:crossing_node:traffic_signals:arrow" [label="requires"];
+  "tier:gold" -> "tag:crossing_node:traffic_signals:arrow" [label="tier"];
+  "dep:crossing_node:crossing:signals" [label="crossing:signals", shape=note];
+  "dep:crossing_node:crossing:signals" -> "tag:crossing_node:traffic_signals:arrow" [label="appliesWhen", style=dashed];
+  "tag:crossing_node:traffic_signals:vibration" [label="traffic_signals:vibration
+conditional
+yes/no"];
+  "feature:crossing_node" -> "tag:crossing_node:traffic_signals:vibration" [label="requires"];
+  "tier:gold" -> "tag:crossing_node:traffic_signals:vibration" [label="tier"];
+  "dep:crossing_node:crossing:signals" [label="crossing:signals", shape=note];
+  "dep:crossing_node:crossing:signals" -> "tag:crossing_node:traffic_signals:vibration" [label="appliesWhen", style=dashed];
+  "tag:crossing_node:traffic_signals:sound" [label="traffic_signals:sound
+conditional
+yes/no"];
+  "feature:crossing_node" -> "tag:crossing_node:traffic_signals:sound" [label="requires"];
+  "tier:gold" -> "tag:crossing_node:traffic_signals:sound" [label="tier"];
+  "dep:crossing_node:crossing:signals" [label="crossing:signals", shape=note];
+  "dep:crossing_node:crossing:signals" -> "tag:crossing_node:traffic_signals:sound" [label="appliesWhen", style=dashed];
+  "tag:crossing_node:traffic_signals:minimap" [label="traffic_signals:minimap
+conditional
+yes/no"];
+  "feature:crossing_node" -> "tag:crossing_node:traffic_signals:minimap" [label="requires"];
+  "tier:diamond" -> "tag:crossing_node:traffic_signals:minimap" [label="tier"];
+  "dep:crossing_node:crossing:signals" [label="crossing:signals", shape=note];
+  "dep:crossing_node:crossing:signals" -> "tag:crossing_node:traffic_signals:minimap" [label="appliesWhen", style=dashed];
+  "tag:crossing_node:crossing:flags" [label="crossing:flags
+required
+yes/no"];
+  "feature:crossing_node" -> "tag:crossing_node:crossing:flags" [label="requires"];
+  "tier:diamond" -> "tag:crossing_node:crossing:flags" [label="tier"];
+  "tag:crossing_node:tactile_paving:colour" [label="tactile_paving:colour
+conditional
+free"];
+  "feature:crossing_node" -> "tag:crossing_node:tactile_paving:colour" [label="requires"];
+  "tier:diamond" -> "tag:crossing_node:tactile_paving:colour" [label="tier"];
+  "dep:crossing_node:tactile_paving" [label="tactile_paving", shape=note];
+  "dep:crossing_node:tactile_paving" -> "tag:crossing_node:tactile_paving:colour" [label="appliesWhen", style=dashed];
+  "feature:curb" [label="Curb", shape=folder];
+  "tier:silver" -> "feature:curb" [label="introduces"];
+  "tag:curb:kerb" [label="kerb
+required
+raised/lowered/flush/rolled/no"];
+  "feature:curb" -> "tag:curb:kerb" [label="requires"];
+  "tier:silver" -> "tag:curb:kerb" [label="tier"];
+  "tag:curb:tactile_paving" [label="tactile_paving
+required
+yes/no"];
+  "feature:curb" -> "tag:curb:tactile_paving" [label="requires"];
+  "tier:silver" -> "tag:curb:tactile_paving" [label="tier"];
+  "tag:curb:kerb:height" [label="kerb:height
+conditional
+length"];
+  "feature:curb" -> "tag:curb:kerb:height" [label="requires"];
+  "tier:gold" -> "tag:curb:kerb:height" [label="tier"];
+  "dep:curb:kerb" [label="kerb", shape=note];
+  "dep:curb:kerb" -> "tag:curb:kerb:height" [label="appliesWhen", style=dashed];
+  "tag:curb:tactile_paving:colour" [label="tactile_paving:colour
+conditional
+free"];
+  "feature:curb" -> "tag:curb:tactile_paving:colour" [label="requires"];
+  "tier:diamond" -> "tag:curb:tactile_paving:colour" [label="tier"];
+  "dep:curb:tactile_paving" [label="tactile_paving", shape=note];
+  "dep:curb:tactile_paving" -> "tag:curb:tactile_paving:colour" [label="appliesWhen", style=dashed];
+  "feature:traffic_island" [label="Traffic Island", shape=folder];
+  "tier:silver" -> "feature:traffic_island" [label="introduces"];
+  "tag:traffic_island:surface" [label="surface
+required
+examples concrete/asphalt"];
+  "feature:traffic_island" -> "tag:traffic_island:surface" [label="requires"];
+  "tier:silver" -> "tag:traffic_island:surface" [label="tier"];
+  "tag:traffic_island:lit" [label="lit
+required
+examples yes/no"];
+  "feature:traffic_island" -> "tag:traffic_island:lit" [label="requires"];
+  "tier:gold" -> "tag:traffic_island:lit" [label="tier"];
+  "tag:traffic_island:width" [label="width
+required
+length"];
+  "feature:traffic_island" -> "tag:traffic_island:width" [label="requires"];
+  "tier:gold" -> "tag:traffic_island:width" [label="tier"];
+  "tag:traffic_island:incline" [label="incline
+manual review: for hilly areas
+up/down or number%/number°"];
+  "feature:traffic_island" -> "tag:traffic_island:incline" [label="requires"];
+  "tier:gold" -> "tag:traffic_island:incline" [label="tier"];
+  "tag:traffic_island:incline:across" [label="incline:across
+required
+up/down or number%/number°"];
+  "feature:traffic_island" -> "tag:traffic_island:incline:across" [label="requires"];
+  "tier:diamond" -> "tag:traffic_island:incline:across" [label="tier"];
+  "tag:traffic_island:tactile_paving" [label="tactile_paving
+required
+yes/no"];
+  "feature:traffic_island" -> "tag:traffic_island:tactile_paving" [label="requires"];
+  "tier:diamond" -> "tag:traffic_island:tactile_paving" [label="tier"];
+  "tag:traffic_island:tactile_paving:colour" [label="tactile_paving:colour
+conditional
+free"];
+  "feature:traffic_island" -> "tag:traffic_island:tactile_paving:colour" [label="requires"];
+  "tier:diamond" -> "tag:traffic_island:tactile_paving:colour" [label="tier"];
+  "dep:traffic_island:tactile_paving" [label="tactile_paving", shape=note];
+  "dep:traffic_island:tactile_paving" -> "tag:traffic_island:tactile_paving:colour" [label="appliesWhen", style=dashed];
+  "feature:access_aisle" [label="Access Aisle", shape=folder];
+  "tier:silver" -> "feature:access_aisle" [label="introduces"];
+  "tag:access_aisle:access_aisle:markings" [label="access_aisle:markings
+required
+examples no/yes/zebra/ladder:skewed"];
+  "feature:access_aisle" -> "tag:access_aisle:access_aisle:markings" [label="requires"];
+  "tier:silver" -> "tag:access_aisle:access_aisle:markings" [label="tier"];
+  "tag:access_aisle:surface" [label="surface
+required
+examples concrete/asphalt"];
+  "feature:access_aisle" -> "tag:access_aisle:surface" [label="requires"];
+  "tier:silver" -> "tag:access_aisle:surface" [label="tier"];
+  "tag:access_aisle:lit" [label="lit
+required
+examples yes/no"];
+  "feature:access_aisle" -> "tag:access_aisle:lit" [label="requires"];
+  "tier:gold" -> "tag:access_aisle:lit" [label="tier"];
+  "tag:access_aisle:width" [label="width
+required
+length"];
+  "feature:access_aisle" -> "tag:access_aisle:width" [label="requires"];
+  "tier:gold" -> "tag:access_aisle:width" [label="tier"];
+  "tag:access_aisle:incline" [label="incline
+manual review: for hilly areas
+up/down or number%/number°"];
+  "feature:access_aisle" -> "tag:access_aisle:incline" [label="requires"];
+  "tier:gold" -> "tag:access_aisle:incline" [label="tier"];
+  "tag:access_aisle:incline:across" [label="incline:across
+required
+up/down or number%/number°"];
+  "feature:access_aisle" -> "tag:access_aisle:incline:across" [label="requires"];
+  "tier:diamond" -> "tag:access_aisle:incline:across" [label="tier"];
+  "tag:access_aisle:tactile_paving" [label="tactile_paving
+required
+yes/no"];
+  "feature:access_aisle" -> "tag:access_aisle:tactile_paving" [label="requires"];
+  "tier:diamond" -> "tag:access_aisle:tactile_paving" [label="tier"];
+  "tag:access_aisle:tactile_paving:colour" [label="tactile_paving:colour
+conditional
+free"];
+  "feature:access_aisle" -> "tag:access_aisle:tactile_paving:colour" [label="requires"];
+  "tier:diamond" -> "tag:access_aisle:tactile_paving:colour" [label="tier"];
+  "dep:access_aisle:tactile_paving" [label="tactile_paving", shape=note];
+  "dep:access_aisle:tactile_paving" -> "tag:access_aisle:tactile_paving:colour" [label="appliesWhen", style=dashed];
+  "feature:footway_area" [label="Footway Area", shape=folder];
+  "tier:gold" -> "feature:footway_area" [label="introduces"];
+  "feature:roadway" [label="Roadway", shape=folder];
+  "tier:bronze" -> "feature:roadway" [label="introduces"];
+  "tag:roadway:sidewalk:SIDE" [label="sidewalk:left, sidewalk:right, sidewalk:both
+required
+no/separate"];
+  "feature:roadway" -> "tag:roadway:sidewalk:SIDE" [label="requires"];
+  "tier:bronze" -> "tag:roadway:sidewalk:SIDE" [label="tier"];
+  "tag:roadway:maxspeed" [label="maxspeed
+required
+free"];
+  "feature:roadway" -> "tag:roadway:maxspeed" [label="requires"];
+  "tier:gold" -> "tag:roadway:maxspeed" [label="tier"];
+}
