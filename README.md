@@ -18,7 +18,6 @@ node scripts/generate-josm-mapcss.js
 
 ## Validators
 
-- **[Conflicting Sidewalk Tagging](validators/sidewalk-tagging.validator.mapcss)** | _(sidewalk-tagging.validator.mapcss)_ | JOSM validator rule that warns when `sidewalk=*` is combined with `sidewalk:left=*`, `sidewalk:right=*`, or `sidewalk:both=*` on one element.
 - **[PWG Tagging Checks](validators/pwg-tagging.validator.mapcss)** | _(pwg-tagging.validator.mapcss)_ | JOSM validator rules for PWG sidewalk conflicts and typos, pedestrian-signal detail tags on unsignalized crossings, and tactile-paving color dependencies.
 
 ## Machine-Readable Schema
