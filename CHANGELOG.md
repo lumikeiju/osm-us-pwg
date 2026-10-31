@@ -4,15 +4,12 @@
 
 All notable changes to this `osm-us-pwg` repository are documented here, using the [Keep a Changelog](https://keepachangelog.com/) format, [Semantic Versioning](https://semver.org/), and [Conventional Commits](https://www.conventionalcommits.org/).
 
-<!--
-## [Unreleased]
+## v1.1.0 (2026-10-31)
 
 ### Added
 
-### Changed
-
-### Fixed
--->
+- Schema-generated JOSM MapCSS PaintStyle that colors PWG features by their highest automatically satisfied tier.
+- JOSM validator checks for typos and conflicts.
 
 ## v1.0.0 (2026-07-20)
 

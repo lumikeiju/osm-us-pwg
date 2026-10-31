@@ -1,0 +1,85 @@
+/*
+ * PWG-specific JOSM validator checks not normally supplied by JOSM presets.
+ * These rules check contradictory, deprecated, or context-dependent tags.
+ */
+
+/* Typos and replaceable tags */
+
+*["sidewalk:left"=none] {
+    throwError: tr("sidewalk:left=none is deprecated; use sidewalk:left=no");
+    fixAdd: "sidewalk:left=no";
+    group: tr("PWG sidewalk tagging");
+    assertMatch: "way highway=residential sidewalk:left=none";
+    assertNoMatch: "way highway=residential sidewalk:left=no";
+}
+
+*["sidewalk:right"=none] {
+    throwError: tr("sidewalk:right=none is deprecated; use sidewalk:right=no");
+    fixAdd: "sidewalk:right=no";
+    group: tr("PWG sidewalk tagging");
+    assertMatch: "way highway=residential sidewalk:right=none";
+    assertNoMatch: "way highway=residential sidewalk:right=no";
+}
+
+*["sidewalk:both"=none] {
+    throwError: tr("sidewalk:both=none is deprecated; use sidewalk:both=no");
+    fixAdd: "sidewalk:both=no";
+    group: tr("PWG sidewalk tagging");
+    assertMatch: "way highway=residential sidewalk:both=none";
+    assertNoMatch: "way highway=residential sidewalk:both=no";
+}
+
+*["sidewalk:left"=seperate] {
+    throwError: tr("sidewalk:left=seperate is a misspelling; use sidewalk:left=separate");
+    fixAdd: "sidewalk:left=separate";
+    group: tr("PWG sidewalk tagging");
+    assertMatch: "way highway=residential sidewalk:left=seperate";
+    assertNoMatch: "way highway=residential sidewalk:left=separate";
+}
+
+*["sidewalk:right"=seperate] {
+    throwError: tr("sidewalk:right=seperate is a misspelling; use sidewalk:right=separate");
+    fixAdd: "sidewalk:right=separate";
+    group: tr("PWG sidewalk tagging");
+    assertMatch: "way highway=residential sidewalk:right=seperate";
+    assertNoMatch: "way highway=residential sidewalk:right=separate";
+}
+
+*["sidewalk:both"=seperate] {
+    throwError: tr("sidewalk:both=seperate is a misspelling; use sidewalk:both=separate");
+    fixAdd: "sidewalk:both=separate";
+    group: tr("PWG sidewalk tagging");
+    assertMatch: "way highway=residential sidewalk:both=seperate";
+    assertNoMatch: "way highway=residential sidewalk:both=separate";
+}
+
+*["tactile_paving:color"][!"tactile_paving:colour"] {
+    throwWarning: tr("Use tactile_paving:colour=* rather than tactile_paving:color=*");
+    fixChangeKey: "tactile_paving:color=>tactile_paving:colour";
+    group: tr("PWG tactile paving tagging");
+    assertMatch: "node tactile_paving=yes tactile_paving:color=yellow";
+    assertNoMatch: "node tactile_paving=yes tactile_paving:colour=yellow";
+}
+
+/* Side-specific tags supersede `sidewalk:both=*`. */
+*["sidewalk:both"]["sidewalk:left"],
+*["sidewalk:both"]["sidewalk:right"] {
+    throwWarning: tr("Do not combine sidewalk:both=* with sidewalk:left=* or sidewalk:right=*");
+    group: tr("PWG sidewalk tagging");
+    assertMatch: "way highway=residential sidewalk:both=separate sidewalk:left=separate";
+    assertMatch: "way highway=residential sidewalk:both=separate sidewalk:right=separate";
+    assertNoMatch: "way highway=residential sidewalk:both=separate";
+    assertNoMatch: "way highway=residential sidewalk:left=separate sidewalk:right=separate";
+}
+
+/* `tactile_paving:colour` requires `tactile_paving=yes` */
+node[highway=crossing][!footway]["tactile_paving:colour"][!tactile_paving],
+way[highway=footway][footway=~/(sidewalk|crossing|traffic_island|access_aisle)/]["tactile_paving:colour"][!tactile_paving],
+node[barrier=kerb]["tactile_paving:colour"][!tactile_paving] {
+    throwWarning: tr("tactile_paving:colour=* requires tactile_paving=*");
+    group: tr("PWG tactile paving tagging");
+    assertMatch: "node highway=crossing tactile_paving:colour=yellow";
+    assertMatch: "way highway=footway footway=sidewalk tactile_paving:colour=yellow";
+    assertMatch: "node barrier=kerb tactile_paving:colour=yellow";
+    assertNoMatch: "node highway=crossing tactile_paving=yes tactile_paving:colour=yellow";
+}
