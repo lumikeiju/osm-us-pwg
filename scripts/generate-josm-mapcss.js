@@ -10,6 +10,7 @@ const {
   getActiveValueSpec,
   loadSchema,
 } = require("./pwg-schema");
+const { parseOptions } = require("./parse-options");
 
 const DEFAULT_OUTPUT_PATH = path.resolve(
   __dirname,
@@ -36,19 +37,6 @@ const FEATURE_STYLES = {
   footway_area: { area: true },
   roadway: { width: 2, dashes: "list(8, 5)" },
 };
-
-function parseArgs(argv) {
-  const args = {};
-  for (let index = 0; index < argv.length; index += 1) {
-    const token = argv[index];
-    if (!token.startsWith("--")) {
-      continue;
-    }
-    args[token.slice(2)] = argv[index + 1];
-    index += 1;
-  }
-  return args;
-}
 
 function quote(value) {
   return `"${String(value).replaceAll("\\", "\\\\").replaceAll('"', '\\"')}"`;
@@ -223,13 +211,17 @@ function clauseDnf(clause) {
   if (!clause.key) {
     return [[]];
   }
+  const parts = [];
   if (clause.value !== undefined) {
-    return [[equal(clause.key, clause.value)]];
+    parts.push(equal(clause.key, clause.value));
   }
   if (clause.oneOf) {
-    return [[matches(clause.key, enumExpression(clause.oneOf))]];
+    parts.push(matches(clause.key, enumExpression(clause.oneOf)));
   }
-  return [[present(clause.key)]];
+  if (parts.length === 0) {
+    parts.push(present(clause.key));
+  }
+  return normalizeDnf([parts]);
 }
 
 function negatedClauseDnf(clause) {
@@ -245,16 +237,14 @@ function negatedClauseDnf(clause) {
   if (!clause.key) {
     return [];
   }
+  const alternatives = [[absent(clause.key)]];
   if (clause.value !== undefined) {
-    return [[absent(clause.key)], [notEqual(clause.key, clause.value)]];
+    alternatives.push([notEqual(clause.key, clause.value)]);
   }
   if (clause.oneOf) {
-    return [
-      [absent(clause.key)],
-      [notMatches(clause.key, enumExpression(clause.oneOf))],
-    ];
+    alternatives.push([notMatches(clause.key, enumExpression(clause.oneOf))]);
   }
-  return [[absent(clause.key)]];
+  return normalizeDnf(alternatives);
 }
 
 function predicateDnf(predicate) {
@@ -263,7 +253,7 @@ function predicateDnf(predicate) {
   }
   return andDnf(
     ...(predicate.allOf ?? []).map(clauseDnf),
-    ...(predicate.oneOf ?? []).map(clauseDnf),
+    ...(predicate.oneOf ? [orDnf(...predicate.oneOf.map(clauseDnf))] : []),
     ...(predicate.noneOf ?? []).map(negatedClauseDnf)
   );
 }
@@ -274,7 +264,9 @@ function negatedPredicateDnf(predicate) {
   }
   return orDnf(
     ...(predicate.allOf ?? []).map(negatedClauseDnf),
-    ...(predicate.oneOf ?? []).map(negatedClauseDnf),
+    ...(predicate.oneOf
+      ? [andDnf(...predicate.oneOf.map(negatedClauseDnf))]
+      : []),
     ...(predicate.noneOf ?? []).map(clauseDnf)
   );
 }
@@ -312,11 +304,14 @@ function valueDnf(key, spec) {
   }
 
   if (spec.type === "length") {
+    const units = ["mm", "cm", "km", "in", "ft", "yd", "mi", "m"].map((unit) =>
+      unit.replace(/[a-z]/g, (letter) => `[${letter}${letter.toUpperCase()}]`)
+    );
     return [
       [
         matches(
           key,
-          "^\\s*-?\\d+(?:\\.\\d+)?(?:\\s*(?:mm|cm|m|km|in|ft|yd|mi))?\\s*$"
+          `^\\s*-?\\d+(?:\\.\\d+)?(?:\\s*(?:${units.join("|")}))?\\s*$`
         ),
       ],
     ];
@@ -356,7 +351,7 @@ function tierDnf(schema, feature, tier) {
       alwaysRequired.push(entry);
       continue;
     }
-    if (!entry.appliesWhen) {
+    if (!entry.appliesWhen || entry.condition) {
       // A free-text real-world condition cannot be determined from OSM tags.
       continue;
     }
@@ -432,6 +427,9 @@ function declarations(featureId, color) {
 }
 
 function rulesForDnf(selectors, dnf, declarationLines) {
+  if (dnf.length === 0) {
+    return [];
+  }
   const rules = [];
   for (const parts of dnf) {
     const suffix = parts.map(renderCondition).join("");
@@ -447,7 +445,7 @@ function generateMapCss(schema) {
     "/*",
     ` * Generated from ${schema.sourceDocument} and schema/${schema.version}.json by scripts/generate-josm-mapcss.js.`,
     " * Colors show the highest automatically satisfied PWG tier; red needs review.",
-    " * Conditional requirements based only on real-world conditions are not evaluated.",
+    " * Conditional requirements with real-world conditions remain manual review.",
     " */",
     "",
     "meta {",
@@ -497,7 +495,9 @@ function generateMapCss(schema) {
 }
 
 function main() {
-  const args = parseArgs(process.argv.slice(2));
+  const args = parseOptions(process.argv.slice(2), {
+    valueOptions: ["schema", "output"],
+  });
   const schemaPath = path.resolve(args.schema || DEFAULT_SCHEMA_PATH);
   const outputPath = path.resolve(args.output || DEFAULT_OUTPUT_PATH);
   const schema = loadSchema(schemaPath);
@@ -510,9 +510,13 @@ function main() {
   console.log(`Wrote ${path.relative(process.cwd(), outputPath)}`);
 }
 
-try {
-  main();
-} catch (error) {
-  console.error(error.message);
-  process.exitCode = 1;
+if (require.main === module) {
+  try {
+    main();
+  } catch (error) {
+    console.error(error.message);
+    process.exitCode = 1;
+  }
 }
+
+module.exports = { generateMapCss, tierDnf };

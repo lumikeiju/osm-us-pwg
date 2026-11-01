@@ -3,12 +3,19 @@
 const fs = require("node:fs");
 const path = require("node:path");
 
+const CURRENT_SCHEMA_VERSION = "1.0.1";
 const DEFAULT_SCHEMA_PATH = path.resolve(
   __dirname,
   "..",
   "schema",
-  "1.0.1.json"
+  `${CURRENT_SCHEMA_VERSION}.json`
 );
+const SCHEMA_VERSION_PATTERN =
+  /^(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)(?:-(?:0|[1-9]\d*|\d*[A-Za-z-][0-9A-Za-z-]*)(?:\.(?:0|[1-9]\d*|\d*[A-Za-z-][0-9A-Za-z-]*))*)?(?:\+[0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*)?$(?![\s\S])/;
+
+function isSchemaVersion(value) {
+  return typeof value === "string" && SCHEMA_VERSION_PATTERN.test(value);
+}
 
 function loadSchema(schemaPath = DEFAULT_SCHEMA_PATH) {
   return JSON.parse(fs.readFileSync(schemaPath, "utf8"));
@@ -103,6 +110,47 @@ function predicateMatches(predicate, tags) {
   }
 
   return true;
+}
+
+function formatClause(clause) {
+  if (clause.allOf) {
+    return `(${clause.allOf.map(formatClause).join(" and ") || "always"})`;
+  }
+  if (clause.noneOf) {
+    return `not (${clause.noneOf.map(formatClause).join(" or ") || "never"})`;
+  }
+  if (clause.oneOf && !clause.key) {
+    return `(${clause.oneOf.map(formatClause).join(" or ") || "never"})`;
+  }
+  if (!clause.key) {
+    throw new Error("Predicate clause must name a key or group");
+  }
+
+  const parts = [];
+  if (clause.value !== undefined) {
+    parts.push(`${clause.key}=${clause.value}`);
+  }
+  if (clause.oneOf) {
+    parts.push(
+      clause.oneOf.length
+        ? `${clause.key} is one of ${clause.oneOf.join(", ")}`
+        : "never"
+    );
+  }
+  return parts.join(" and ") || `${clause.key} is present`;
+}
+
+function formatPredicate(predicate) {
+  const parts = (predicate.allOf ?? []).map(formatClause);
+  if (predicate.oneOf) {
+    parts.push(
+      `(${predicate.oneOf.map(formatClause).join(" or ") || "never"})`
+    );
+  }
+  parts.push(
+    ...(predicate.noneOf ?? []).map((clause) => `not (${formatClause(clause)})`)
+  );
+  return parts.join(" and ") || "always";
 }
 
 function getFeatureElements(feature) {
@@ -543,7 +591,9 @@ function parseTagString(tagString) {
 }
 
 module.exports = {
+  CURRENT_SCHEMA_VERSION,
   DEFAULT_SCHEMA_PATH,
+  isSchemaVersion,
   loadSchema,
   getTierOrder,
   getTierIndex,
@@ -552,6 +602,7 @@ module.exports = {
   tagValue,
   clauseMatches,
   predicateMatches,
+  formatPredicate,
   getFeatureElements,
   identifyFeatures,
   getActiveValueSpec,

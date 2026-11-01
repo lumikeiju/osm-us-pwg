@@ -12,6 +12,7 @@ const {
   getTierIndex,
   loadSchema,
 } = require("./pwg-schema");
+const { parseOptions } = require("./parse-options");
 
 const DEFAULT_MODE = "tier";
 const DEFAULT_READINESS_TIER = "silver";
@@ -76,19 +77,6 @@ const FEATURE_DASHES = {
   roadway: [3, 2],
 };
 
-function parseArgs(argv) {
-  const args = {};
-  for (let index = 0; index < argv.length; index += 1) {
-    const token = argv[index];
-    if (!token.startsWith("--")) {
-      continue;
-    }
-    args[token.slice(2)] = argv[index + 1];
-    index += 1;
-  }
-  return args;
-}
-
 function flow(value) {
   return JSON.stringify(value);
 }
@@ -148,15 +136,21 @@ function clauseExpression(clause) {
   if (!clause.key) {
     return true;
   }
-  if (clause.value !== undefined) {
-    return ["==", ["get", clause.key], String(clause.value)];
-  }
-  if (clause.oneOf) {
-    return anyExpression(
-      clause.oneOf.map((value) => ["==", ["get", clause.key], String(value)])
-    );
-  }
-  return ["has", clause.key];
+  return allExpression([
+    clause.value !== undefined
+      ? ["==", ["get", clause.key], String(clause.value)]
+      : true,
+    clause.oneOf
+      ? anyExpression(
+          clause.oneOf.map((value) => [
+            "==",
+            ["get", clause.key],
+            String(value),
+          ])
+        )
+      : true,
+    clause.value === undefined && !clause.oneOf ? ["has", clause.key] : true,
+  ]);
 }
 
 function predicateExpression(predicate) {
@@ -222,7 +216,7 @@ function keyValueExpression(key, spec) {
       anyExpression([
         numericStringExpression(valueExpression),
         ...["mm", "cm", "km", "in", "ft", "yd", "mi", "m"].map((unit) =>
-          valueWithNumberSuffixExpression(valueExpression, unit)
+          valueWithNumberSuffixExpression(["downcase", valueExpression], unit)
         ),
       ]),
     ]);
@@ -252,11 +246,7 @@ function keyValueExpression(key, spec) {
 }
 
 function entryExpression(schema, entry, tier) {
-  if (
-    entry.requirement === "conditional" &&
-    entry.condition &&
-    !entry.appliesWhen
-  ) {
+  if (entry.requirement === "conditional" && entry.condition) {
     return null;
   }
 
@@ -663,7 +653,9 @@ function generateUltra(schema, options = {}) {
 }
 
 function main() {
-  const args = parseArgs(process.argv.slice(2));
+  const args = parseOptions(process.argv.slice(2), {
+    valueOptions: ["schema", "output", "mode", "targetTier"],
+  });
   const schemaPath = path.resolve(args.schema || DEFAULT_SCHEMA_PATH);
   const mode = args.mode || DEFAULT_MODE;
   const targetTier = args.targetTier || DEFAULT_READINESS_TIER;
@@ -680,9 +672,13 @@ function main() {
   console.log(`Wrote ${path.relative(process.cwd(), outputPath)}`);
 }
 
-try {
-  main();
-} catch (error) {
-  console.error(error.stack || error.message);
-  process.exitCode = 1;
+if (require.main === module) {
+  try {
+    main();
+  } catch (error) {
+    console.error(error.stack || error.message);
+    process.exitCode = 1;
+  }
 }
+
+module.exports = { generateUltra };
