@@ -19,6 +19,7 @@ Release headings below refer to the **repository version**. Individual component
 
 ### Changed
 
+- Updated PWG Releases Table template and doc mirror
 - Made generated length-unit checks case-insensitive to match the schema query helper, and made command-line parsing reject unknown, duplicate, or incomplete options.
 - Strengthened schema structure, predicate, tier, and templated-key validation.
 - Run the complete discovered Node.js test suite in local documentation and CI instructions.
