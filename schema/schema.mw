@@ -458,7 +458,7 @@ If you have access to high-quality imagery and want to map pedestrian infrastruc
 |{{IconWay}}
 |
 |Indicate ramp presence as {{Value|yes}} or {{Value|no}}
-| colspan="2" |Indicate if a ramp has been separately mapped as {{Value|seperate}}
+| colspan="2" |Indicate if a ramp has been separately mapped as {{Value|separate}}
 |-
 |{{Tag|tactile_paving}}
 |{{IconWay}}

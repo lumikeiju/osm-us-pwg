@@ -10,6 +10,7 @@ Release headings below refer to the **repository version**. Individual component
 
 ### Added
 
+- Archive copy of PWG Schema v1.1.1
 - Archive copy of PWG Schema v1.1.0
 - Schema-generated JOSM MapCSS PaintStyle that colors PWG features by their highest automatically satisfied tier.
 - JOSM validator checks for typos and conflicts.
