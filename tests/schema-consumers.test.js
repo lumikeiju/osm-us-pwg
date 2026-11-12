@@ -1,6 +1,8 @@
 /** @format */
 
 const assert = require("node:assert/strict");
+const fs = require("node:fs");
+const path = require("node:path");
 const { test } = require("node:test");
 const {
   DEFAULT_SCHEMA_PATH,
@@ -625,23 +627,92 @@ test("new feature identifiers and generated queries respect feature types", () =
   );
 
   const ultra = generateUltra(schema);
-  assert.ok(ultra.includes("  way[highway=steps];"));
-  assert.ok(ultra.includes("  node[traffic_sign];"));
+  assert.ok(ultra.includes("\ntype: postpass\n"));
+  assert.ok(ultra.includes("WHERE geom && ST_MakeEnvelope({{wsen}}, 4326)"));
+  assert.ok(ultra.includes("      OR tags->>'highway' = 'steps'"));
+  assert.ok(ultra.includes("      OR tags ? 'traffic_sign'"));
+  assert.ok(!/;\s*$/.test(ultra));
   const silver = generateUltra(schema, {
     mode: "readiness",
     targetTier: "silver",
   });
-  assert.ok(silver.includes("  way[highway=steps];"));
-  assert.ok(!silver.includes("  node[traffic_sign];"));
+  assert.ok(silver.includes("      OR tags->>'highway' = 'steps'"));
+  assert.ok(!silver.includes("traffic_sign'"));
   const gold = generateUltra(schema, {
     mode: "readiness",
     targetTier: "gold",
   });
-  assert.ok(gold.includes("  node[traffic_sign];"));
+  assert.ok(gold.includes("      OR tags ? 'traffic_sign'"));
+
+  const overpass = generateUltra(schema, { provider: "overpass" });
+  assert.ok(!overpass.includes("type: postpass"));
+  assert.ok(!overpass.includes("transform:"));
+  assert.ok(overpass.includes("  way[highway=steps];"));
+  assert.ok(overpass.includes("  node[traffic_sign];"));
+  const overpassSilver = generateUltra(schema, {
+    mode: "readiness",
+    targetTier: "silver",
+    provider: "overpass",
+  });
+  assert.ok(overpassSilver.includes("  way[highway=steps];"));
+  assert.ok(!overpassSilver.includes("  node[traffic_sign];"));
+  assert.throws(
+    () => generateUltra(schema, { provider: "qlever" }),
+    /Unsupported provider: qlever/
+  );
   assert.match(
     generateMapCss(schema),
     /\/\* Traffic Sign: Gold tier \*\/\nnode[^\n]+\n\{\n  symbol-shape: circle;/
   );
+});
+
+function ultraTransformBlock(ultra) {
+  const lines = ultra.replaceAll("\r\n", "\n").split("\n");
+  const start = lines.indexOf("transform: |");
+  assert.notEqual(start, -1, "missing transform block");
+  const body = [];
+  for (const line of lines.slice(start + 1)) {
+    if (!line.startsWith("  ")) break;
+    body.push(line.slice(2));
+  }
+  return body.join("\n");
+}
+
+test("Postpass Ultra maps flatten nested tags for style filters", async () => {
+  const transform = ultraTransformBlock(generateUltra(schema));
+  // Ultra loads the transform via btoa(), which rejects non-Latin1 text.
+  assert.match(transform, /^[\x20-\x7e\n]*$/);
+  const { default: flatten } = await import(
+    `data:text/javascript;base64,${Buffer.from(transform).toString("base64")}`
+  );
+  const result = flatten({
+    type: "FeatureCollection",
+    features: [
+      {
+        type: "Feature",
+        geometry: { type: "Point", coordinates: [-77, 38] },
+        properties: {
+          osm_type: "N",
+          osm_id: 1,
+          tags: { highway: "crossing", "crossing:markings": "zebra" },
+        },
+      },
+    ],
+  });
+  assert.deepEqual(result.features[0].properties, {
+    highway: "crossing",
+    "crossing:markings": "zebra",
+    osm_type: "N",
+    osm_id: 1,
+  });
+
+  const visualizationsDir = path.resolve(__dirname, "..", "visualizations");
+  for (const file of fs.readdirSync(visualizationsDir)) {
+    if (!file.endsWith(".yaml")) continue;
+    const text = fs.readFileSync(path.join(visualizationsDir, file), "utf8");
+    assert.match(text, /\r?\ntype: postpass\r?\n/, file);
+    assert.equal(ultraTransformBlock(text), transform, file);
+  }
 });
 
 test("compound predicates and manual-review conditionals agree across consumers", () => {

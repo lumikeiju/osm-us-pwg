@@ -18,9 +18,11 @@ Release headings below refer to the **repository version**. Individual component
 - Cross-platform CI coverage on supported Node.js LTS releases.
 - Cross-consumer agreement and schema/CLI validation tests.
 - Per-file licensing information following the [REUSE](https://reuse.software/) specification, checked in CI, with attribution and license notices at the top of files that JOSM and Ultra load by URL.
+- `--provider overpass` option for the Ultra map generator, to produce Overpass versions of the schema-generated maps.
 
 ### Changed
 
+- Switched the schema-generated and hand-written Ultra maps from the Overpass API to [Postpass](https://github.com/woodpeck/postpass), a public OpenStreetMap SQL service, to reduce load on overloaded Overpass servers. Each map flattens Postpass's nested tags with an Ultra `transform`, so map styles are unchanged.
 - Made Schema 1.1.1 the default for queries, validation, and asset generation while retaining the 1.0.1 snapshot.
 - Updated the generated JOSM preset, PaintStyle, and Ultra views for Schema 1.1.1 features and requirements.
 - Updated PWG Releases Table template and doc mirror.

@@ -3,7 +3,17 @@
 # SPDX-License-Identifier: CC0-1.0
 # Dedicated to the public domain under CC0 1.0: https://creativecommons.org/publicdomain/zero/1.0/
 #
-# Styled Overpass query for use in Ultra (https://overpass-ultra.us)
+# Styled Postpass SQL query for use in Ultra (https://overpass-ultra.us)
+type: postpass
+# Postpass returns OSM tags as a nested object; flatten them so style filters can read each tag.
+transform: |
+  export default function (data) {
+    for (const feature of data.features) {
+      const { tags, ...rest } = feature.properties || {};
+      feature.properties = { ...tags, ...rest };
+    }
+    return data;
+  }
 style:
   extends: https://styles.trailsta.sh/protomaps-black.json
   layers:
@@ -36,8 +46,7 @@ style:
         circle-radius: 4
         circle-color: "#F39237"
 ---
-[bbox:{{bbox}}];
-(
-  node["kerb"];
-);
-out geom;
+SELECT osm_type, osm_id, tags, geom
+FROM postpass_point
+WHERE geom && ST_MakeEnvelope({{wsen}}, 4326)
+  AND tags ? 'kerb'

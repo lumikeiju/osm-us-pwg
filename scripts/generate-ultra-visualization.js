@@ -17,6 +17,20 @@ const { parseOptions } = require("./parse-options");
 
 const DEFAULT_MODE = "tier";
 const DEFAULT_READINESS_TIER = "silver";
+const DEFAULT_PROVIDER = "postpass";
+const SUPPORTED_PROVIDERS = new Set(["postpass", "overpass"]);
+// Ultra loads transforms with btoa(), so this must stay ASCII-only.
+const POSTPASS_TAG_TRANSFORM = [
+  "# Postpass returns OSM tags as a nested object; flatten them so style filters can read each tag.",
+  "transform: |",
+  "  export default function (data) {",
+  "    for (const feature of data.features) {",
+  "      const { tags, ...rest } = feature.properties || {};",
+  "      feature.properties = { ...tags, ...rest };",
+  "    }",
+  "    return data;",
+  "  }",
+];
 const VISUALIZATIONS_DIR = path.resolve(__dirname, "..", "visualizations");
 
 const TIER_COLORS = {
@@ -567,13 +581,18 @@ function circleShineLayer(schema, mode, featureId, feature) {
   ];
 }
 
-function overpassQuery(schema, mode, targetTier) {
+function includesTrafficSigns(schema, mode, targetTier) {
   const trafficSign = schema.features.traffic_sign;
-  const includeTrafficSigns =
+  return Boolean(
     trafficSign &&
-    (mode !== "readiness" ||
-      getTierIndex(schema, trafficSign.identifier.minTier) <=
-        getTierIndex(schema, targetTier));
+      (mode !== "readiness" ||
+        getTierIndex(schema, trafficSign.identifier.minTier) <=
+          getTierIndex(schema, targetTier))
+  );
+}
+
+function overpassQuery(schema, mode, targetTier) {
+  const includeTrafficSigns = includesTrafficSigns(schema, mode, targetTier);
 
   return [
     "[bbox:{{bbox}}];",
@@ -588,6 +607,31 @@ function overpassQuery(schema, mode, targetTier) {
     ...(includeTrafficSigns ? ["  node[traffic_sign];"] : []),
     ");",
     "out geom;",
+  ];
+}
+
+// Mirrors overpassQuery(). Postpass wraps this in a subquery, so no trailing semicolon.
+function postpassQuery(schema, mode, targetTier) {
+  const includeTrafficSigns = includesTrafficSigns(schema, mode, targetTier);
+
+  return [
+    "SELECT osm_type, osm_id, tags, geom",
+    "FROM postpass_pointlinepolygon",
+    "WHERE geom && ST_MakeEnvelope({{wsen}}, 4326)",
+    "  AND (",
+    "    (osm_type = 'W' AND (",
+    "      (tags->>'highway' = 'footway' AND tags->>'footway' IN ('sidewalk', 'crossing', 'traffic_island', 'access_aisle'))",
+    "      OR tags->>'area:highway' = 'footway'",
+    "      OR (tags ? 'highway' AND NOT (tags ? 'footway'))",
+    ...(schema.features.stairs ? ["      OR tags->>'highway' = 'steps'"] : []),
+    "    ))",
+    "    OR (osm_type = 'R' AND tags->>'area:highway' = 'footway')",
+    "    OR (osm_type = 'N' AND (",
+    "      tags->>'highway' = 'crossing'",
+    "      OR tags->>'barrier' = 'kerb'",
+    ...(includeTrafficSigns ? ["      OR tags ? 'traffic_sign'"] : []),
+    "    ))",
+    "  )",
   ];
 }
 
@@ -623,10 +667,17 @@ function defaultOutputPath(mode, targetTier) {
 function generateUltra(schema, options = {}) {
   const mode = options.mode || DEFAULT_MODE;
   const targetTier = options.targetTier || DEFAULT_READINESS_TIER;
+  const provider = options.provider || DEFAULT_PROVIDER;
   const supportedModes = new Set(["tier", "readiness"]);
 
   if (!supportedModes.has(mode)) {
     throw new Error(`Unsupported mode: ${mode}`);
+  }
+
+  if (!SUPPORTED_PROVIDERS.has(provider)) {
+    throw new Error(
+      `Unsupported provider: ${provider}. Expected one of: ${[...SUPPORTED_PROVIDERS].join(", ")}`
+    );
   }
 
   if (mode === "readiness") {
@@ -638,6 +689,9 @@ function generateUltra(schema, options = {}) {
     ...schemaLicenseNotice(schema).map((line) => (line ? `# ${line}` : "#")),
     `title: ${viewTitle(schema, mode, targetTier)}`,
     `description: ${viewDescription(schema, mode, targetTier)}`,
+    ...(provider === "postpass"
+      ? ["type: postpass", ...POSTPASS_TAG_TRANSFORM]
+      : []),
     "style:",
     "  extends: https://styles.trailsta.sh/protomaps-black.json",
     "  layers:",
@@ -659,17 +713,22 @@ function generateUltra(schema, options = {}) {
     }
   }
 
-  lines.push("---", ...overpassQuery(schema, mode, targetTier), "");
+  const query =
+    provider === "postpass"
+      ? postpassQuery(schema, mode, targetTier)
+      : overpassQuery(schema, mode, targetTier);
+  lines.push("---", ...query, "");
   return lines.join("\n");
 }
 
 function main() {
   const args = parseOptions(process.argv.slice(2), {
-    valueOptions: ["schema", "output", "mode", "targetTier"],
+    valueOptions: ["schema", "output", "mode", "targetTier", "provider"],
   });
   const schemaPath = path.resolve(args.schema || DEFAULT_SCHEMA_PATH);
   const mode = args.mode || DEFAULT_MODE;
   const targetTier = args.targetTier || DEFAULT_READINESS_TIER;
+  const provider = args.provider || DEFAULT_PROVIDER;
   const outputPath = path.resolve(
     args.output || defaultOutputPath(mode, targetTier)
   );
@@ -677,7 +736,10 @@ function main() {
 
   fs.writeFileSync(
     outputPath,
-    generateUltra(schema, { mode, targetTier }).replaceAll("\n", "\r\n"),
+    generateUltra(schema, { mode, targetTier, provider }).replaceAll(
+      "\n",
+      "\r\n"
+    ),
     "utf8"
   );
   console.log(`Wrote ${path.relative(process.cwd(), outputPath)}`);

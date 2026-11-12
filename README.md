@@ -4,11 +4,9 @@
 
 Tools and reference material for mapping sidewalks, crossings, curbs, and other pedestrian infrastructure in [OpenStreetMap](https://www.openstreetmap.org/), from the [OpenStreetMap US Pedestrian Working Group](https://wiki.openstreetmap.org/wiki/Foundation/Local_Chapters/United_States/Pedestrian_Working_Group) (PWG).
 
-<!-- Uncomment the image and caption after adding the PWG Schema Tier View screenshot at resources/images/hero.png.
-[![Pedestrian features colored by their highest PWG Schema tier in Ultra](resources/images/hero.png)](https://overpass-ultra.us/#query=url:https%3A%2F%2Fraw.githubusercontent.com%2Flumikeiju%2Fosm-us-pwg%2Fmain%2Fvisualizations%2Fpwg_schema_tiers.ultra)
+[![Pedestrian features colored by their highest PWG Schema tier in Ultra](resources/images/hero-dark.png)](https://overpass-ultra.us/#query=url:https%3A%2F%2Fraw.githubusercontent.com%2Flumikeiju%2Fosm-us-pwg%2Fmain%2Fvisualizations%2Fpwg_schema_tiers.ultra)
 
 _The [PWG Schema Tier View](#pwg-schema-maps) in Ultra. Select the image to open the live map. Map data © [OpenStreetMap contributors](https://www.openstreetmap.org/copyright)._
--->
 
 Everything here is built around the **[PWG Schema](https://wiki.osm.org/PWG_Schema)**, which describes how to tag pedestrian features at four levels of detail. Pick the starting point that fits how you work:
 
@@ -32,7 +30,7 @@ The maps and JOSM paint style below use these colors, plus **red** (`#ff1744`) f
 
 ## Visualizations
 
-Ready-made maps for [Ultra](https://overpass-ultra.us/), a free web app that draws live OpenStreetMap data. No account or installation needed.
+Ready-made maps for [Ultra](https://overpass-ultra.us/), a free web app that draws live OpenStreetMap data. No account or installation needed. The maps get their data from [Postpass](https://github.com/woodpeck/postpass), a public OpenStreetMap SQL service hosted by Geofabrik, rather than the often-overloaded Overpass API.
 
 1. Select **Open in Ultra** next to a map.
 2. Move to the area you want to check. A neighborhood or small town works best; large areas can be slow to load.
@@ -215,6 +213,12 @@ node scripts/generate-josm-preset.js
 node scripts/generate-josm-mapcss.js
 node scripts/generate-ultra-visualization.js
 node scripts/generate-ultra-visualization.js --mode readiness --targetTier silver
+```
+
+The schema-generated Ultra maps query Postpass by default. To make an Overpass version, for example while Postpass is unavailable, add `--provider overpass` and an `--output` path so the checked-in maps aren't overwritten:
+
+```powershell
+node scripts/generate-ultra-visualization.js --provider overpass --output pwg_schema_tiers_overpass.ultra
 ```
 
 ### Testing
