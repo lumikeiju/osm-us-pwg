@@ -1,0 +1,50 @@
+version = 1
+
+# Files that JOSM, Ultra, or other tools fetch by raw URL are intentionally not
+# listed here. They carry their own license notices so the notice travels with
+# the file: presets/, styles/, validators/, and everything in visualizations/.
+# The schema-derived ones are written by scripts/; if a generator stops emitting
+# its notice, `reuse lint` fails.
+
+[[annotations]]
+path = ["schema/*.mw", "schema/*.json", "guide/*.mw", "templates/**"]
+precedence = "override"
+SPDX-FileCopyrightText = "OpenStreetMap US Pedestrian Working Group and OpenStreetMap Wiki contributors"
+SPDX-License-Identifier = "CC-BY-SA-2.0"
+
+[[annotations]]
+path = ["README.md", "CHANGELOG.md", "resources/icons/tiers/README.md"]
+precedence = "override"
+SPDX-FileCopyrightText = "OpenStreetMap US Pedestrian Working Group contributors"
+SPDX-License-Identifier = "CC-BY-SA-2.0"
+
+[[annotations]]
+path = ["resources/icons/tiers/*.svg", "resources/icons/tiers/*.png"]
+precedence = "override"
+SPDX-FileCopyrightText = "OpenStreetMap US Pedestrian Working Group contributors"
+SPDX-License-Identifier = "CC0-1.0"
+
+[[annotations]]
+path = ["resources/images/hero-*.png"]
+precedence = "override"
+SPDX-FileCopyrightText = [
+  "OpenStreetMap US Pedestrian Working Group and OpenStreetMap Wiki contributors",
+  "Map data © OpenStreetMap contributors (ODbL Produced Work)",
+  "Basemap © Protomaps, © OpenStreetMap contributors",
+  "Ultra interface © 2022 Daniel Schep (MIT)",
+]
+SPDX-License-Identifier = "CC-BY-SA-2.0"
+
+[[annotations]]
+path = [
+  "scripts/**",
+  "tests/**",
+  "examples/**",
+  ".github/**",
+  ".editorconfig",
+  ".gitignore",
+  ".prettierrc.js",
+]
+precedence = "override"
+SPDX-FileCopyrightText = "OpenStreetMap US Pedestrian Working Group contributors"
+SPDX-License-Identifier = "MIT"

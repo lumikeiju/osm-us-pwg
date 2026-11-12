@@ -1,12 +1,19 @@
 /*
- * Generated from schema/1.0.1.mw and schema/1.0.1.json by scripts/generate-josm-mapcss.js.
+ * SPDX-FileCopyrightText: OpenStreetMap US Pedestrian Working Group and OpenStreetMap Wiki contributors
+ * SPDX-License-Identifier: CC-BY-SA-2.0
+ *
+ * Adapted from PWG Schema v1.1.1 by the OpenStreetMap US Pedestrian Working Group and OpenStreetMap Wiki contributors:
+ * https://wiki.openstreetmap.org/wiki/Foundation/Local_Chapters/United_States/Pedestrian_Working_Group/Schema
+ * Licensed under CC BY-SA 2.0: https://creativecommons.org/licenses/by-sa/2.0/
+ *
+ * Generated from schema/1.1.1.mw and schema/1.1.1.json by scripts/generate-josm-mapcss.js.
  * Colors show the highest automatically satisfied PWG tier; red needs review.
- * Conditional requirements based only on real-world conditions are not evaluated.
+ * Conditional requirements with real-world conditions remain manual review.
  */
 
 meta {
-  title: "PWG Schema v1.0.1 Tiers";
-  version: "1.0.1";
+  title: "PWG Schema v1.1.1 Tiers";
+  version: "1.1.1";
   description: "Colors PWG features by their highest automatically satisfied schema tier.";
   link: "https://github.com/lumikeiju/osm-us-pwg";
 }
@@ -42,7 +49,7 @@ way["footway"="sidewalk"]["highway"="footway"]["surface"=~/^.*\S.*$/]
 }
 
 /* Sidewalk: Gold tier */
-way["footway"="sidewalk"]["highway"="footway"]["lit"=~/^.*\S.*$/]["surface"=~/^.*\S.*$/]["width"=~/^\s*-?\d+(?:\.\d+)?(?:\s*(?:mm|cm|m|km|in|ft|yd|mi))?\s*$/]
+way["footway"="sidewalk"]["highway"="footway"]["lit"=~/^.*\S.*$/]["surface"=~/^.*\S.*$/]["width"=~/^\s*-?\d+(?:\.\d+)?(?:\s*(?:[mM][mM]|[cC][mM]|[kK][mM]|[iI][nN]|[fF][tT]|[yY][dD]|[mM][iI]|[mM]))?\s*$/]
 {
   color: #e5c839;
   width: 4;
@@ -52,8 +59,8 @@ way["footway"="sidewalk"]["highway"="footway"]["lit"=~/^.*\S.*$/]["surface"=~/^.
 }
 
 /* Sidewalk: Diamond tier */
-way["footway"="sidewalk"]["highway"="footway"]["incline:across"=~/^\s*(?:up|down|[+-]?\d+(?:\.\d+)?(?:%|°))\s*$/]["lit"=~/^.*\S.*$/]["surface"=~/^.*\S.*$/]["tactile_paving"!~/^(?:yes)$/]["tactile_paving"=~/^(?:yes|no)$/]["width"=~/^\s*-?\d+(?:\.\d+)?(?:\s*(?:mm|cm|m|km|in|ft|yd|mi))?\s*$/],
-way["footway"="sidewalk"]["highway"="footway"]["incline:across"=~/^\s*(?:up|down|[+-]?\d+(?:\.\d+)?(?:%|°))\s*$/]["lit"=~/^.*\S.*$/]["surface"=~/^.*\S.*$/]["tactile_paving:colour"=~/^.*\S.*$/]["tactile_paving"=~/^(?:yes)$/]["tactile_paving"=~/^(?:yes|no)$/]["width"=~/^\s*-?\d+(?:\.\d+)?(?:\s*(?:mm|cm|m|km|in|ft|yd|mi))?\s*$/]
+way["footway"="sidewalk"]["highway"="footway"]["incline:across"=~/^\s*(?:up|down|[+-]?\d+(?:\.\d+)?(?:%|°))\s*$/]["lit"=~/^.*\S.*$/]["surface"=~/^.*\S.*$/]["tactile_paving"!~/^(?:yes)$/]["tactile_paving"=~/^(?:yes|no)$/]["width"=~/^\s*-?\d+(?:\.\d+)?(?:\s*(?:[mM][mM]|[cC][mM]|[kK][mM]|[iI][nN]|[fF][tT]|[yY][dD]|[mM][iI]|[mM]))?\s*$/],
+way["footway"="sidewalk"]["highway"="footway"]["incline:across"=~/^\s*(?:up|down|[+-]?\d+(?:\.\d+)?(?:%|°))\s*$/]["lit"=~/^.*\S.*$/]["surface"=~/^.*\S.*$/]["tactile_paving:colour"=~/^.*\S.*$/]["tactile_paving"=~/^(?:yes)$/]["tactile_paving"=~/^(?:yes|no)$/]["width"=~/^\s*-?\d+(?:\.\d+)?(?:\s*(?:[mM][mM]|[cC][mM]|[kK][mM]|[iI][nN]|[fF][tT]|[yY][dD]|[mM][iI]|[mM]))?\s*$/]
 {
   color: #39c8e5;
   width: 4;
@@ -85,7 +92,7 @@ way["crossing:markings"=~/^(?:yes|no)$/]["crossing:signals"=~/^(?:yes|no)$/]["fo
 }
 
 /* Crossing (way): Silver tier */
-way["crossing:island"=~/^(?:yes|no)$/]["crossing:markings"=~/^(?!yes$).*\S.*$/]["crossing:signals"=~/^(?:yes|no)$/]["footway"="crossing"]["highway"="footway"]["surface"=~/^.*\S.*$/]
+way["crossing:island"=~/^(?:separate|no)$/]["crossing:markings"=~/^(?!yes$).*\S.*$/]["crossing:signals"=~/^(?:yes|no)$/]["footway"="crossing"]["highway"="footway"]["surface"=~/^.*\S.*$/]
 {
   color: #cccccc;
   width: 4;
@@ -96,8 +103,8 @@ way["crossing:island"=~/^(?:yes|no)$/]["crossing:markings"=~/^(?!yes$).*\S.*$/][
 }
 
 /* Crossing (way): Gold tier */
-way["crossing:island"=~/^(?:yes|no)$/]["crossing:markings"=~/^(?!yes$).*\S.*$/]["crossing:signals"!~/^(?:yes|shared|dedicated)$/]["crossing:signals"=~/^(?:yes|no)$/]["crossing:signed"=~/^(?:yes|no)$/]["footway"="crossing"]["highway"="footway"]["surface"=~/^.*\S.*$/]["width"=~/^\s*-?\d+(?:\.\d+)?(?:\s*(?:mm|cm|m|km|in|ft|yd|mi))?\s*$/],
-way["button_operated"=~/^(?:yes|no)$/]["crossing:island"=~/^(?:yes|no)$/]["crossing:markings"=~/^(?!yes$).*\S.*$/]["crossing:signals"=~/^(?:yes|no)$/]["crossing:signals"=~/^(?:yes|shared|dedicated)$/]["crossing:signed"=~/^(?:yes|no)$/]["footway"="crossing"]["highway"="footway"]["surface"=~/^.*\S.*$/]["traffic_signals:arrow"=~/^(?:yes|no)$/]["traffic_signals:sound"=~/^(?:yes|no)$/]["traffic_signals:vibration"=~/^(?:yes|no)$/]["width"=~/^\s*-?\d+(?:\.\d+)?(?:\s*(?:mm|cm|m|km|in|ft|yd|mi))?\s*$/]
+way["crossing:island"=~/^(?:separate|no)$/]["crossing:markings"=~/^(?!yes$).*\S.*$/]["crossing:signals"!~/^(?:yes|shared|dedicated)$/]["crossing:signals"=~/^(?:yes|no)$/]["crossing:signed"=~/^(?:yes|no)$/]["flashing_lights"=~/^(?:yes|no)$/]["footway"="crossing"]["highway"="footway"]["surface"=~/^.*\S.*$/]["width"=~/^\s*-?\d+(?:\.\d+)?(?:\s*(?:[mM][mM]|[cC][mM]|[kK][mM]|[iI][nN]|[fF][tT]|[yY][dD]|[mM][iI]|[mM]))?\s*$/],
+way["button_operated"=~/^(?:yes|no)$/]["crossing:island"=~/^(?:separate|no)$/]["crossing:markings"=~/^(?!yes$).*\S.*$/]["crossing:signals"=~/^(?:yes|no)$/]["crossing:signals"=~/^(?:yes|shared|dedicated)$/]["crossing:signed"=~/^(?:yes|no)$/]["flashing_lights"=~/^(?:yes|no)$/]["footway"="crossing"]["highway"="footway"]["surface"=~/^.*\S.*$/]["traffic_signals:arrow"=~/^(?:yes|no)$/]["traffic_signals:sound"=~/^(?:yes|no)$/]["traffic_signals:vibration"=~/^(?:yes|no)$/]["width"=~/^\s*-?\d+(?:\.\d+)?(?:\s*(?:[mM][mM]|[cC][mM]|[kK][mM]|[iI][nN]|[fF][tT]|[yY][dD]|[mM][iI]|[mM]))?\s*$/]
 {
   color: #e5c839;
   width: 4;
@@ -108,10 +115,10 @@ way["button_operated"=~/^(?:yes|no)$/]["crossing:island"=~/^(?:yes|no)$/]["cross
 }
 
 /* Crossing (way): Diamond tier */
-way["crossing:flags"=~/^(?:yes|no)$/]["crossing:island"=~/^(?:yes|no)$/]["crossing:markings"=~/^(?!yes$).*\S.*$/]["crossing:signals"!~/^(?:yes|shared|dedicated)$/]["crossing:signals"=~/^(?:no|shared|dedicated)$/]["crossing:signed"=~/^(?:yes|no)$/]["footway"="crossing"]["highway"="footway"]["surface"=~/^.*\S.*$/]["tactile_paving"!~/^(?:yes)$/]["tactile_paving"=~/^(?:yes|no)$/]["width"=~/^\s*-?\d+(?:\.\d+)?(?:\s*(?:mm|cm|m|km|in|ft|yd|mi))?\s*$/],
-way["crossing:flags"=~/^(?:yes|no)$/]["crossing:island"=~/^(?:yes|no)$/]["crossing:markings"=~/^(?!yes$).*\S.*$/]["crossing:signals"!~/^(?:yes|shared|dedicated)$/]["crossing:signals"=~/^(?:no|shared|dedicated)$/]["crossing:signed"=~/^(?:yes|no)$/]["footway"="crossing"]["highway"="footway"]["surface"=~/^.*\S.*$/]["tactile_paving:colour"=~/^.*\S.*$/]["tactile_paving"=~/^(?:yes)$/]["tactile_paving"=~/^(?:yes|no)$/]["width"=~/^\s*-?\d+(?:\.\d+)?(?:\s*(?:mm|cm|m|km|in|ft|yd|mi))?\s*$/],
-way["button_operated"=~/^(?:yes|no)$/]["crossing:flags"=~/^(?:yes|no)$/]["crossing:island"=~/^(?:yes|no)$/]["crossing:markings"=~/^(?!yes$).*\S.*$/]["crossing:signals"=~/^(?:no|shared|dedicated)$/]["crossing:signals"=~/^(?:yes|shared|dedicated)$/]["crossing:signed"=~/^(?:yes|no)$/]["footway"="crossing"]["highway"="footway"]["surface"=~/^.*\S.*$/]["tactile_paving"!~/^(?:yes)$/]["tactile_paving"=~/^(?:yes|no)$/]["traffic_signals:arrow"=~/^(?:yes|no)$/]["traffic_signals:minimap"=~/^(?:yes|no)$/]["traffic_signals:sound"=~/^(?:yes|no|locate|walk|locate;walk|walk;locate)$/]["traffic_signals:vibration"=~/^(?:yes|no)$/]["width"=~/^\s*-?\d+(?:\.\d+)?(?:\s*(?:mm|cm|m|km|in|ft|yd|mi))?\s*$/],
-way["button_operated"=~/^(?:yes|no)$/]["crossing:flags"=~/^(?:yes|no)$/]["crossing:island"=~/^(?:yes|no)$/]["crossing:markings"=~/^(?!yes$).*\S.*$/]["crossing:signals"=~/^(?:no|shared|dedicated)$/]["crossing:signals"=~/^(?:yes|shared|dedicated)$/]["crossing:signed"=~/^(?:yes|no)$/]["footway"="crossing"]["highway"="footway"]["surface"=~/^.*\S.*$/]["tactile_paving:colour"=~/^.*\S.*$/]["tactile_paving"=~/^(?:yes)$/]["tactile_paving"=~/^(?:yes|no)$/]["traffic_signals:arrow"=~/^(?:yes|no)$/]["traffic_signals:minimap"=~/^(?:yes|no)$/]["traffic_signals:sound"=~/^(?:yes|no|locate|walk|locate;walk|walk;locate)$/]["traffic_signals:vibration"=~/^(?:yes|no)$/]["width"=~/^\s*-?\d+(?:\.\d+)?(?:\s*(?:mm|cm|m|km|in|ft|yd|mi))?\s*$/]
+way["crossing:flags"=~/^(?:yes|no)$/]["crossing:island"=~/^(?:separate|no)$/]["crossing:markings"=~/^(?!yes$).*\S.*$/]["crossing:signals"!~/^(?:yes|shared|dedicated)$/]["crossing:signals"=~/^(?:no|shared|dedicated)$/]["crossing:signed"=~/^(?:yes|no)$/]["flashing_lights"=~/^(?!yes$).*\S.*$/]["footway"="crossing"]["highway"="footway"]["surface"=~/^.*\S.*$/]["tactile_paving"!~/^(?:yes)$/]["tactile_paving"=~/^(?:yes|no)$/]["width"=~/^\s*-?\d+(?:\.\d+)?(?:\s*(?:[mM][mM]|[cC][mM]|[kK][mM]|[iI][nN]|[fF][tT]|[yY][dD]|[mM][iI]|[mM]))?\s*$/],
+way["crossing:flags"=~/^(?:yes|no)$/]["crossing:island"=~/^(?:separate|no)$/]["crossing:markings"=~/^(?!yes$).*\S.*$/]["crossing:signals"!~/^(?:yes|shared|dedicated)$/]["crossing:signals"=~/^(?:no|shared|dedicated)$/]["crossing:signed"=~/^(?:yes|no)$/]["flashing_lights"=~/^(?!yes$).*\S.*$/]["footway"="crossing"]["highway"="footway"]["surface"=~/^.*\S.*$/]["tactile_paving:colour"=~/^.*\S.*$/]["tactile_paving"=~/^(?:yes)$/]["tactile_paving"=~/^(?:yes|no)$/]["width"=~/^\s*-?\d+(?:\.\d+)?(?:\s*(?:[mM][mM]|[cC][mM]|[kK][mM]|[iI][nN]|[fF][tT]|[yY][dD]|[mM][iI]|[mM]))?\s*$/],
+way["button_operated"=~/^(?:yes|no)$/]["crossing:flags"=~/^(?:yes|no)$/]["crossing:island"=~/^(?:separate|no)$/]["crossing:markings"=~/^(?!yes$).*\S.*$/]["crossing:signals"=~/^(?:no|shared|dedicated)$/]["crossing:signals"=~/^(?:yes|shared|dedicated)$/]["crossing:signed"=~/^(?:yes|no)$/]["flashing_lights"=~/^(?!yes$).*\S.*$/]["footway"="crossing"]["highway"="footway"]["surface"=~/^.*\S.*$/]["tactile_paving"!~/^(?:yes)$/]["tactile_paving"=~/^(?:yes|no)$/]["traffic_signals:arrow"=~/^(?:yes|no)$/]["traffic_signals:minimap"=~/^(?:yes|no)$/]["traffic_signals:sound"=~/^(?:yes|no|locate|walk|locate;walk|walk;locate)$/]["traffic_signals:vibration"=~/^(?:yes|no)$/]["width"=~/^\s*-?\d+(?:\.\d+)?(?:\s*(?:[mM][mM]|[cC][mM]|[kK][mM]|[iI][nN]|[fF][tT]|[yY][dD]|[mM][iI]|[mM]))?\s*$/],
+way["button_operated"=~/^(?:yes|no)$/]["crossing:flags"=~/^(?:yes|no)$/]["crossing:island"=~/^(?:separate|no)$/]["crossing:markings"=~/^(?!yes$).*\S.*$/]["crossing:signals"=~/^(?:no|shared|dedicated)$/]["crossing:signals"=~/^(?:yes|shared|dedicated)$/]["crossing:signed"=~/^(?:yes|no)$/]["flashing_lights"=~/^(?!yes$).*\S.*$/]["footway"="crossing"]["highway"="footway"]["surface"=~/^.*\S.*$/]["tactile_paving:colour"=~/^.*\S.*$/]["tactile_paving"=~/^(?:yes)$/]["tactile_paving"=~/^(?:yes|no)$/]["traffic_signals:arrow"=~/^(?:yes|no)$/]["traffic_signals:minimap"=~/^(?:yes|no)$/]["traffic_signals:sound"=~/^(?:yes|no|locate|walk|locate;walk|walk;locate)$/]["traffic_signals:vibration"=~/^(?:yes|no)$/]["width"=~/^\s*-?\d+(?:\.\d+)?(?:\s*(?:[mM][mM]|[cC][mM]|[kK][mM]|[iI][nN]|[fF][tT]|[yY][dD]|[mM][iI]|[mM]))?\s*$/]
 {
   color: #39c8e5;
   width: 4;
@@ -144,7 +151,7 @@ node[!"footway"]["crossing:markings"=~/^(?:yes|no)$/]["crossing:signals"=~/^(?:y
 }
 
 /* Crossing (node): Silver tier */
-node[!"footway"]["crossing:island"=~/^(?:yes|no)$/]["crossing:markings"=~/^(?!yes$).*\S.*$/]["crossing:signals"=~/^(?:yes|no)$/]["highway"="crossing"]["tactile_paving"=~/^(?:yes|no|partial)$/]
+node[!"footway"]["crossing:island"=~/^(?:separate|no)$/]["crossing:markings"=~/^(?!yes$).*\S.*$/]["crossing:signals"=~/^(?:yes|no)$/]["highway"="crossing"]["tactile_paving"=~/^(?:yes|no|partial)$/]
 {
   symbol-shape: circle;
   symbol-size: 12;
@@ -155,8 +162,8 @@ node[!"footway"]["crossing:island"=~/^(?:yes|no)$/]["crossing:markings"=~/^(?!ye
 }
 
 /* Crossing (node): Gold tier */
-node[!"footway"]["crossing:island"=~/^(?:yes|no)$/]["crossing:markings"=~/^(?!yes$).*\S.*$/]["crossing:signals"!~/^(?:yes|shared|dedicated)$/]["crossing:signals"=~/^(?:yes|no)$/]["crossing:signed"=~/^(?:yes|no)$/]["highway"="crossing"]["tactile_paving"=~/^(?:yes|no|partial)$/],
-node[!"footway"]["button_operated"=~/^(?:yes|no)$/]["crossing:island"=~/^(?:yes|no)$/]["crossing:markings"=~/^(?!yes$).*\S.*$/]["crossing:signals"=~/^(?:yes|no)$/]["crossing:signals"=~/^(?:yes|shared|dedicated)$/]["crossing:signed"=~/^(?:yes|no)$/]["highway"="crossing"]["tactile_paving"=~/^(?:yes|no|partial)$/]["traffic_signals:arrow"=~/^(?:yes|no)$/]["traffic_signals:sound"=~/^(?:yes|no)$/]["traffic_signals:vibration"=~/^(?:yes|no)$/]
+node[!"footway"]["crossing:island"=~/^(?:separate|no)$/]["crossing:markings"=~/^(?!yes$).*\S.*$/]["crossing:signals"!~/^(?:yes|shared|dedicated)$/]["crossing:signals"=~/^(?:yes|no)$/]["crossing:signed"=~/^(?:yes|no)$/]["flashing_lights"=~/^(?:yes|no)$/]["highway"="crossing"]["tactile_paving"=~/^(?:yes|no|partial)$/],
+node[!"footway"]["button_operated"=~/^(?:yes|no)$/]["crossing:island"=~/^(?:separate|no)$/]["crossing:markings"=~/^(?!yes$).*\S.*$/]["crossing:signals"=~/^(?:yes|no)$/]["crossing:signals"=~/^(?:yes|shared|dedicated)$/]["crossing:signed"=~/^(?:yes|no)$/]["flashing_lights"=~/^(?:yes|no)$/]["highway"="crossing"]["tactile_paving"=~/^(?:yes|no|partial)$/]["traffic_signals:arrow"=~/^(?:yes|no)$/]["traffic_signals:sound"=~/^(?:yes|no)$/]["traffic_signals:vibration"=~/^(?:yes|no)$/]
 {
   symbol-shape: circle;
   symbol-size: 12;
@@ -167,10 +174,10 @@ node[!"footway"]["button_operated"=~/^(?:yes|no)$/]["crossing:island"=~/^(?:yes|
 }
 
 /* Crossing (node): Diamond tier */
-node[!"footway"]["crossing:flags"=~/^(?:yes|no)$/]["crossing:island"=~/^(?:yes|no)$/]["crossing:markings"=~/^(?!yes$).*\S.*$/]["crossing:signals"!~/^(?:yes|shared|dedicated)$/]["crossing:signals"=~/^(?:no|shared|dedicated)$/]["crossing:signed"=~/^(?:yes|no)$/]["highway"="crossing"]["tactile_paving"!~/^(?:yes|partial)$/]["tactile_paving"=~/^(?:yes|no|partial)$/],
-node[!"footway"]["crossing:flags"=~/^(?:yes|no)$/]["crossing:island"=~/^(?:yes|no)$/]["crossing:markings"=~/^(?!yes$).*\S.*$/]["crossing:signals"!~/^(?:yes|shared|dedicated)$/]["crossing:signals"=~/^(?:no|shared|dedicated)$/]["crossing:signed"=~/^(?:yes|no)$/]["highway"="crossing"]["tactile_paving:colour"=~/^.*\S.*$/]["tactile_paving"=~/^(?:yes|no|partial)$/]["tactile_paving"=~/^(?:yes|partial)$/],
-node[!"footway"]["button_operated"=~/^(?:yes|no)$/]["crossing:flags"=~/^(?:yes|no)$/]["crossing:island"=~/^(?:yes|no)$/]["crossing:markings"=~/^(?!yes$).*\S.*$/]["crossing:signals"=~/^(?:no|shared|dedicated)$/]["crossing:signals"=~/^(?:yes|shared|dedicated)$/]["crossing:signed"=~/^(?:yes|no)$/]["highway"="crossing"]["tactile_paving"!~/^(?:yes|partial)$/]["tactile_paving"=~/^(?:yes|no|partial)$/]["traffic_signals:arrow"=~/^(?:yes|no)$/]["traffic_signals:minimap"=~/^(?:yes|no)$/]["traffic_signals:sound"=~/^(?:yes|no|locate|walk|locate;walk|walk;locate)$/]["traffic_signals:vibration"=~/^(?:yes|no)$/],
-node[!"footway"]["button_operated"=~/^(?:yes|no)$/]["crossing:flags"=~/^(?:yes|no)$/]["crossing:island"=~/^(?:yes|no)$/]["crossing:markings"=~/^(?!yes$).*\S.*$/]["crossing:signals"=~/^(?:no|shared|dedicated)$/]["crossing:signals"=~/^(?:yes|shared|dedicated)$/]["crossing:signed"=~/^(?:yes|no)$/]["highway"="crossing"]["tactile_paving:colour"=~/^.*\S.*$/]["tactile_paving"=~/^(?:yes|no|partial)$/]["tactile_paving"=~/^(?:yes|partial)$/]["traffic_signals:arrow"=~/^(?:yes|no)$/]["traffic_signals:minimap"=~/^(?:yes|no)$/]["traffic_signals:sound"=~/^(?:yes|no|locate|walk|locate;walk|walk;locate)$/]["traffic_signals:vibration"=~/^(?:yes|no)$/]
+node[!"footway"]["crossing:flags"=~/^(?:yes|no)$/]["crossing:island"=~/^(?:separate|no)$/]["crossing:markings"=~/^(?!yes$).*\S.*$/]["crossing:signals"!~/^(?:yes|shared|dedicated)$/]["crossing:signals"=~/^(?:no|shared|dedicated)$/]["crossing:signed"=~/^(?:yes|no)$/]["flashing_lights"=~/^(?!yes$).*\S.*$/]["highway"="crossing"]["tactile_paving"!~/^(?:yes|partial)$/]["tactile_paving"=~/^(?:yes|no|partial)$/],
+node[!"footway"]["crossing:flags"=~/^(?:yes|no)$/]["crossing:island"=~/^(?:separate|no)$/]["crossing:markings"=~/^(?!yes$).*\S.*$/]["crossing:signals"!~/^(?:yes|shared|dedicated)$/]["crossing:signals"=~/^(?:no|shared|dedicated)$/]["crossing:signed"=~/^(?:yes|no)$/]["flashing_lights"=~/^(?!yes$).*\S.*$/]["highway"="crossing"]["tactile_paving:colour"=~/^.*\S.*$/]["tactile_paving"=~/^(?:yes|no|partial)$/]["tactile_paving"=~/^(?:yes|partial)$/],
+node[!"footway"]["button_operated"=~/^(?:yes|no)$/]["crossing:flags"=~/^(?:yes|no)$/]["crossing:island"=~/^(?:separate|no)$/]["crossing:markings"=~/^(?!yes$).*\S.*$/]["crossing:signals"=~/^(?:no|shared|dedicated)$/]["crossing:signals"=~/^(?:yes|shared|dedicated)$/]["crossing:signed"=~/^(?:yes|no)$/]["flashing_lights"=~/^(?!yes$).*\S.*$/]["highway"="crossing"]["tactile_paving"!~/^(?:yes|partial)$/]["tactile_paving"=~/^(?:yes|no|partial)$/]["traffic_signals:arrow"=~/^(?:yes|no)$/]["traffic_signals:minimap"=~/^(?:yes|no)$/]["traffic_signals:sound"=~/^(?:yes|no|locate|walk|locate;walk|walk;locate)$/]["traffic_signals:vibration"=~/^(?:yes|no)$/],
+node[!"footway"]["button_operated"=~/^(?:yes|no)$/]["crossing:flags"=~/^(?:yes|no)$/]["crossing:island"=~/^(?:separate|no)$/]["crossing:markings"=~/^(?!yes$).*\S.*$/]["crossing:signals"=~/^(?:no|shared|dedicated)$/]["crossing:signals"=~/^(?:yes|shared|dedicated)$/]["crossing:signed"=~/^(?:yes|no)$/]["flashing_lights"=~/^(?!yes$).*\S.*$/]["highway"="crossing"]["tactile_paving:colour"=~/^.*\S.*$/]["tactile_paving"=~/^(?:yes|no|partial)$/]["tactile_paving"=~/^(?:yes|partial)$/]["traffic_signals:arrow"=~/^(?:yes|no)$/]["traffic_signals:minimap"=~/^(?:yes|no)$/]["traffic_signals:sound"=~/^(?:yes|no|locate|walk|locate;walk|walk;locate)$/]["traffic_signals:vibration"=~/^(?:yes|no)$/]
 {
   symbol-shape: circle;
   symbol-size: 12;
@@ -204,7 +211,7 @@ node["barrier"="kerb"]["kerb"=~/^(?:raised|lowered|flush|rolled|no)$/]["tactile_
 
 /* Curb: Gold tier */
 node["barrier"="kerb"]["kerb"!~/^(?:raised)$/]["kerb"=~/^(?:raised|lowered|flush|rolled|no)$/]["tactile_paving"=~/^(?:yes|no)$/],
-node["barrier"="kerb"]["kerb:height"=~/^\s*-?\d+(?:\.\d+)?(?:\s*(?:mm|cm|m|km|in|ft|yd|mi))?\s*$/]["kerb"=~/^(?:raised)$/]["kerb"=~/^(?:raised|lowered|flush|rolled|no)$/]["tactile_paving"=~/^(?:yes|no)$/]
+node["barrier"="kerb"]["kerb:height"=~/^\s*-?\d+(?:\.\d+)?(?:\s*(?:[mM][mM]|[cC][mM]|[kK][mM]|[iI][nN]|[fF][tT]|[yY][dD]|[mM][iI]|[mM]))?\s*$/]["kerb"=~/^(?:raised)$/]["kerb"=~/^(?:raised|lowered|flush|rolled|no)$/]["tactile_paving"=~/^(?:yes|no)$/]
 {
   symbol-shape: circle;
   symbol-size: 12;
@@ -217,8 +224,8 @@ node["barrier"="kerb"]["kerb:height"=~/^\s*-?\d+(?:\.\d+)?(?:\s*(?:mm|cm|m|km|in
 /* Curb: Diamond tier */
 node["barrier"="kerb"]["kerb"!~/^(?:raised)$/]["kerb"=~/^(?:raised|lowered|flush|rolled|no)$/]["tactile_paving"!~/^(?:yes)$/]["tactile_paving"=~/^(?:yes|no)$/],
 node["barrier"="kerb"]["kerb"!~/^(?:raised)$/]["kerb"=~/^(?:raised|lowered|flush|rolled|no)$/]["tactile_paving:colour"=~/^.*\S.*$/]["tactile_paving"=~/^(?:yes)$/]["tactile_paving"=~/^(?:yes|no)$/],
-node["barrier"="kerb"]["kerb:height"=~/^\s*-?\d+(?:\.\d+)?(?:\s*(?:mm|cm|m|km|in|ft|yd|mi))?\s*$/]["kerb"=~/^(?:raised)$/]["kerb"=~/^(?:raised|lowered|flush|rolled|no)$/]["tactile_paving"!~/^(?:yes)$/]["tactile_paving"=~/^(?:yes|no)$/],
-node["barrier"="kerb"]["kerb:height"=~/^\s*-?\d+(?:\.\d+)?(?:\s*(?:mm|cm|m|km|in|ft|yd|mi))?\s*$/]["kerb"=~/^(?:raised)$/]["kerb"=~/^(?:raised|lowered|flush|rolled|no)$/]["tactile_paving:colour"=~/^.*\S.*$/]["tactile_paving"=~/^(?:yes)$/]["tactile_paving"=~/^(?:yes|no)$/]
+node["barrier"="kerb"]["kerb:height"=~/^\s*-?\d+(?:\.\d+)?(?:\s*(?:[mM][mM]|[cC][mM]|[kK][mM]|[iI][nN]|[fF][tT]|[yY][dD]|[mM][iI]|[mM]))?\s*$/]["kerb"=~/^(?:raised)$/]["kerb"=~/^(?:raised|lowered|flush|rolled|no)$/]["tactile_paving"!~/^(?:yes)$/]["tactile_paving"=~/^(?:yes|no)$/],
+node["barrier"="kerb"]["kerb:height"=~/^\s*-?\d+(?:\.\d+)?(?:\s*(?:[mM][mM]|[cC][mM]|[kK][mM]|[iI][nN]|[fF][tT]|[yY][dD]|[mM][iI]|[mM]))?\s*$/]["kerb"=~/^(?:raised)$/]["kerb"=~/^(?:raised|lowered|flush|rolled|no)$/]["tactile_paving:colour"=~/^.*\S.*$/]["tactile_paving"=~/^(?:yes)$/]["tactile_paving"=~/^(?:yes|no)$/]
 {
   symbol-shape: circle;
   symbol-size: 12;
@@ -251,7 +258,7 @@ way["footway"="traffic_island"]["highway"="footway"]["surface"=~/^.*\S.*$/]
 }
 
 /* Traffic Island: Gold tier */
-way["footway"="traffic_island"]["highway"="footway"]["lit"=~/^.*\S.*$/]["surface"=~/^.*\S.*$/]["width"=~/^\s*-?\d+(?:\.\d+)?(?:\s*(?:mm|cm|m|km|in|ft|yd|mi))?\s*$/]
+way["footway"="traffic_island"]["highway"="footway"]["lit"=~/^.*\S.*$/]["surface"=~/^.*\S.*$/]["width"=~/^\s*-?\d+(?:\.\d+)?(?:\s*(?:[mM][mM]|[cC][mM]|[kK][mM]|[iI][nN]|[fF][tT]|[yY][dD]|[mM][iI]|[mM]))?\s*$/]
 {
   color: #e5c839;
   width: 4;
@@ -262,8 +269,8 @@ way["footway"="traffic_island"]["highway"="footway"]["lit"=~/^.*\S.*$/]["surface
 }
 
 /* Traffic Island: Diamond tier */
-way["footway"="traffic_island"]["highway"="footway"]["incline:across"=~/^\s*(?:up|down|[+-]?\d+(?:\.\d+)?(?:%|°))\s*$/]["lit"=~/^.*\S.*$/]["surface"=~/^.*\S.*$/]["tactile_paving"!~/^(?:yes)$/]["tactile_paving"=~/^(?:yes|no)$/]["width"=~/^\s*-?\d+(?:\.\d+)?(?:\s*(?:mm|cm|m|km|in|ft|yd|mi))?\s*$/],
-way["footway"="traffic_island"]["highway"="footway"]["incline:across"=~/^\s*(?:up|down|[+-]?\d+(?:\.\d+)?(?:%|°))\s*$/]["lit"=~/^.*\S.*$/]["surface"=~/^.*\S.*$/]["tactile_paving:colour"=~/^.*\S.*$/]["tactile_paving"=~/^(?:yes)$/]["tactile_paving"=~/^(?:yes|no)$/]["width"=~/^\s*-?\d+(?:\.\d+)?(?:\s*(?:mm|cm|m|km|in|ft|yd|mi))?\s*$/]
+way["footway"="traffic_island"]["highway"="footway"]["incline:across"=~/^\s*(?:up|down|[+-]?\d+(?:\.\d+)?(?:%|°))\s*$/]["lit"=~/^.*\S.*$/]["surface"=~/^.*\S.*$/]["tactile_paving"!~/^(?:yes)$/]["tactile_paving"=~/^(?:yes|no)$/]["width"=~/^\s*-?\d+(?:\.\d+)?(?:\s*(?:[mM][mM]|[cC][mM]|[kK][mM]|[iI][nN]|[fF][tT]|[yY][dD]|[mM][iI]|[mM]))?\s*$/],
+way["footway"="traffic_island"]["highway"="footway"]["incline:across"=~/^\s*(?:up|down|[+-]?\d+(?:\.\d+)?(?:%|°))\s*$/]["lit"=~/^.*\S.*$/]["surface"=~/^.*\S.*$/]["tactile_paving:colour"=~/^.*\S.*$/]["tactile_paving"=~/^(?:yes)$/]["tactile_paving"=~/^(?:yes|no)$/]["width"=~/^\s*-?\d+(?:\.\d+)?(?:\s*(?:[mM][mM]|[cC][mM]|[kK][mM]|[iI][nN]|[fF][tT]|[yY][dD]|[mM][iI]|[mM]))?\s*$/]
 {
   color: #39c8e5;
   width: 4;
@@ -296,7 +303,7 @@ way["access_aisle:markings"=~/^.*\S.*$/]["footway"="access_aisle"]["highway"="fo
 }
 
 /* Access Aisle: Gold tier */
-way["access_aisle:markings"=~/^.*\S.*$/]["footway"="access_aisle"]["highway"="footway"]["lit"=~/^.*\S.*$/]["surface"=~/^.*\S.*$/]["width"=~/^\s*-?\d+(?:\.\d+)?(?:\s*(?:mm|cm|m|km|in|ft|yd|mi))?\s*$/]
+way["access_aisle:markings"=~/^.*\S.*$/]["footway"="access_aisle"]["highway"="footway"]["lit"=~/^.*\S.*$/]["surface"=~/^.*\S.*$/]["width"=~/^\s*-?\d+(?:\.\d+)?(?:\s*(?:[mM][mM]|[cC][mM]|[kK][mM]|[iI][nN]|[fF][tT]|[yY][dD]|[mM][iI]|[mM]))?\s*$/]
 {
   color: #e5c839;
   width: 4;
@@ -307,8 +314,8 @@ way["access_aisle:markings"=~/^.*\S.*$/]["footway"="access_aisle"]["highway"="fo
 }
 
 /* Access Aisle: Diamond tier */
-way["access_aisle:markings"=~/^.*\S.*$/]["footway"="access_aisle"]["highway"="footway"]["incline:across"=~/^\s*(?:up|down|[+-]?\d+(?:\.\d+)?(?:%|°))\s*$/]["lit"=~/^.*\S.*$/]["surface"=~/^.*\S.*$/]["tactile_paving"!~/^(?:yes)$/]["tactile_paving"=~/^(?:yes|no)$/]["width"=~/^\s*-?\d+(?:\.\d+)?(?:\s*(?:mm|cm|m|km|in|ft|yd|mi))?\s*$/],
-way["access_aisle:markings"=~/^.*\S.*$/]["footway"="access_aisle"]["highway"="footway"]["incline:across"=~/^\s*(?:up|down|[+-]?\d+(?:\.\d+)?(?:%|°))\s*$/]["lit"=~/^.*\S.*$/]["surface"=~/^.*\S.*$/]["tactile_paving:colour"=~/^.*\S.*$/]["tactile_paving"=~/^(?:yes)$/]["tactile_paving"=~/^(?:yes|no)$/]["width"=~/^\s*-?\d+(?:\.\d+)?(?:\s*(?:mm|cm|m|km|in|ft|yd|mi))?\s*$/]
+way["access_aisle:markings"=~/^.*\S.*$/]["footway"="access_aisle"]["highway"="footway"]["incline:across"=~/^\s*(?:up|down|[+-]?\d+(?:\.\d+)?(?:%|°))\s*$/]["lit"=~/^.*\S.*$/]["surface"=~/^.*\S.*$/]["tactile_paving"!~/^(?:yes)$/]["tactile_paving"=~/^(?:yes|no)$/]["width"=~/^\s*-?\d+(?:\.\d+)?(?:\s*(?:[mM][mM]|[cC][mM]|[kK][mM]|[iI][nN]|[fF][tT]|[yY][dD]|[mM][iI]|[mM]))?\s*$/],
+way["access_aisle:markings"=~/^.*\S.*$/]["footway"="access_aisle"]["highway"="footway"]["incline:across"=~/^\s*(?:up|down|[+-]?\d+(?:\.\d+)?(?:%|°))\s*$/]["lit"=~/^.*\S.*$/]["surface"=~/^.*\S.*$/]["tactile_paving:colour"=~/^.*\S.*$/]["tactile_paving"=~/^(?:yes)$/]["tactile_paving"=~/^(?:yes|no)$/]["width"=~/^\s*-?\d+(?:\.\d+)?(?:\s*(?:[mM][mM]|[cC][mM]|[kK][mM]|[iI][nN]|[fF][tT]|[yY][dD]|[mM][iI]|[mM]))?\s*$/]
 {
   color: #39c8e5;
   width: 4;
@@ -316,6 +323,61 @@ way["access_aisle:markings"=~/^.*\S.*$/]["footway"="access_aisle"]["highway"="fo
   casing-color: #202020;
   casing-width: 1;
   dashes: list(3, 6);
+}
+
+/* Stairs: below Bronze tier */
+way["highway"="steps"]
+{
+  color: #ff1744;
+  width: 4;
+  opacity: 0.9;
+  casing-color: #202020;
+  casing-width: 1;
+}
+
+/* Stairs: Bronze tier */
+way["highway"="steps"]
+{
+  color: #e58139;
+  width: 4;
+  opacity: 0.9;
+  casing-color: #202020;
+  casing-width: 1;
+}
+
+/* Stairs: Silver tier */
+way["handrail"=~/^.*\S.*$/]["highway"="steps"]["incline"=~/^(?:up|down)$/]["ramp"=~/^(?:yes|no)$/]["surface"=~/^.*\S.*$/]
+{
+  color: #cccccc;
+  width: 4;
+  opacity: 0.9;
+  casing-color: #202020;
+  casing-width: 1;
+}
+
+/* Stairs: Gold tier */
+way["handrail"=~/^.*\S.*$/]["highway"="steps"]["incline"=~/^(?:up|down)$/]["lit"=~/^.*\S.*$/]["ramp"=~/^(?:no|separate)$/]["step_count"=~/^\s*-?\d+(?:\.\d+)?\s*$/]["surface"=~/^.*\S.*$/]["tactile_paving"=~/^(?:yes|no)$/]["width"=~/^\s*-?\d+(?:\.\d+)?(?:\s*(?:[mM][mM]|[cC][mM]|[kK][mM]|[iI][nN]|[fF][tT]|[yY][dD]|[mM][iI]|[mM]))?\s*$/]
+{
+  color: #e5c839;
+  width: 4;
+  opacity: 0.9;
+  casing-color: #202020;
+  casing-width: 1;
+}
+
+/* Stairs: Diamond tier */
+way["handrail"="no"]["highway"="steps"]["incline"=~/^(?:up|down)$/]["lit"=~/^.*\S.*$/]["ramp"=~/^(?:no|separate)$/]["step_count"=~/^\s*-?\d+(?:\.\d+)?\s*$/]["surface"=~/^.*\S.*$/]["tactile_paving"!~/^(?:yes)$/]["tactile_paving"=~/^(?:yes|no)$/]["width"=~/^\s*-?\d+(?:\.\d+)?(?:\s*(?:[mM][mM]|[cC][mM]|[kK][mM]|[iI][nN]|[fF][tT]|[yY][dD]|[mM][iI]|[mM]))?\s*$/],
+way["handrail:both"=~/^(?:yes|no)$/]["handrail"!="no"]["handrail"]["handrail"=~/^.*\S.*$/]["highway"="steps"]["incline"=~/^(?:up|down)$/]["lit"=~/^.*\S.*$/]["ramp"=~/^(?:no|separate)$/]["step_count"=~/^\s*-?\d+(?:\.\d+)?\s*$/]["surface"=~/^.*\S.*$/]["tactile_paving"!~/^(?:yes)$/]["tactile_paving"=~/^(?:yes|no)$/]["width"=~/^\s*-?\d+(?:\.\d+)?(?:\s*(?:[mM][mM]|[cC][mM]|[kK][mM]|[iI][nN]|[fF][tT]|[yY][dD]|[mM][iI]|[mM]))?\s*$/],
+way["handrail:left"=~/^(?:yes|no)$/]["handrail:right"=~/^(?:yes|no)$/]["handrail"!="no"]["handrail"]["handrail"=~/^.*\S.*$/]["highway"="steps"]["incline"=~/^(?:up|down)$/]["lit"=~/^.*\S.*$/]["ramp"=~/^(?:no|separate)$/]["step_count"=~/^\s*-?\d+(?:\.\d+)?\s*$/]["surface"=~/^.*\S.*$/]["tactile_paving"!~/^(?:yes)$/]["tactile_paving"=~/^(?:yes|no)$/]["width"=~/^\s*-?\d+(?:\.\d+)?(?:\s*(?:[mM][mM]|[cC][mM]|[kK][mM]|[iI][nN]|[fF][tT]|[yY][dD]|[mM][iI]|[mM]))?\s*$/],
+way["handrail"="no"]["highway"="steps"]["incline"=~/^(?:up|down)$/]["lit"=~/^.*\S.*$/]["ramp"=~/^(?:no|separate)$/]["step_count"=~/^\s*-?\d+(?:\.\d+)?\s*$/]["surface"=~/^.*\S.*$/]["tactile_paving:colour"=~/^.*\S.*$/]["tactile_paving"=~/^(?:yes)$/]["tactile_paving"=~/^(?:yes|no)$/]["width"=~/^\s*-?\d+(?:\.\d+)?(?:\s*(?:[mM][mM]|[cC][mM]|[kK][mM]|[iI][nN]|[fF][tT]|[yY][dD]|[mM][iI]|[mM]))?\s*$/],
+way["handrail:both"=~/^(?:yes|no)$/]["handrail"!="no"]["handrail"]["handrail"=~/^.*\S.*$/]["highway"="steps"]["incline"=~/^(?:up|down)$/]["lit"=~/^.*\S.*$/]["ramp"=~/^(?:no|separate)$/]["step_count"=~/^\s*-?\d+(?:\.\d+)?\s*$/]["surface"=~/^.*\S.*$/]["tactile_paving:colour"=~/^.*\S.*$/]["tactile_paving"=~/^(?:yes)$/]["tactile_paving"=~/^(?:yes|no)$/]["width"=~/^\s*-?\d+(?:\.\d+)?(?:\s*(?:[mM][mM]|[cC][mM]|[kK][mM]|[iI][nN]|[fF][tT]|[yY][dD]|[mM][iI]|[mM]))?\s*$/],
+way["handrail:left"=~/^(?:yes|no)$/]["handrail:right"=~/^(?:yes|no)$/]["handrail"!="no"]["handrail"]["handrail"=~/^.*\S.*$/]["highway"="steps"]["incline"=~/^(?:up|down)$/]["lit"=~/^.*\S.*$/]["ramp"=~/^(?:no|separate)$/]["step_count"=~/^\s*-?\d+(?:\.\d+)?\s*$/]["surface"=~/^.*\S.*$/]["tactile_paving:colour"=~/^.*\S.*$/]["tactile_paving"=~/^(?:yes)$/]["tactile_paving"=~/^(?:yes|no)$/]["width"=~/^\s*-?\d+(?:\.\d+)?(?:\s*(?:[mM][mM]|[cC][mM]|[kK][mM]|[iI][nN]|[fF][tT]|[yY][dD]|[mM][iI]|[mM]))?\s*$/]
+{
+  color: #39c8e5;
+  width: 4;
+  opacity: 0.9;
+  casing-color: #202020;
+  casing-width: 1;
 }
 
 /* Footway Area: below Gold tier */
@@ -349,7 +411,7 @@ relation["area:highway"="footway"]
 }
 
 /* Roadway: below Bronze tier */
-way[!"footway"]["highway"]
+way[!"footway"]["highway"!="steps"]["highway"]
 {
   color: #ff1744;
   width: 2;
@@ -360,8 +422,8 @@ way[!"footway"]["highway"]
 }
 
 /* Roadway: Bronze tier */
-way[!"footway"]["highway"]["sidewalk:both"=~/^(?:no|separate)$/],
-way[!"footway"]["highway"]["sidewalk:left"=~/^(?:no|separate)$/]["sidewalk:right"=~/^(?:no|separate)$/]
+way[!"footway"]["highway"!="steps"]["highway"]["sidewalk:both"=~/^(?:no|separate)$/],
+way[!"footway"]["highway"!="steps"]["highway"]["sidewalk:left"=~/^(?:no|separate)$/]["sidewalk:right"=~/^(?:no|separate)$/]
 {
   color: #e58139;
   width: 2;
@@ -372,8 +434,8 @@ way[!"footway"]["highway"]["sidewalk:left"=~/^(?:no|separate)$/]["sidewalk:right
 }
 
 /* Roadway: Silver tier */
-way[!"footway"]["highway"]["sidewalk:both"=~/^(?:no|separate)$/],
-way[!"footway"]["highway"]["sidewalk:left"=~/^(?:no|separate)$/]["sidewalk:right"=~/^(?:no|separate)$/]
+way[!"footway"]["highway"!="steps"]["highway"]["sidewalk:both"=~/^(?:no|separate)$/],
+way[!"footway"]["highway"!="steps"]["highway"]["sidewalk:left"=~/^(?:no|separate)$/]["sidewalk:right"=~/^(?:no|separate)$/]
 {
   color: #cccccc;
   width: 2;
@@ -384,8 +446,8 @@ way[!"footway"]["highway"]["sidewalk:left"=~/^(?:no|separate)$/]["sidewalk:right
 }
 
 /* Roadway: Gold tier */
-way[!"footway"]["highway"]["maxspeed"=~/^.*\S.*$/]["sidewalk:both"=~/^(?:no|separate)$/],
-way[!"footway"]["highway"]["maxspeed"=~/^.*\S.*$/]["sidewalk:left"=~/^(?:no|separate)$/]["sidewalk:right"=~/^(?:no|separate)$/]
+way[!"footway"]["highway"!="steps"]["highway"]["maxspeed"=~/^.*\S.*$/]["sidewalk:both"=~/^(?:no|separate)$/],
+way[!"footway"]["highway"!="steps"]["highway"]["maxspeed"=~/^.*\S.*$/]["sidewalk:left"=~/^(?:no|separate)$/]["sidewalk:right"=~/^(?:no|separate)$/]
 {
   color: #e5c839;
   width: 2;
@@ -396,8 +458,8 @@ way[!"footway"]["highway"]["maxspeed"=~/^.*\S.*$/]["sidewalk:left"=~/^(?:no|sepa
 }
 
 /* Roadway: Diamond tier */
-way[!"footway"]["highway"]["maxspeed"=~/^.*\S.*$/]["sidewalk:both"=~/^(?:no|separate)$/],
-way[!"footway"]["highway"]["maxspeed"=~/^.*\S.*$/]["sidewalk:left"=~/^(?:no|separate)$/]["sidewalk:right"=~/^(?:no|separate)$/]
+way[!"footway"]["highway"!="steps"]["highway"]["maxspeed"=~/^.*\S.*$/]["sidewalk:both"=~/^(?:no|separate)$/],
+way[!"footway"]["highway"!="steps"]["highway"]["maxspeed"=~/^.*\S.*$/]["sidewalk:left"=~/^(?:no|separate)$/]["sidewalk:right"=~/^(?:no|separate)$/]
 {
   color: #39c8e5;
   width: 2;
@@ -405,4 +467,37 @@ way[!"footway"]["highway"]["maxspeed"=~/^.*\S.*$/]["sidewalk:left"=~/^(?:no|sepa
   casing-color: #202020;
   casing-width: 1;
   dashes: list(8, 5);
+}
+
+/* Traffic Sign: below Gold tier */
+node["traffic_sign"]
+{
+  symbol-shape: circle;
+  symbol-size: 12;
+  symbol-fill-color: #ff1744;
+  symbol-fill-opacity: 0.95;
+  symbol-stroke-color: #202020;
+  symbol-stroke-width: 1.4;
+}
+
+/* Traffic Sign: Gold tier */
+node["traffic_sign"]["traffic_sign"=~/^.*\S.*$/]
+{
+  symbol-shape: circle;
+  symbol-size: 12;
+  symbol-fill-color: #e5c839;
+  symbol-fill-opacity: 0.95;
+  symbol-stroke-color: #202020;
+  symbol-stroke-width: 1.4;
+}
+
+/* Traffic Sign: Diamond tier */
+node["traffic_sign"]["traffic_sign"=~/^(?!stop|give_way$).*\S.*$/]
+{
+  symbol-shape: circle;
+  symbol-size: 12;
+  symbol-fill-color: #39c8e5;
+  symbol-fill-opacity: 0.95;
+  symbol-stroke-color: #202020;
+  symbol-stroke-width: 1.4;
 }

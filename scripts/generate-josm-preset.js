@@ -6,10 +6,13 @@ const path = require("node:path");
 const {
   DEFAULT_SCHEMA_PATH,
   expandEntryKeys,
+  formatPredicate,
   getActiveValueSpec,
   getFeatureElements,
   loadSchema,
+  schemaLicenseNotice,
 } = require("./pwg-schema");
+const { parseOptions } = require("./parse-options");
 
 const DEFAULT_OUTPUT_PATH = path.resolve(
   __dirname,
@@ -26,19 +29,6 @@ const TIER_ICON_DIRECTORY = path.resolve(
 );
 const tierIconDataUris = new Map();
 
-function parseArgs(argv) {
-  const args = {};
-  for (let index = 0; index < argv.length; index += 1) {
-    const token = argv[index];
-    if (!token.startsWith("--")) {
-      continue;
-    }
-    args[token.slice(2)] = argv[index + 1];
-    index += 1;
-  }
-  return args;
-}
-
 function escapeXml(value) {
   return String(value)
     .replaceAll("&", "&amp;")
@@ -54,54 +44,15 @@ function humanizeKey(key) {
     .replace(/\b\w/g, (letter) => letter.toUpperCase());
 }
 
-function predicateText(predicate) {
-  if (!predicate) {
-    return "";
-  }
-
-  const describeClause = (clause) => {
-    if (clause.allOf) {
-      return clause.allOf.map(describeClause).join(" and ");
-    }
-    if (clause.noneOf) {
-      return clause.noneOf
-        .map((part) => `not (${describeClause(part)})`)
-        .join(" and ");
-    }
-    if (clause.oneOf && !clause.key) {
-      return clause.oneOf.map(describeClause).join(" or ");
-    }
-    if (!clause.key) {
-      return "";
-    }
-    if (clause.value !== undefined) {
-      return `${clause.key}=${clause.value}`;
-    }
-    if (clause.oneOf) {
-      return `${clause.key} is ${clause.oneOf.join(", ")}`;
-    }
-    return `${clause.key} is present`;
-  };
-
-  return [
-    ...(predicate.allOf ?? []).map(describeClause),
-    ...(predicate.oneOf ?? []).map(describeClause),
-    ...(predicate.noneOf ?? []).map(
-      (clause) => `not (${describeClause(clause)})`
-    ),
-  ]
-    .filter(Boolean)
-    .join(" and ");
-}
-
 function conditionalNote(entry) {
-  if (entry.condition) {
-    return `Conditional fields — ${entry.condition}`;
-  }
+  const notes = [];
   if (entry.appliesWhen) {
-    return `Conditional fields — when ${predicateText(entry.appliesWhen)}`;
+    notes.push(`when ${formatPredicate(entry.appliesWhen)}`);
   }
-  return "";
+  if (entry.condition) {
+    notes.push(entry.condition);
+  }
+  return notes.length ? `Conditional fields — ${notes.join("; ")}` : "";
 }
 
 function fieldXmlForKey(schema, key, entry) {
@@ -177,6 +128,10 @@ function entryFieldsXml(schema, entry) {
 }
 
 function identifierApplicabilityText(feature, clause) {
+  if (clause.value !== undefined || clause.oneOf) {
+    return `Applies when ${formatPredicate({ noneOf: [clause] })}`;
+  }
+
   if (feature.name === "Roadway" && clause.key === "footway") {
     return "Applies to roads typically expected to have sidewalks.";
   }
@@ -195,7 +150,11 @@ function identifierXml(feature) {
       lines.push(
         `      <key key="${escapeXml(clause.key)}" value="${escapeXml(clause.value)}" />`
       );
-    } else {
+    } else if (
+      !feature.tags.some(
+        (entry) => entry.key === clause.key && !entry.keyTemplate
+      )
+    ) {
       lines.push(
         `      <text key="${escapeXml(clause.key)}" text="${escapeXml(humanizeKey(clause.key))}" />`
       );
@@ -231,7 +190,8 @@ function josmTypeForFeature(feature) {
 function tierIconDataUri(tier) {
   if (!tierIconDataUris.has(tier)) {
     const iconPath = path.join(TIER_ICON_DIRECTORY, `${tier}.svg`);
-    const icon = fs.readFileSync(iconPath).toString("base64");
+    const source = fs.readFileSync(iconPath, "utf8").replaceAll("\r\n", "\n");
+    const icon = Buffer.from(source, "utf8").toString("base64");
     tierIconDataUris.set(tier, `data:image/svg+xml;base64,${icon}`);
   }
 
@@ -254,6 +214,9 @@ function tierSectionXml(schema, tier) {
 function generatePreset(schema) {
   const lines = [
     '<?xml version="1.0" encoding="UTF-8"?>',
+    "<!--",
+    ...schemaLicenseNotice(schema).map((line) => (line ? `  ${line}` : "")),
+    "-->",
     '<presets xmlns="http://josm.openstreetmap.de/tagging-preset-1.0">',
     `  <!-- Generated from ${escapeXml(schema.sourceDocument)} and schema/${escapeXml(schema.version)}.json by scripts/generate-josm-preset.js. -->`,
     `  <group name="PWG Schema v${escapeXml(schema.version)}">`,
@@ -309,7 +272,9 @@ function generatePreset(schema) {
 }
 
 function main() {
-  const args = parseArgs(process.argv.slice(2));
+  const args = parseOptions(process.argv.slice(2), {
+    valueOptions: ["schema", "output"],
+  });
   const schemaPath = path.resolve(args.schema || DEFAULT_SCHEMA_PATH);
   const outputPath = path.resolve(args.output || DEFAULT_OUTPUT_PATH);
   const schema = loadSchema(schemaPath);

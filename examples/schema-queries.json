@@ -1,6 +1,6 @@
 {
-    "schema": "../schema/1.0.1.json",
-    "description": "Machine-readable examples for the PWG schema query use cases.",
+    "schema": "../schema/1.1.1.json",
+    "description": "Machine-readable examples for the PWG Schema 1.1.1 query use cases.",
     "examples": [
         {
             "name": "tierOf sidewalk mapped to Gold",
@@ -36,6 +36,8 @@
                     "crossing:signed",
                     "width",
                     "button_operated",
+                    "flashing_lights",
+                    "crossing_ref",
                     "traffic_signals:arrow",
                     "traffic_signals:vibration",
                     "traffic_signals:sound",
@@ -113,7 +115,7 @@
         },
         {
             "name": "tierOf unmarked unsignalized crossing way can reach Diamond",
-            "command": "node scripts/query-schema.js tier-of --element way --tags highway=footway,footway=crossing,crossing:markings=no,crossing:signals=no,surface=concrete,crossing:island=no,crossing:signed=no,width=3,button_operated=no,traffic_signals:arrow=no,traffic_signals:vibration=no,traffic_signals:sound=no,traffic_signals:minimap=no,crossing:flags=no,tactile_paving=no",
+            "command": "node scripts/query-schema.js tier-of --element way --tags highway=footway,footway=crossing,crossing:markings=no,crossing:signals=no,surface=concrete,crossing:island=no,crossing:signed=no,width=3,button_operated=no,flashing_lights=no,traffic_signals:arrow=no,traffic_signals:vibration=no,traffic_signals:sound=no,traffic_signals:minimap=no,crossing:flags=no,tactile_paving=no",
             "query": "tierOf",
             "element": "way",
             "tags": {
@@ -126,6 +128,7 @@
                 "crossing:signed": "no",
                 "width": "3",
                 "button_operated": "no",
+                "flashing_lights": "no",
                 "traffic_signals:arrow": "no",
                 "traffic_signals:vibration": "no",
                 "traffic_signals:sound": "no",
@@ -135,12 +138,13 @@
             },
             "expected": {
                 "featureId": "crossing_way",
-                "tier": "diamond"
+                "tier": "diamond",
+                "manualReviewKeys": ["crossing_ref"]
             }
         },
         {
             "name": "gapToTier crossing node Gold passes when unsignalized without signal detail negatives",
-            "command": "node scripts/query-schema.js gap-to-tier --feature crossing_node --tier gold --tags highway=crossing,crossing:markings=no,crossing:signals=no,tactile_paving=no,crossing:island=no,crossing:signed=no",
+            "command": "node scripts/query-schema.js gap-to-tier --feature crossing_node --tier gold --tags highway=crossing,crossing:markings=no,crossing:signals=no,tactile_paving=no,crossing:island=no,crossing:signed=no,flashing_lights=no",
             "query": "gapToTier",
             "featureId": "crossing_node",
             "tier": "gold",
@@ -150,7 +154,8 @@
                 "crossing:signals": "no",
                 "tactile_paving": "no",
                 "crossing:island": "no",
-                "crossing:signed": "no"
+                "crossing:signed": "no",
+                "flashing_lights": "no"
             },
             "expected": {
                 "passes": true
@@ -167,7 +172,8 @@
                 "crossing:signals": "yes",
                 "tactile_paving": "no",
                 "crossing:island": "no",
-                "crossing:signed": "no"
+                "crossing:signed": "no",
+                "flashing_lights": "no"
             },
             "expected": {
                 "passes": false,
@@ -213,6 +219,38 @@
             },
             "expected": {
                 "passes": true
+            }
+        },
+        {
+            "name": "tierOf stairs without ramps or handrails can reach Diamond",
+            "query": "tierOf",
+            "element": "way",
+            "tags": {
+                "highway": "steps",
+                "surface": "concrete",
+                "incline": "up",
+                "step_count": "8",
+                "ramp": "no",
+                "tactile_paving": "no",
+                "handrail": "no",
+                "lit": "yes",
+                "width": "1.5"
+            },
+            "expected": {
+                "featureId": "stairs",
+                "tier": "diamond"
+            }
+        },
+        {
+            "name": "tierOf traffic sign with a specific MUTCD code reaches Diamond",
+            "query": "tierOf",
+            "element": "node",
+            "tags": {
+                "traffic_sign": "US:R1-1"
+            },
+            "expected": {
+                "featureId": "traffic_sign",
+                "tier": "diamond"
             }
         },
         {

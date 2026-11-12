@@ -9,34 +9,7 @@ const {
   tagsForTier,
   tierOf,
 } = require("./pwg-schema");
-
-function parseArgs(argv) {
-  const args = { _: [] };
-  for (let index = 0; index < argv.length; index += 1) {
-    const token = argv[index];
-    if (!token.startsWith("--")) {
-      args._.push(token);
-      continue;
-    }
-
-    const key = token.slice(2);
-    const next = argv[index + 1];
-    if (!next || next.startsWith("--")) {
-      args[key] = true;
-      continue;
-    }
-
-    if (args[key] !== undefined) {
-      args[key] = Array.isArray(args[key])
-        ? [...args[key], next]
-        : [args[key], next];
-    } else {
-      args[key] = next;
-    }
-    index += 1;
-  }
-  return args;
-}
+const { parseOptions } = require("./parse-options");
 
 function printUsage() {
   console.log(`Usage:
@@ -51,7 +24,14 @@ Options:
 }
 
 function main() {
-  const args = parseArgs(process.argv.slice(2));
+  const args = parseOptions(process.argv.slice(2), {
+    valueOptions: ["schema", "tags", "element", "feature", "tier"],
+    booleanOptions: ["help"],
+    allowPositionals: true,
+  });
+  if (args._.length > 1) {
+    throw new Error("query-schema accepts one command");
+  }
   const command = args._[0];
 
   if (!command || args.help) {

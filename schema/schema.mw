@@ -73,7 +73,7 @@ If you have access to high-quality imagery and want to map pedestrian infrastruc
 === Sidewalks ===
 {| class="wikitable sortable" style="width: 100%; margin: auto;"
 ! style="width: 20%;" |Tag
-! Element 
+! Element
 ! style="width: 20%;" |[[File:PWG_-_Bronze.svg|alt=Circular icon containing a pedestrian symbol with a bronze-colored background.|frameless|32x32px]] Bronze
 ! style="width: 20%;" |[[File:PWG_-_Silver.svg|alt=Circular icon containing a pedestrian symbol with a silver-colored background.|frameless|32x32px]] Silver
 ! style="width: 20%;" |[[File:PWG - Gold.svg|alt=Circular icon containing a pedestrian symbol with a gold-colored background.|frameless|32x32px]] Gold
@@ -128,7 +128,7 @@ If you have access to high-quality imagery and want to map pedestrian infrastruc
 === Crossings ===
 {| class="wikitable sortable" style="width: 100%; margin: auto;"
 ! style="width: 20%;" |Tag
-!Element 
+! Element
 ! style="width: 20%;" |[[File:PWG_-_Bronze.svg|alt=Circular icon containing a pedestrian symbol with a bronze-colored background.|frameless|32x32px]] Bronze
 ! style="width: 20%;" |[[File:PWG_-_Silver.svg|alt=Circular icon containing a pedestrian symbol with a silver-colored background.|frameless|32x32px]] Silver
 ! style="width: 20%;" |[[File:PWG - Gold.svg|alt=Circular icon containing a pedestrian symbol with a gold-colored background.|frameless|32x32px]] Gold
@@ -139,7 +139,7 @@ If you have access to high-quality imagery and want to map pedestrian infrastruc
 |-
 | {{Tag|highway|crossing}}
 | {{IconNode}}
-| colspan="4" | Indicates a crossing '''mapped as a node.<br>⛔️ ''NOTE: The {{Tag|footway}} tag is not used on crossings mapped as nodes.''''' 
+| colspan="4" | Indicates a crossing '''mapped as a node.<br>⛔️ ''NOTE: The {{Tag|footway}} tag is not used on crossings mapped as nodes.'''''
 |-
 | {{Tag|crossing:markings}}
 | {{IconWay}}{{IconNode}} || Are ''markings'' present?:
@@ -177,7 +177,7 @@ If you have access to high-quality imagery and want to map pedestrian infrastruc
 | {{Tag|crossing:island|}}
 | {{IconWay}}{{IconNode}}
 |
-| colspan="3" | Indicate presence: {{Value|yes}} or {{Value|no}}
+| colspan="3" | Indicate presence: {{Value|separate}} or {{Value|no}}
 |-
 |{{Tag|crossing:signed}}
 |{{IconWay}}{{IconNode}}
@@ -193,6 +193,25 @@ If you have access to high-quality imagery and want to map pedestrian infrastruc
 | {{IconWay}}{{IconNode}}
 | colspan="2" |
 | colspan="2" | Indicate button operation: {{Value|yes}} or {{Value|no}}
+|-
+|{{Key|flashing_lights}}
+|{{IconWay}}{{IconNode}}
+| colspan="2" |
+|Indicate presence: {{Value|yes}} or {{Value|no}}
+|In the Diamond tier, this tag becomes more specific, ex:
+
+* {{Value|always}} - Lights flash continuously
+* {{Value|button}} - Lights flash only for a period of time after a button is pressed
+* {{Value|sensor}} - Lights flash only when pedestrian/cyclist motion is detected
+* {{Value|button;sensor}} - Lights flash for a period of time after either a button is pressed or pedestrian/cyclist motion is detected
+|-
+|{{Key|crossing_ref}}
+|{{IconWay}}{{IconNode}}
+| colspan="2" |
+| colspan="2" |Is a specific type of standardized crossing present?
+
+* {{Value|hawk}} - HAWK beacon is present
+* {{Value|rrfb}} - RRFB is present
 |-
 | {{Tag|traffic_signals:arrow}}
 | {{IconWay}}{{IconNode}}
@@ -227,14 +246,14 @@ If you have access to high-quality imagery and want to map pedestrian infrastruc
 * {{Value|no}} - Flags are (usually) not present
 |-
 | {{Tag|tactile_paving}}
-| {{IconWay}} 
+| {{IconWay}}
 | colspan="3" |
 | Is ''tactile paving'' present '''along the entire way'''?:
 * {{Value|yes}} - Tactile paving is present '''along the entire way'''<br>⚠️ '''''NOTE''': This is exceedingly rare in the United States. Please review [[Key:tactile paving#Use on ways|this section]] of the {{Tag|tactile_paving}} page if you are unsure.''
 * {{Value|no}} - Tactile paving is not present '''along the entire way'''
 |-
 | {{Tag|tactile_paving|subkey=colour}}
-| {{IconWay}}{{IconNode}} 
+| {{IconWay}}{{IconNode}}
 | colspan="3" |
 | Specify the tactile paving color.
 |}
@@ -242,7 +261,7 @@ If you have access to high-quality imagery and want to map pedestrian infrastruc
 === Curbs ===
 {| class="wikitable sortable" style="width: 100%; margin: auto;"
 ! style="width: 20%;" |Tag
-!Element 
+! Element
 ! style="width: 20%;" |[[File:PWG_-_Bronze.svg|alt=Circular icon containing a pedestrian symbol with a bronze-colored background.|frameless|32x32px]] Bronze
 ! style="width: 20%;" |[[File:PWG_-_Silver.svg|alt=Circular icon containing a pedestrian symbol with a silver-colored background.|frameless|32x32px]] Silver
 ! style="width: 20%;" |[[File:PWG - Gold.svg|alt=Circular icon containing a pedestrian symbol with a gold-colored background.|frameless|32x32px]] Gold
@@ -282,18 +301,20 @@ If you have access to high-quality imagery and want to map pedestrian infrastruc
 === Islands ===
 {| class="wikitable sortable" style="width: 100%; margin: auto;"
 ! style="width: 20%;" |Tag
-! Element 
+! Element
 ! style="width: 20%;" |[[File:PWG_-_Bronze.svg|alt=Circular icon containing a pedestrian symbol with a bronze-colored background.|frameless|32x32px]] Bronze
 ! style="width: 20%;" |[[File:PWG_-_Silver.svg|alt=Circular icon containing a pedestrian symbol with a silver-colored background.|frameless|32x32px]] Silver
 ! style="width: 20%;" |[[File:PWG - Gold.svg|alt=Circular icon containing a pedestrian symbol with a gold-colored background.|frameless|32x32px]] Gold
 ! style="width: 20%;" |[[File:PWG - Diamond.svg|alt=Circular icon containing a pedestrian symbol with a diamond-colored background.|frameless|32x32px]] Diamond
 |-
-| {{Tag|highway|footway}} + {{Tag|footway|traffic_island}}
-| {{IconWay}}
-| colspan="3" | Indicate a traffic island '''mapped as a way'''
+|{{Tag|highway|footway}} + {{Tag|footway|traffic_island}}
+|{{IconWay}}
+|
+| colspan="3" |Indicate a traffic island '''mapped as a way'''
 |-
 | {{Tag|surface}}
 | {{IconWay}}
+| colspan="1" |
 | colspan="3" | Required in the Silver tier. Example values include:
 * {{Value|concrete}}
 * {{Value|asphalt}}
@@ -338,7 +359,7 @@ If you have access to high-quality imagery and want to map pedestrian infrastruc
 === Access Aisles ===
 {| class="wikitable sortable" style="width: 100%; margin: auto;"
 ! style="width: 20%;" |Tag
-! Element 
+! Element
 ! style="width: 20%;" |[[File:PWG_-_Bronze.svg|alt=Circular icon containing a pedestrian symbol with a bronze-colored background.|frameless|32x32px]] Bronze
 ! style="width: 20%;" |[[File:PWG_-_Silver.svg|alt=Circular icon containing a pedestrian symbol with a silver-colored background.|frameless|32x32px]] Silver
 ! style="width: 20%;" |[[File:PWG - Gold.svg|alt=Circular icon containing a pedestrian symbol with a gold-colored background.|frameless|32x32px]] Gold
@@ -402,10 +423,84 @@ If you have access to high-quality imagery and want to map pedestrian infrastruc
 | Specify the tactile paving color.
 |}
 
+=== Stairs ===
+{| class="wikitable sortable" style="width: 100%; margin: auto;"
+! style="width: 20%;" |Tag
+! Element
+! style="width: 20%;" |[[File:PWG_-_Bronze.svg|alt=Circular icon containing a pedestrian symbol with a bronze-colored background.|frameless|32x32px]] Bronze
+! style="width: 20%;" |[[File:PWG_-_Silver.svg|alt=Circular icon containing a pedestrian symbol with a silver-colored background.|frameless|32x32px]] Silver
+! style="width: 20%;" |[[File:PWG - Gold.svg|alt=Circular icon containing a pedestrian symbol with a gold-colored background.|frameless|32x32px]] Gold
+! style="width: 20%;" |[[File:PWG - Diamond.svg|alt=Circular icon containing a pedestrian symbol with a diamond-colored background.|frameless|32x32px]] Diamond
+|-
+|{{Tag|highway|steps}}
+|{{IconWay}}
+| colspan="4" |Indicate the location of stairs '''as a way'''
+|-
+|{{Tag|surface}}
+|{{IconWay}}
+|
+| colspan="3" |Specify the surface material of the steps. Example values include:
+
+* {{Value|concrete}}
+* {{Value|asphalt}}
+|-
+|{{Tag|incline}}
+|{{IconWay}}
+|
+| colspan="3" |Incline '''along the way''', specified as: {{Value|up}} or {{Value|down}}
+|-
+|{{Tag|step_count}}
+|{{IconWay}}
+| colspan="2" |
+| colspan="2" |Indicate the number of steps
+|-
+|{{Tag|ramp}}
+|{{IconWay}}
+|
+|Indicate ramp presence as {{Value|yes}} or {{Value|no}}
+| colspan="2" |Indicate if a ramp has been separately mapped as {{Value|separate}}
+|-
+|{{Tag|tactile_paving}}
+|{{IconWay}}
+| colspan="2" |
+| colspan="2" |Is ''tactile paving'' present?:
+* {{Value|yes}} - Tactile paving is present '''at the top and bottom of the staircase'''
+* {{Value|no}} - Tactile paving is not present '''at the top and bottom of the staircase'''
+|-
+|{{Tag|tactile_paving:colour}}
+|{{IconWay}}
+| colspan="3" |
+|Specify the tactile paving color.
+|-
+|{{Tag|handrail}}
+|{{IconWay}}
+|
+| colspan="3" |Indicate any handrail presence
+|-
+|{{Tag|handrail||subkey={{Tagvariable|(left{{!}}right{{!}}both)}}}}
+|{{IconWay}}
+| colspan="3" |
+|Indicate specific handrail location presence
+|-
+|{{Tag|lit}}
+|{{IconWay}}
+| colspan="2" |
+| colspan="2" |Indicate whether the way is lit. Example values include:
+
+* {{Value|yes}}, or
+* {{Value|no}}, or
+* any other valid value
+|-
+|{{Tag|width}}
+|{{IconWay}}
+| colspan="2" |
+| colspan="2" |Specify the width of the stairs
+|}
+
 === Roadways ===
 {| class="wikitable sortable" style="width: 100%; margin: auto;"
 ! style="width: 20%;" |Tag
-!Element 
+! Element
 ! style="width: 20%;" |[[File:PWG_-_Bronze.svg|alt=Circular icon containing a pedestrian symbol with a bronze-colored background.|frameless|32x32px]] Bronze
 ! style="width: 20%;" |[[File:PWG_-_Silver.svg|alt=Circular icon containing a pedestrian symbol with a silver-colored background.|frameless|32x32px]] Silver
 ! style="width: 20%;" |[[File:PWG - Gold.svg|alt=Circular icon containing a pedestrian symbol with a gold-colored background.|frameless|32x32px]] Gold
@@ -414,7 +509,7 @@ If you have access to high-quality imagery and want to map pedestrian infrastruc
 |{{Tag|highway|}}
 |{{IconWay}}|| colspan="4" |Indicate a roadway location
 |-
-|{{Tag|sidewalk||subkey={{Tagvariable|(left{{!}}right{{!}}both)}}}} 
+|{{Tag|sidewalk||subkey={{Tagvariable|(left{{!}}right{{!}}both)}}}}
 |{{IconWay}}
 | colspan="4" |To support consistency and clarity in pedestrian infrastructure data, the PWG recommends avoiding new use of the older {{Tag|sidewalk|}} key.
 Instead, because we start with separately mapped sidewalks at the [[File:PWG_-_Bronze.svg|frameless|16x16px]] Bronze Tier, we use the newer approach, {{Tag|sidewalk|no{{!}}separate|subkey={{Tagvariable|(left{{!}}right{{!}}both)}}}}, to indicate the presence and relative position of sidewalks along a street:
@@ -426,6 +521,34 @@ Instead, because we start with separately mapped sidewalks at the [[File:PWG_-_B
 |{{IconWay}}
 | colspan="2" |
 | colspan="2" |Indicate the highway speed limit
+|}
+
+=== Traffic Signs ===
+{| class="wikitable sortable" style="width: 100%; margin: auto;"
+! style="width: 20%;" |Tag
+! Element
+! style="width: 20%;" |[[File:PWG_-_Bronze.svg|alt=Circular icon containing a pedestrian symbol with a bronze-colored background.|frameless|32x32px]] Bronze
+! style="width: 20%;" |[[File:PWG_-_Silver.svg|alt=Circular icon containing a pedestrian symbol with a silver-colored background.|frameless|32x32px]] Silver
+! style="width: 20%;" |[[File:PWG - Gold.svg|alt=Circular icon containing a pedestrian symbol with a gold-colored background.|frameless|32x32px]] Gold
+! style="width: 20%;" |[[File:PWG - Diamond.svg|alt=Circular icon containing a pedestrian symbol with a diamond-colored background.|frameless|32x32px]] Diamond
+|-
+|{{Tag|traffic_sign|}}
+|{{IconNode}}|| colspan="2" |
+|Node at the physical location of a traffic sign.
+Sign type values:
+
+* {{Value|stop}} - a stop sign
+* {{Value|give_way}} - a yield sign
+|Specific [[MUTCD]] codes:
+
+* {{Value|US:R1-1}}
+* {{Value|US:S1-1}}
+* {{Value|US:W11-2}}
+* {{Value|US:W11-15}}
+* {{Value|US:W16-2P}}
+* {{Value|US:W16-7P}}
+* {{Value|US:W16-9P}}
+* any other valid value
 |}
 
 {{PWG Releases Table}}
