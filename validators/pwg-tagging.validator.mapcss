@@ -1,4 +1,8 @@
 /*
+ * SPDX-FileCopyrightText: OpenStreetMap US Pedestrian Working Group contributors
+ * SPDX-License-Identifier: CC0-1.0
+ * Dedicated to the public domain under CC0 1.0: https://creativecommons.org/publicdomain/zero/1.0/
+ *
  * PWG-specific JOSM validator checks not normally supplied by JOSM presets.
  * These rules check contradictory, deprecated, or context-dependent tags.
  */

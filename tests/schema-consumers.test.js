@@ -4,6 +4,7 @@ const assert = require("node:assert/strict");
 const { test } = require("node:test");
 const {
   DEFAULT_SCHEMA_PATH,
+  gapToTier,
   getTierIndex,
   loadSchema,
   tierOf,
@@ -26,8 +27,9 @@ const crossingTags = (overrides = {}) => ({
   "crossing:markings": "zebra",
   "crossing:signals": "no",
   surface: "asphalt",
-  "crossing:island": "yes",
+  "crossing:island": "separate",
   "crossing:signed": "yes",
+  flashing_lights: "no",
   width: "3 m",
   ...overrides,
 });
@@ -39,6 +41,19 @@ const sidewalkTags = (overrides = {}) => ({
   lit: "yes",
   width: "1.5 m",
   incline: "up",
+  ...overrides,
+});
+
+const stairsTags = (overrides = {}) => ({
+  highway: "steps",
+  surface: "concrete",
+  incline: "up",
+  step_count: "8",
+  ramp: "no",
+  tactile_paving: "no",
+  handrail: "yes",
+  lit: "yes",
+  width: "1.5 m",
   ...overrides,
 });
 
@@ -181,6 +196,106 @@ const fixtures = [
     tags: { "area:highway": "footway" },
     tier: "diamond",
   },
+  {
+    name: "stairs enter at Bronze without also being roadways",
+    featureId: "stairs",
+    element: "way",
+    tags: { highway: "steps" },
+    tier: "bronze",
+  },
+  {
+    name: "stairs with an unseparated ramp remain Silver",
+    featureId: "stairs",
+    element: "way",
+    tags: stairsTags({ ramp: "yes" }),
+    tier: "silver",
+  },
+  {
+    name: "stairs need numeric step counts at Gold",
+    featureId: "stairs",
+    element: "way",
+    tags: stairsTags({ step_count: "eight" }),
+    tier: "silver",
+  },
+  {
+    name: "stairs with handrails need locations for Diamond",
+    featureId: "stairs",
+    element: "way",
+    tags: stairsTags({ ramp: "separate" }),
+    tier: "gold",
+  },
+  {
+    name: "one handrail side alone is incomplete",
+    featureId: "stairs",
+    element: "way",
+    tags: stairsTags({ "handrail:left": "yes" }),
+    tier: "gold",
+  },
+  {
+    name: "stairs accept a complete paired handrail location",
+    featureId: "stairs",
+    element: "way",
+    tags: stairsTags({
+      ramp: "separate",
+      "handrail:left": "yes",
+      "handrail:right": "no",
+    }),
+    tier: "diamond",
+  },
+  {
+    name: "stairs accept handrail:both",
+    featureId: "stairs",
+    element: "way",
+    tags: stairsTags({ "handrail:both": "yes" }),
+    tier: "diamond",
+  },
+  {
+    name: "stairs without ramps or handrails can reach Diamond",
+    featureId: "stairs",
+    element: "way",
+    tags: stairsTags({ handrail: "no" }),
+    tier: "diamond",
+  },
+  {
+    name: "stair tactile paving needs its color at Diamond",
+    featureId: "stairs",
+    element: "way",
+    tags: stairsTags({ handrail: "no", tactile_paving: "yes" }),
+    tier: "gold",
+  },
+  {
+    name: "stair tactile paving with a color satisfies Diamond",
+    featureId: "stairs",
+    element: "way",
+    tags: stairsTags({
+      handrail: "no",
+      tactile_paving: "yes",
+      "tactile_paving:colour": "yellow",
+    }),
+    tier: "diamond",
+  },
+  ...["stop", "give_way", "US:R1-1", "US:R1-2", ""].map((value) => ({
+    name: `traffic sign value ${JSON.stringify(value)} has the correct tier`,
+    featureId: "traffic_sign",
+    element: "node",
+    tags: { traffic_sign: value },
+    tier: !value
+      ? null
+      : ["stop", "give_way"].includes(value)
+        ? "gold"
+        : "diamond",
+  })),
+  ...["yes", "no", "button;sensor"].map((value) => ({
+    name: `crossing flashing lights ${value} use the tier-active specificity`,
+    featureId: "crossing_way",
+    element: "way",
+    tags: crossingTags({
+      flashing_lights: value,
+      "crossing:flags": "no",
+      tactile_paving: "no",
+    }),
+    tier: value === "yes" ? "gold" : "diamond",
+  })),
 ];
 
 function matchesCondition(part, tags) {
@@ -450,6 +565,83 @@ test("readiness views use the same requirements and omit later-introduced featur
       );
     }
   }
+});
+
+test("1.1.1 crossing rules apply to both ways and nodes", () => {
+  for (const [featureId, tags] of [
+    ["crossing_way", crossingTags()],
+    [
+      "crossing_node",
+      {
+        highway: "crossing",
+        "crossing:markings": "no",
+        "crossing:signals": "no",
+        "crossing:island": "separate",
+        "crossing:signed": "no",
+        tactile_paving: "no",
+        flashing_lights: "no",
+      },
+    ],
+  ]) {
+    const gold = gapToTier(schema, featureId, "gold", tags);
+    assert.equal(gold.passes, true, featureId);
+    assert.deepEqual(
+      gold.manualReviews.map((review) => review.key),
+      ["crossing_ref"],
+      featureId
+    );
+    for (const value of ["separate", "no", "yes"]) {
+      const silver = gapToTier(schema, featureId, "silver", {
+        ...tags,
+        "crossing:island": value,
+      });
+      assert.equal(silver.passes, value !== "yes", `${featureId}: ${value}`);
+    }
+    const withoutLights = { ...tags };
+    delete withoutLights.flashing_lights;
+    const missing = gapToTier(schema, featureId, "gold", withoutLights);
+    assert.deepEqual(
+      missing.blockers.map((blocker) => blocker.key),
+      ["flashing_lights"],
+      featureId
+    );
+  }
+});
+
+test("new feature identifiers and generated queries respect feature types", () => {
+  assert.deepEqual(
+    tierOf(schema, "way", { highway: "steps" }).map((match) => match.featureId),
+    ["stairs"]
+  );
+  assert.deepEqual(tierOf(schema, "node", { highway: "steps" }), []);
+  assert.deepEqual(tierOf(schema, "way", { traffic_sign: "stop" }), []);
+  const roadwayGap = gapToTier(schema, "roadway", "bronze", {
+    highway: "steps",
+    "sidewalk:both": "no",
+  });
+  assert.equal(
+    roadwayGap.blockers[0].issues[0].expected,
+    "not (highway=steps)"
+  );
+
+  const ultra = generateUltra(schema);
+  assert.ok(ultra.includes("  way[highway=steps];"));
+  assert.ok(ultra.includes("  node[traffic_sign];"));
+  const silver = generateUltra(schema, {
+    mode: "readiness",
+    targetTier: "silver",
+  });
+  assert.ok(silver.includes("  way[highway=steps];"));
+  assert.ok(!silver.includes("  node[traffic_sign];"));
+  const gold = generateUltra(schema, {
+    mode: "readiness",
+    targetTier: "gold",
+  });
+  assert.ok(gold.includes("  node[traffic_sign];"));
+  assert.match(
+    generateMapCss(schema),
+    /\/\* Traffic Sign: Gold tier \*\/\nnode[^\n]+\n\{\n  symbol-shape: circle;/
+  );
 });
 
 test("compound predicates and manual-review conditionals agree across consumers", () => {

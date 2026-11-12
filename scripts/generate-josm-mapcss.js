@@ -9,6 +9,7 @@ const {
   expandEntryKeys,
   getActiveValueSpec,
   loadSchema,
+  schemaLicenseNotice,
 } = require("./pwg-schema");
 const { parseOptions } = require("./parse-options");
 
@@ -36,6 +37,7 @@ const FEATURE_STYLES = {
   access_aisle: { width: 4, dashes: "list(3, 6)" },
   footway_area: { area: true },
   roadway: { width: 2, dashes: "list(8, 5)" },
+  traffic_sign: { symbol: true },
 };
 
 function quote(value) {
@@ -443,6 +445,8 @@ function rulesForDnf(selectors, dnf, declarationLines) {
 function generateMapCss(schema) {
   const lines = [
     "/*",
+    ...schemaLicenseNotice(schema).map((line) => (line ? ` * ${line}` : " *")),
+    " *",
     ` * Generated from ${schema.sourceDocument} and schema/${schema.version}.json by scripts/generate-josm-mapcss.js.`,
     " * Colors show the highest automatically satisfied PWG tier; red needs review.",
     " * Conditional requirements with real-world conditions remain manual review.",

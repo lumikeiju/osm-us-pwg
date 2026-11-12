@@ -26,3 +26,10 @@ jobs:
           node-version: ${{ matrix.node-version }}
       - name: Run test suite
         run: node --test
+
+  reuse:
+    name: REUSE licensing check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: fsfe/reuse-action@v6

@@ -10,6 +10,7 @@ const {
   getActiveValueSpec,
   getFeatureElements,
   loadSchema,
+  schemaLicenseNotice,
 } = require("./pwg-schema");
 const { parseOptions } = require("./parse-options");
 
@@ -127,6 +128,10 @@ function entryFieldsXml(schema, entry) {
 }
 
 function identifierApplicabilityText(feature, clause) {
+  if (clause.value !== undefined || clause.oneOf) {
+    return `Applies when ${formatPredicate({ noneOf: [clause] })}`;
+  }
+
   if (feature.name === "Roadway" && clause.key === "footway") {
     return "Applies to roads typically expected to have sidewalks.";
   }
@@ -145,7 +150,11 @@ function identifierXml(feature) {
       lines.push(
         `      <key key="${escapeXml(clause.key)}" value="${escapeXml(clause.value)}" />`
       );
-    } else {
+    } else if (
+      !feature.tags.some(
+        (entry) => entry.key === clause.key && !entry.keyTemplate
+      )
+    ) {
       lines.push(
         `      <text key="${escapeXml(clause.key)}" text="${escapeXml(humanizeKey(clause.key))}" />`
       );
@@ -205,6 +214,9 @@ function tierSectionXml(schema, tier) {
 function generatePreset(schema) {
   const lines = [
     '<?xml version="1.0" encoding="UTF-8"?>',
+    "<!--",
+    ...schemaLicenseNotice(schema).map((line) => (line ? `  ${line}` : "")),
+    "-->",
     '<presets xmlns="http://josm.openstreetmap.de/tagging-preset-1.0">',
     `  <!-- Generated from ${escapeXml(schema.sourceDocument)} and schema/${escapeXml(schema.version)}.json by scripts/generate-josm-preset.js. -->`,
     `  <group name="PWG Schema v${escapeXml(schema.version)}">`,

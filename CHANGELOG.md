@@ -6,34 +6,48 @@ All notable changes to this `osm-us-pwg` repository are documented here, using t
 
 Release headings below refer to the **repository version**. Individual components, including the **PWG Schema** and **PWG Guide**, have independent versions and release cycles; their versions are named explicitly in entries that concern them. See [Versioning](README.md#versioning) for the distinction.
 
-## v1.1.0 (2026-10-31)
+## v1.2.0 (2026-11-11)
 
 ### Added
 
-- Archive copy of PWG Schema v1.1.1
-- Archive copy of PWG Schema v1.1.0
+- Archive copies of PWG Schema v1.1.0 and v1.1.1.
+- Machine-readable PWG Schema 1.1.1, adding stairs and traffic signs and updating crossing-tag rules.
 - Schema-generated JOSM MapCSS PaintStyle that colors PWG features by their highest automatically satisfied tier.
 - JOSM validator checks for typos and conflicts.
 - Single-command regeneration of all schema-generated assets, with validation.
 - Cross-platform CI coverage on supported Node.js LTS releases.
 - Cross-consumer agreement and schema/CLI validation tests.
+- Per-file licensing information following the [REUSE](https://reuse.software/) specification, checked in CI, with attribution and license notices at the top of files that JOSM and Ultra load by URL.
 
 ### Changed
 
-- Updated PWG Releases Table template and doc mirror
+- Made Schema 1.1.1 the default for queries, validation, and asset generation while retaining the 1.0.1 snapshot.
+- Updated the generated JOSM preset, PaintStyle, and Ultra views for Schema 1.1.1 features and requirements.
+- Updated PWG Releases Table template and doc mirror.
 - Made generated length-unit checks case-insensitive to match the schema query helper, and made command-line parsing reject unknown, duplicate, or incomplete options.
 - Strengthened schema structure, predicate, tier, and templated-key validation.
-- Run the complete discovered Node.js test suite in local documentation and CI instructions.
+- Documented running the complete discovered Node.js test suite locally and in CI.
 - Removed generated schema documentation and its generator.
 - Clarified independent repository and product versioning, and documented the Schema and Guide latest aliases.
+- Reorganized the README as a user-focused front page, with one-click Ultra links, JOSM setup steps, a tier color legend, and developer material last.
+- Licensed repository material by type instead of under a single license: scripts, tests, example queries, and repository configuration are now MIT; tag maps and the new JOSM validator checks are CC0 1.0; tier icons remain CC0 1.0. The PWG Schema, PWG Guide, wiki copies, schema-generated assets, and documentation remain CC BY-SA 2.0. See [License](README.md#license).
 
 ### Fixed
 
 - Made embedded preset icon encoding independent of Windows/Linux checkout line endings.
 - Retained every supported length unit, including miles, in the generated PaintStyle.
 - Aligned compound predicate and manual-review handling across schema consumers, and made preset labels preserve predicate grouping.
+- Corrected JOSM preset identifier handling for valued exclusions and tags that are both identifiers and fields.
+- Included stairs and tier-appropriate traffic signs in generated Ultra queries.
 - Rejected missing tier-active value rules and unresolved template placeholders before asset regeneration, while retaining valid nearest-earlier tier-specific rules.
 - Rejected malformed semantic-version metadata.
+
+## v1.1.0 (2026-10-31)
+
+### Added
+
+- Schema-generated JOSM MapCSS PaintStyle that colors PWG features by their highest automatically satisfied tier.
+- JOSM validator checks for typos and conflicts.
 
 ## v1.0.0 (2026-07-20)
 

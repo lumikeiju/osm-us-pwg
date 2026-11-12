@@ -11,6 +11,7 @@ const {
   getFeatureElements,
   getTierIndex,
   loadSchema,
+  schemaLicenseNotice,
 } = require("./pwg-schema");
 const { parseOptions } = require("./parse-options");
 
@@ -566,7 +567,14 @@ function circleShineLayer(schema, mode, featureId, feature) {
   ];
 }
 
-function overpassQuery() {
+function overpassQuery(schema, mode, targetTier) {
+  const trafficSign = schema.features.traffic_sign;
+  const includeTrafficSigns =
+    trafficSign &&
+    (mode !== "readiness" ||
+      getTierIndex(schema, trafficSign.identifier.minTier) <=
+        getTierIndex(schema, targetTier));
+
   return [
     "[bbox:{{bbox}}];",
     "(",
@@ -576,6 +584,8 @@ function overpassQuery() {
     "  node[highway=crossing];",
     "  node[barrier=kerb];",
     "  way[highway][!footway];",
+    ...(schema.features.stairs ? ["  way[highway=steps];"] : []),
+    ...(includeTrafficSigns ? ["  node[traffic_sign];"] : []),
     ");",
     "out geom;",
   ];
@@ -625,6 +635,7 @@ function generateUltra(schema, options = {}) {
 
   const lines = [
     "---",
+    ...schemaLicenseNotice(schema).map((line) => (line ? `# ${line}` : "#")),
     `title: ${viewTitle(schema, mode, targetTier)}`,
     `description: ${viewDescription(schema, mode, targetTier)}`,
     "style:",
@@ -648,7 +659,7 @@ function generateUltra(schema, options = {}) {
     }
   }
 
-  lines.push("---", ...overpassQuery(), "");
+  lines.push("---", ...overpassQuery(schema, mode, targetTier), "");
   return lines.join("\n");
 }
 

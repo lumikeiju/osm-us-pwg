@@ -3,7 +3,7 @@
 const fs = require("node:fs");
 const path = require("node:path");
 
-const CURRENT_SCHEMA_VERSION = "1.0.1";
+const CURRENT_SCHEMA_VERSION = "1.1.1";
 const DEFAULT_SCHEMA_PATH = path.resolve(
   __dirname,
   "..",
@@ -12,9 +12,29 @@ const DEFAULT_SCHEMA_PATH = path.resolve(
 );
 const SCHEMA_VERSION_PATTERN =
   /^(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)(?:-(?:0|[1-9]\d*|\d*[A-Za-z-][0-9A-Za-z-]*)(?:\.(?:0|[1-9]\d*|\d*[A-Za-z-][0-9A-Za-z-]*))*)?(?:\+[0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*)?$(?![\s\S])/;
+const SCHEMA_AUTHORS =
+  "OpenStreetMap US Pedestrian Working Group and OpenStreetMap Wiki contributors";
+const SCHEMA_WIKI_URL =
+  "https://wiki.openstreetmap.org/wiki/Foundation/Local_Chapters/United_States/Pedestrian_Working_Group/Schema";
+const SCHEMA_LICENSE_URL = "https://creativecommons.org/licenses/by-sa/2.0/";
 
 function isSchemaVersion(value) {
   return typeof value === "string" && SCHEMA_VERSION_PATTERN.test(value);
+}
+
+// Generated assets adapt CC BY-SA 2.0 schema text and are fetched by raw URL,
+// so each one must carry its own attribution and license notice.
+function schemaLicenseNotice(schema) {
+  // REUSE-IgnoreStart
+  return [
+    `SPDX-FileCopyrightText: ${SCHEMA_AUTHORS}`,
+    "SPDX-License-Identifier: CC-BY-SA-2.0",
+    "",
+    `Adapted from PWG Schema v${schema.version} by the ${SCHEMA_AUTHORS}:`,
+    SCHEMA_WIKI_URL,
+    `Licensed under CC BY-SA 2.0: ${SCHEMA_LICENSE_URL}`,
+  ];
+  // REUSE-IgnoreEnd
 }
 
 function loadSchema(schemaPath = DEFAULT_SCHEMA_PATH) {
@@ -415,7 +435,10 @@ function identifierIssues(identifier, tags) {
       key: clause.key,
       issue: "forbidden-identifier-tag",
       actual: tagValue(tags, clause.key),
-      expected: "not present",
+      expected:
+        clause.value !== undefined || clause.oneOf
+          ? formatPredicate({ noneOf: [clause] })
+          : "not present",
     });
   }
 
@@ -594,6 +617,7 @@ module.exports = {
   CURRENT_SCHEMA_VERSION,
   DEFAULT_SCHEMA_PATH,
   isSchemaVersion,
+  schemaLicenseNotice,
   loadSchema,
   getTierOrder,
   getTierIndex,

@@ -116,6 +116,28 @@ test("generates every checked-in asset without recreating schema documentation",
   }
 });
 
+// REUSE-IgnoreStart
+test("schema-generated assets begin with their CC BY-SA 2.0 attribution notice", () => {
+  for (const file of EXPECTED_OUTPUTS) {
+    const header = normalizedContents(path.join(REPO_ROOT, file))
+      .split("\n")
+      .slice(0, 10)
+      .join("\n");
+    assert.match(header, /SPDX-License-Identifier: CC-BY-SA-2\.0$/m, file);
+    assert.match(
+      header,
+      /Adapted from PWG Schema v\S+ by the OpenStreetMap US Pedestrian Working Group and OpenStreetMap Wiki contributors/,
+      file
+    );
+    assert.match(
+      header,
+      /https:\/\/creativecommons\.org\/licenses\/by-sa\/2\.0\//,
+      file
+    );
+  }
+});
+// REUSE-IgnoreEnd
+
 test("preset icon encoding is independent of checkout line endings", (t) => {
   const root = createWorkspace(t);
   const icons = path.join(root, "resources", "icons", "tiers");
@@ -133,6 +155,25 @@ test("preset icon encoding is independent of checkout line endings", (t) => {
       `Preset differs with ${JSON.stringify(newline)} SVG newlines`
     );
   }
+});
+
+test("preset handles tiered identifier fields and valued exclusions", (t) => {
+  const root = createWorkspace(t);
+  const result = runScript(root, "generate-josm-preset.js");
+  assert.equal(result.status, 0, result.stderr);
+  const preset = normalizedContents(
+    path.join(root, "presets", "pwg_schema.xml")
+  );
+  const sign = preset.match(/<item name="[^"]*Traffic Sign"[\s\S]*?<\/item>/);
+  assert.ok(sign, "Missing traffic sign preset");
+  assert.equal(
+    [...sign[0].matchAll(/<(?:text|combo|check|key)\b[^>]*key="traffic_sign"/g)]
+      .length,
+    1
+  );
+  assert.match(sign[0], /<combo key="traffic_sign"/);
+  assert.ok(preset.includes("Applies when not (highway=steps)"));
+  assert.ok(!preset.includes("Applies when highway is not present"));
 });
 
 test("stops before generating anything when validation fails", (t) => {
