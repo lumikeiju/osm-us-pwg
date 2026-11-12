@@ -25,6 +25,17 @@ SPDX-FileCopyrightText = "OpenStreetMap US Pedestrian Working Group contributors
 SPDX-License-Identifier = "CC0-1.0"
 
 [[annotations]]
+path = ["resources/images/hero-*.png"]
+precedence = "override"
+SPDX-FileCopyrightText = [
+  "OpenStreetMap US Pedestrian Working Group and OpenStreetMap Wiki contributors",
+  "Map data © OpenStreetMap contributors (ODbL Produced Work)",
+  "Basemap © Protomaps, © OpenStreetMap contributors",
+  "Ultra interface © 2022 Daniel Schep (MIT)",
+]
+SPDX-License-Identifier = "CC-BY-SA-2.0"
+
+[[annotations]]
 path = [
   "scripts/**",
   "tests/**",
