@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   viewBox="0 0 16 16"
+   version="1.1"
+   id="svg2139"
+   sodipodi:docname="roadway.svg"
+   width="16"
+   height="16"
+   inkscape:version="1.2.2 (b0a8486541, 2022-12-01)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs2143" />
+  <sodipodi:namedview
+     id="namedview2141"
+     pagecolor="#505050"
+     bordercolor="#eeeeee"
+     borderopacity="1"
+     inkscape:showpageshadow="false"
+     inkscape:pageopacity="0"
+     inkscape:pagecheckerboard="true"
+     inkscape:deskcolor="#505050"
+     showgrid="true"
+     inkscape:zoom="22.627417"
+     inkscape:cx="2.8284271"
+     inkscape:cy="11.534679"
+     inkscape:window-width="1920"
+     inkscape:window-height="1016"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg2139">
+    <inkscape:grid
+       type="xygrid"
+       id="grid234"
+       empspacing="8" />
+  </sodipodi:namedview>
+  <rect
+     style="fill:#ffffff;stroke:#000000;stroke-width:2;stroke-linecap:round;stroke-miterlimit:5.5;stroke-dasharray:none;paint-order:stroke fill markers;stop-color:#000000"
+     id="rect2314"
+     width="14"
+     height="14"
+     x="1"
+     y="1" />
+  <path
+     d="M 3.0000001,14 H 13 V 2.0000001 H 3.0000001 Z"
+     id="path2137"
+     style="stroke-width:0.653568"
+     sodipodi:nodetypes="ccccc" />
+  <rect
+     style="fill:#ffffff;stroke:none;stroke-width:1.82574;stroke-miterlimit:5.5;stroke-dasharray:none;paint-order:stroke fill markers;stop-color:#000000"
+     id="rect2444"
+     width="1"
+     height="2.5"
+     x="7.5"
+     y="10.5" />
+  <rect
+     style="fill:#ffffff;stroke:none;stroke-width:1.82574;stroke-miterlimit:5.5;stroke-dasharray:none;paint-order:stroke fill markers;stop-color:#000000"
+     id="rect2446"
+     width="1"
+     height="2.5"
+     x="7.5"
+     y="3" />
+  <rect
+     style="fill:#ffffff;stroke:none;stroke-width:1.82574;stroke-miterlimit:5.5;stroke-dasharray:none;paint-order:stroke fill markers;stop-color:#000000"
+     id="rect2448"
+     width="1"
+     height="2.5"
+     x="7.5"
+     y="6.75" />
+</svg>

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   viewBox="0 0 16 16"
+   version="1.1"
+   id="svg4421"
+   sodipodi:docname="traffic_sign.svg"
+   width="16"
+   height="16"
+   inkscape:version="1.2.2 (b0a8486541, 2022-12-01)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs4425" />
+  <sodipodi:namedview
+     id="namedview4423"
+     pagecolor="#505050"
+     bordercolor="#eeeeee"
+     borderopacity="1"
+     inkscape:showpageshadow="false"
+     inkscape:pageopacity="0"
+     inkscape:pagecheckerboard="true"
+     inkscape:deskcolor="#505050"
+     showgrid="true"
+     inkscape:zoom="26.457579"
+     inkscape:cx="2.891421"
+     inkscape:cy="11.187721"
+     inkscape:window-width="1920"
+     inkscape:window-height="1016"
+     inkscape:window-x="1920"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg4421">
+    <inkscape:grid
+       type="xygrid"
+       id="grid234"
+       empspacing="8" />
+  </sodipodi:namedview>
+  <circle
+     style="fill:#ffffff;stroke:#000000;stroke-width:0.796294;stroke-linecap:round;stroke-miterlimit:5.5;stop-color:#000000"
+     id="path4546"
+     cx="8"
+     cy="8"
+     r="7.6018529" />
+  <path
+     d="M 12.86937,3.8441955 H 3.130629 c -0.6301539,0 -1.0884476,0.7447274 -0.7447273,1.3175945 l 4.8693705,8.535721 c 0.1718602,0.286433 0.4582942,0.458294 0.7447276,0.458294 0.2864334,0 0.5728674,-0.171861 0.7447276,-0.458294 L 13.614098,5.16179 C 13.957819,4.5889229 13.499523,3.8441955 12.86937,3.8441955 M 7.9999998,12.723637 3.5889228,4.9899299 H 12.35379 L 7.9999998,12.723637 M 5.0783773,5.8492306 H 10.921623 L 7.9999998,11.005034 Z"
+     id="path4419"
+     style="stroke-width:0.572867" />
+</svg>

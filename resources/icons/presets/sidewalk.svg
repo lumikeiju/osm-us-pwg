@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   viewBox="0 0 16 16"
+   version="1.1"
+   id="svg4"
+   sodipodi:docname="sidewalk.svg"
+   width="16"
+   height="16"
+   inkscape:version="1.2.2 (b0a8486541, 2022-12-01)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs8" />
+  <sodipodi:namedview
+     id="namedview6"
+     pagecolor="#505050"
+     bordercolor="#eeeeee"
+     borderopacity="1"
+     inkscape:showpageshadow="false"
+     inkscape:pageopacity="0"
+     inkscape:pagecheckerboard="true"
+     inkscape:deskcolor="#505050"
+     showgrid="true"
+     inkscape:zoom="29.933333"
+     inkscape:cx="6.5979956"
+     inkscape:cy="8.0846326"
+     inkscape:window-width="1920"
+     inkscape:window-height="1016"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg4"
+     showguides="true">
+    <inkscape:grid
+       type="xygrid"
+       id="grid2056"
+       originx="0"
+       originy="0"
+       empspacing="8" />
+  </sodipodi:namedview>
+  <rect
+     style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-linecap:butt;stroke-miterlimit:5.5;stroke-dasharray:none;stroke-opacity:1;stop-color:#000000;paint-order:stroke fill markers"
+     id="rect919"
+     width="14"
+     height="14"
+     x="1"
+     y="1" />
+  <path
+     d="m 9.4999999,2.83 c 0,0.69 -0.56,1.25 -1.25,1.25 -0.69,0 -1.25,-0.56 -1.25,-1.25 0,-0.69 0.56,-1.2500001 1.25,-1.2500001 0.69,0 1.25,0.5600001 1.25,1.2500001 z m -2.5,1.5 h 0.75 L 12,7.31 V 8 H 11.5 L 8.9999999,6.22 V 8 l 1,1.8300003 L 11,12.120001 C 9.7630019,13.413943 9.4611729,11.346088 8.9999999,10.29 l -2,-2.75 V 5.4 l -1.25,0.99 -1,1.61 H 3.9999994 V 7.54 L 4.7499999,6.16 Z m 0.42,4.7700003 c -0.669748,1.2233157 -0.445558,4.4516407 -2.17,3.0200007 l 1.41,-3.870001 z"
+     id="path2"
+     sodipodi:nodetypes="ssssscccccccccccccccccccccc"
+     inkscape:label="pedestrian" />
+  <path
+     style="color:#000000;fill:#000000;stroke-miterlimit:5.5;-inkscape-stroke:none"
+     d="m 2,13.5 v 1 h 12 v -1 z"
+     id="path2425"
+     sodipodi:nodetypes="ccccc"
+     transform="translate(0,-0.5)"
+     inkscape:label="sidewalk" />
+</svg>
