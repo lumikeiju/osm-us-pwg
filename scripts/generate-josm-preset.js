@@ -29,6 +29,15 @@ const TIER_ICON_DIRECTORY = path.resolve(
 );
 const tierIconDataUris = new Map();
 
+const PRESET_ICON_DIRECTORY = path.resolve(
+  __dirname,
+  "..",
+  "resources",
+  "icons",
+  "presets"
+);
+const presetIconDataUris = new Map();
+
 function escapeXml(value) {
   return String(value)
     .replaceAll("&", "&amp;")
@@ -211,6 +220,13 @@ function tierSectionXml(schema, tier) {
   ];
 }
 
+function presetIcon(feature) {
+  const iconPath = path.join(PRESET_ICON_DIRECTORY, `${feature}.svg`);
+  const icon = fs.readFileSync(iconPath).toString("base64");
+  
+  return `data:image/svg+xml;base64,${icon}`;
+}
+
 function generatePreset(schema) {
   const lines = [
     '<?xml version="1.0" encoding="UTF-8"?>',
@@ -219,13 +235,13 @@ function generatePreset(schema) {
     "-->",
     '<presets xmlns="http://josm.openstreetmap.de/tagging-preset-1.0">',
     `  <!-- Generated from ${escapeXml(schema.sourceDocument)} and schema/${escapeXml(schema.version)}.json by scripts/generate-josm-preset.js. -->`,
-    `  <group name="PWG Schema v${escapeXml(schema.version)}">`,
+    `  <group name="PWG Schema v${escapeXml(schema.version)}" icon="${escapeXml(tierIconDataUri('gold'))}">`,
   ];
 
   let itemNumber = 1;
   for (const [featureId, feature] of Object.entries(schema.features)) {
     lines.push(
-      `    <item name="${String(itemNumber).padStart(2, "0")}. ${escapeXml(feature.name)}" type="${escapeXml(josmTypeForFeature(feature))}">`
+      `    <item name="${String(itemNumber).padStart(2, "0")}. ${escapeXml(feature.name)}" type="${escapeXml(josmTypeForFeature(feature))}" icon="${escapeXml(presetIcon(featureId))}">`
     );
     lines.push(
       `      <label text="${escapeXml(`${feature.name} (${feature.identifier.minTier}+)`)}" />`
