@@ -1,0 +1,42 @@
+---
+# SPDX-FileCopyrightText: OpenStreetMap US Pedestrian Working Group contributors
+# SPDX-License-Identifier: CC0-1.0
+# Dedicated to the public domain under CC0 1.0: https://creativecommons.org/publicdomain/zero/1.0/
+#
+# Styled Overpass QL query for use in Ultra (https://overpass-ultra.us)
+type: overpass
+style:
+  extends: https://styles.trailsta.sh/protomaps-black.json
+  layers:
+    - type: circle
+      filter:
+        - any
+        - [ ==, [ get, 'kerb' ], no ]
+      paint:
+        circle-radius: 2
+        circle-color: "#FBFEF9"
+    - type: circle
+      filter:
+        - any
+        - [ ==, [ get, 'kerb' ], raised ]
+      paint:
+        circle-radius: 4
+        circle-color: "#BF1363"
+    - type: circle
+      filter:
+        - any
+        - [ ==, [ get, 'kerb' ], lowered ]
+      paint:
+        circle-radius: 4
+        circle-color: "#0E79B2"
+    - type: circle
+      filter:
+        - any
+        - [ ==, [ get, 'kerb' ], flush ]
+      paint:
+        circle-radius: 4
+        circle-color: "#F39237"
+---
+[bbox:{{bbox}}];
+node["kerb"];
+out geom;

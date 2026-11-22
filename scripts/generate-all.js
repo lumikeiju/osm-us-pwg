@@ -9,6 +9,7 @@ const steps = [
   ["generate-josm-preset.js"],
   ["generate-josm-mapcss.js"],
   ["generate-ultra-visualization.js"],
+  ["generate-ultra-visualization.js", "--provider", "overpass"],
   [
     "generate-ultra-visualization.js",
     "--mode",

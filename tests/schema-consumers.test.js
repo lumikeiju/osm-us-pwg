@@ -413,6 +413,12 @@ function evaluateMapLibre(expression, tags) {
       return Object.prototype.hasOwnProperty.call(tags, args[0]);
     case "get":
       return tags[args[0]] ?? null;
+    case "to-string":
+      return String(evaluateMapLibre(args[0], tags) ?? "");
+    case "in":
+      return evaluateMapLibre(args[1], tags).includes(
+        evaluateMapLibre(args[0], tags)
+      );
     case "all":
       return args.every((arg) => Boolean(evaluateMapLibre(arg, tags)));
     case "any":
@@ -423,40 +429,6 @@ function evaluateMapLibre(expression, tags) {
       return (
         evaluateMapLibre(args[0], tags) === evaluateMapLibre(args[1], tags)
       );
-    case "!=":
-      return (
-        evaluateMapLibre(args[0], tags) !== evaluateMapLibre(args[1], tags)
-      );
-    case ">":
-      return evaluateMapLibre(args[0], tags) > evaluateMapLibre(args[1], tags);
-    case "-": {
-      const values = args.map((arg) => Number(evaluateMapLibre(arg, tags)));
-      return values.length === 1
-        ? -values[0]
-        : values.slice(1).reduce((total, value) => total - value, values[0]);
-    }
-    case "length":
-      return String(evaluateMapLibre(args[0], tags) ?? "").length;
-    case "to-string":
-      return String(evaluateMapLibre(args[0], tags) ?? "");
-    case "to-number": {
-      for (const arg of args) {
-        const value = evaluateMapLibre(arg, tags);
-        const number = Number(value);
-        if (!Number.isNaN(number)) {
-          return number;
-        }
-      }
-      throw new Error("Could not convert value to number");
-    }
-    case "slice": {
-      const value = String(evaluateMapLibre(args[0], tags) ?? "");
-      const start = evaluateMapLibre(args[1], tags);
-      const end = args.length > 2 ? evaluateMapLibre(args[2], tags) : undefined;
-      return value.slice(start, end);
-    }
-    case "downcase":
-      return String(evaluateMapLibre(args[0], tags) ?? "").toLowerCase();
     case "case":
       for (let index = 0; index < args.length - 1; index += 2) {
         if (evaluateMapLibre(args[index], tags)) {
@@ -469,7 +441,7 @@ function evaluateMapLibre(expression, tags) {
   }
 }
 
-function ultraColor(featureId, ultraStyle, tags, mode = "tier") {
+async function ultraColor(featureId, ultraStyle, tags, mode = "tier") {
   const layerId = `    - id: ${mode}-${featureId}`;
   const lines = ultraStyle.split(/\r?\n/);
   const start = lines.indexOf(layerId);
@@ -483,11 +455,14 @@ function ultraColor(featureId, ultraStyle, tags, mode = "tier") {
   );
   assert.ok(colorLine, `Missing color expression for ${featureId}`);
   const expression = JSON.parse(colorLine.slice(colorLine.indexOf(": ") + 2));
-  return evaluateMapLibre(expression, tags);
+  const transform = await loadUltraTransform(ultraStyle);
+  const properties = lines.includes("type: postpass") ? { tags } : tags;
+  const result = transform({ features: [{ properties }] });
+  return evaluateMapLibre(expression, result.features[0].properties);
 }
 
-function ultraTier(featureId, ultraStyle, tags) {
-  const color = ultraColor(featureId, ultraStyle, tags);
+async function ultraTier(featureId, ultraStyle, tags) {
+  const color = await ultraColor(featureId, ultraStyle, tags);
   return (
     Object.entries(MAPCSS_TIER_COLORS).find(
       ([, tierColor]) => tierColor === color
@@ -508,7 +483,7 @@ function assertMapCssColor(css, feature, tier) {
   assert.ok(ruleGroup.includes(color), `${marker} does not use ${color}`);
 }
 
-test("query, Ultra, and JOSM PaintStyle classify shared schema fixtures consistently", () => {
+test("query, Ultra, and JOSM PaintStyle classify shared schema fixtures consistently", async () => {
   const mapCss = generateMapCss(schema);
   const ultra = generateUltra(schema);
 
@@ -534,7 +509,7 @@ test("query, Ultra, and JOSM PaintStyle classify shared schema fixtures consiste
       `${fixture.name}: serialized JOSM PaintStyle`
     );
     assert.equal(
-      ultraTier(fixture.featureId, ultra, fixture.tags),
+      await ultraTier(fixture.featureId, ultra, fixture.tags),
       fixture.tier,
       `${fixture.name}: Ultra styling`
     );
@@ -542,7 +517,7 @@ test("query, Ultra, and JOSM PaintStyle classify shared schema fixtures consiste
   }
 });
 
-test("readiness views use the same requirements and omit later-introduced features", () => {
+test("readiness views use the same requirements and omit later-introduced features", async () => {
   for (const targetTier of schema.$usage.tierOrder) {
     const ultra = generateUltra(schema, { mode: "readiness", targetTier });
     for (const fixture of fixtures) {
@@ -561,10 +536,41 @@ test("readiness views use the same requirements and omit later-introduced featur
       );
       const ready = result.evaluations[targetTier].passes;
       assert.equal(
-        ultraColor(fixture.featureId, ultra, fixture.tags, "readiness"),
+        await ultraColor(fixture.featureId, ultra, fixture.tags, "readiness"),
         ready ? MAPCSS_TIER_COLORS[targetTier] : BELOW_SCHEMA_COLOR,
         `${fixture.name}: ${targetTier} readiness`
       );
+    }
+  }
+});
+
+test("Ultra value validation agrees with the schema on numeric and whitespace edge cases", async () => {
+  const cases = [
+    ["sidewalk", sidewalkTags({ width: " cm" }), "silver"],
+    ["sidewalk", sidewalkTags({ width: "1e3 m" }), "silver"],
+    ["sidewalk", sidewalkTags({ surface: " " }), "bronze"],
+    [
+      "sidewalk",
+      sidewalkTags({ "incline:across": " %", tactile_paving: "no" }),
+      "gold",
+    ],
+    [
+      "sidewalk",
+      sidewalkTags({ "incline:across": " +8\u00b0 ", tactile_paving: "no" }),
+      "diamond",
+    ],
+    ["stairs", stairsTags({ step_count: "Infinity" }), "silver"],
+    ["stairs", stairsTags({ step_count: "-9007199254740991" }), "gold"],
+  ];
+  for (const provider of ["postpass", "overpass"]) {
+    const ultra = generateUltra(schema, { provider });
+    for (const [featureId, tags, expected] of cases) {
+      const message = `${provider} ${JSON.stringify(tags)}`;
+      const result = tierOf(schema, "way", tags).find(
+        (candidate) => candidate.featureId === featureId
+      );
+      assert.equal(result.tier, expected, message);
+      assert.equal(await ultraTier(featureId, ultra, tags), expected, message);
     }
   }
 });
@@ -629,33 +635,32 @@ test("new feature identifiers and generated queries respect feature types", () =
   const ultra = generateUltra(schema);
   assert.ok(ultra.includes("\ntype: postpass\n"));
   assert.ok(ultra.includes("WHERE geom && ST_MakeEnvelope({{wsen}}, 4326)"));
-  assert.ok(ultra.includes("      OR tags->>'highway' = 'steps'"));
-  assert.ok(ultra.includes("      OR tags ? 'traffic_sign'"));
+  assert.ok(ultra.includes("(osm_type = 'W' AND tags->>'highway' = 'steps')"));
+  assert.ok(ultra.includes("(osm_type = 'N' AND tags ? 'traffic_sign')"));
   assert.ok(!/;\s*$/.test(ultra));
   const silver = generateUltra(schema, {
     mode: "readiness",
     targetTier: "silver",
   });
-  assert.ok(silver.includes("      OR tags->>'highway' = 'steps'"));
+  assert.ok(silver.includes("(osm_type = 'W' AND tags->>'highway' = 'steps')"));
   assert.ok(!silver.includes("traffic_sign'"));
   const gold = generateUltra(schema, {
     mode: "readiness",
     targetTier: "gold",
   });
-  assert.ok(gold.includes("      OR tags ? 'traffic_sign'"));
+  assert.ok(gold.includes("(osm_type = 'N' AND tags ? 'traffic_sign')"));
 
   const overpass = generateUltra(schema, { provider: "overpass" });
-  assert.ok(!overpass.includes("type: postpass"));
-  assert.ok(!overpass.includes("transform:"));
-  assert.ok(overpass.includes("  way[highway=steps];"));
-  assert.ok(overpass.includes("  node[traffic_sign];"));
+  assert.ok(overpass.includes("\ntype: overpass\n"));
+  assert.ok(overpass.includes('  way["highway"="steps"];'));
+  assert.ok(overpass.includes('  node["traffic_sign"];'));
   const overpassSilver = generateUltra(schema, {
     mode: "readiness",
     targetTier: "silver",
     provider: "overpass",
   });
-  assert.ok(overpassSilver.includes("  way[highway=steps];"));
-  assert.ok(!overpassSilver.includes("  node[traffic_sign];"));
+  assert.ok(overpassSilver.includes('  way["highway"="steps"];'));
+  assert.ok(!overpassSilver.includes('  node["traffic_sign"];'));
   assert.throws(
     () => generateUltra(schema, { provider: "qlever" }),
     /Unsupported provider: qlever/
@@ -666,26 +671,103 @@ test("new feature identifiers and generated queries respect feature types", () =
   );
 });
 
-function ultraTransformBlock(ultra) {
+test("both providers select added schema features and exclude them below their minimum tier", () => {
+  const selectedSchema = structuredClone(schema);
+  selectedSchema.features.connector = {
+    name: "Connector",
+    elements: ["way"],
+    identifier: {
+      minTier: "gold",
+      allOf: [
+        { key: "highway", value: "footway" },
+        {
+          oneOf: [
+            { key: "footway", oneOf: ["link", "shortcut"] },
+            { key: "connector" },
+          ],
+        },
+      ],
+      noneOf: [{ allOf: [{ key: "access", value: "no" }, { key: "locked" }] }],
+    },
+    tags: [],
+  };
+  const postpass = generateUltra(selectedSchema).split("\n---\n")[1];
+  assert.ok(
+    postpass.includes(
+      "(osm_type = 'W' AND tags->>'highway' = 'footway' AND tags->>'footway' = 'link' AND tags->>'access' IS DISTINCT FROM 'no')"
+    )
+  );
+  assert.ok(
+    postpass.includes(
+      "(osm_type = 'W' AND tags->>'highway' = 'footway' AND tags ? 'connector' AND NOT (tags ? 'locked'))"
+    )
+  );
+  const overpass = generateUltra(selectedSchema, {
+    provider: "overpass",
+  }).split("\n---\n")[1];
+  assert.ok(
+    overpass.includes(
+      'way["highway"="footway"]["footway"="link"]["access"!="no"];'
+    )
+  );
+  assert.ok(
+    overpass.includes(
+      'way["highway"="footway"]["footway"="shortcut"][!"locked"];'
+    )
+  );
+  assert.ok(
+    overpass.includes('way["highway"="footway"]["connector"][!"locked"];')
+  );
+
+  for (const provider of ["postpass", "overpass"]) {
+    const silver = generateUltra(selectedSchema, {
+      provider,
+      mode: "readiness",
+      targetTier: "silver",
+    });
+    assert.doesNotMatch(silver, /connector|shortcut|area:highway/);
+  }
+});
+
+function ultraBlock(ultra, key) {
   const lines = ultra.replaceAll("\r\n", "\n").split("\n");
-  const start = lines.indexOf("transform: |");
-  assert.notEqual(start, -1, "missing transform block");
+  const start = lines.indexOf(`${key}: |`);
+  assert.notEqual(start, -1, `missing ${key} block`);
   const body = [];
   for (const line of lines.slice(start + 1)) {
-    if (!line.startsWith("  ")) break;
+    if (line && !line.startsWith("  ")) break;
     body.push(line.slice(2));
   }
   return body.join("\n");
 }
 
-test("Postpass Ultra maps flatten nested tags for style filters", async () => {
-  const transform = ultraTransformBlock(generateUltra(schema));
+async function loadUltraTransform(ultra) {
+  const transform = ultraBlock(ultra, "transform");
   // Ultra loads the transform via btoa(), which rejects non-Latin1 text.
   assert.match(transform, /^[\x20-\x7e\n]*$/);
-  const { default: flatten } = await import(
-    `data:text/javascript;base64,${Buffer.from(transform).toString("base64")}`
+  const { default: applyTransform } = await import(
+    `data:text/javascript;base64,${btoa(transform)}`
   );
-  const result = flatten({
+  return applyTransform;
+}
+
+test("Ultra popup templates skip the validation cache in each provider's data", () => {
+  for (const [provider, collection] of [
+    ["postpass", "properties"],
+    ["overpass", "meta"],
+  ]) {
+    const popup = ultraBlock(generateUltra(schema, { provider }), "popupTemplate");
+    const fields = popup.split(`{% for tag in ${collection} %}`)[1]?.split("{% endfor %}")[0];
+    assert.ok(fields, provider);
+    assert.ok(
+      fields.trimStart().startsWith('{% if tag[0] == "@pwg:valid" %}{% continue %}{% endif %}'),
+      provider
+    );
+  }
+});
+
+test("Postpass Ultra transforms preserve tags and metadata for style filters", async () => {
+  const featureCollection = {
     type: "FeatureCollection",
     features: [
       {
@@ -698,24 +780,51 @@ test("Postpass Ultra maps flatten nested tags for style filters", async () => {
         },
       },
     ],
-  });
-  assert.deepEqual(result.features[0].properties, {
+  };
+  const expected = {
     highway: "crossing",
     "crossing:markings": "zebra",
     osm_type: "N",
     osm_id: 1,
-  });
+  };
+  const transform = await loadUltraTransform(generateUltra(schema));
+  const generated = transform(structuredClone(featureCollection));
+  const { "@pwg:valid": validation, ...tagsAndMetadata } =
+    generated.features[0].properties;
+  assert.equal(typeof validation, "string");
+  assert.deepEqual(tagsAndMetadata, expected);
 
   const visualizationsDir = path.resolve(__dirname, "..", "visualizations");
-  for (const file of fs.readdirSync(visualizationsDir)) {
-    if (!file.endsWith(".yaml")) continue;
+  for (const name of ["curb_type", "roadway_sidewalk_tagging", "tactile_paving"]) {
+    const file = `${name}.ultra`;
     const text = fs.readFileSync(path.join(visualizationsDir, file), "utf8");
     assert.match(text, /\r?\ntype: postpass\r?\n/, file);
-    assert.equal(ultraTransformBlock(text), transform, file);
+    const flatten = await loadUltraTransform(text);
+    const result = flatten(structuredClone(featureCollection));
+    assert.deepEqual(result.features[0].properties, expected, file);
   }
 });
 
-test("compound predicates and manual-review conditionals agree across consumers", () => {
+test("handwritten Ultra maps use the same style with Postpass and Overpass", () => {
+  const visualizationsDir = path.resolve(__dirname, "..", "visualizations");
+  const readMap = (file) =>
+    fs.readFileSync(path.join(visualizationsDir, file), "utf8").replaceAll("\r\n", "\n");
+  for (const name of ["curb_type", "roadway_sidewalk_tagging", "tactile_paving"]) {
+    const postpass = readMap(`${name}.ultra`);
+    const overpass = readMap(`${name}_overpass.ultra`);
+    assert.match(overpass, /\ntype: overpass\n/, name);
+    assert.doesNotMatch(overpass, /\ntransform:/, name);
+    const [frontmatter, query] = overpass.split("\n---\n");
+    assert.match(query, /^\[bbox:\{\{bbox\}\}\];\n[\s\S]+\nout geom;\n$/, name);
+    assert.equal(
+      frontmatter.split("\nstyle:\n")[1],
+      postpass.split("\n---\n")[0].split("\nstyle:\n")[1],
+      name
+    );
+  }
+});
+
+test("compound predicates and manual-review conditionals agree across consumers", async () => {
   const selectedSchema = structuredClone(schema);
   const feature = selectedSchema.features.sidewalk;
   const entry = feature.tags.find((tag) => tag.key === "tactile_paving:colour");
@@ -757,7 +866,7 @@ test("compound predicates and manual-review conditionals agree across consumers"
         JSON.stringify(predicate)
       );
       assert.equal(
-        ultraTier("sidewalk", ultra, candidateTags),
+        await ultraTier("sidewalk", ultra, candidateTags),
         expected,
         JSON.stringify(predicate)
       );
@@ -771,7 +880,7 @@ test("compound predicates and manual-review conditionals agree across consumers"
   assert.equal(expected, "diamond");
   assert.equal(mapCssTier(selectedSchema, feature, tags), expected);
   assert.equal(
-    ultraTier("sidewalk", generateUltra(selectedSchema), tags),
+    await ultraTier("sidewalk", generateUltra(selectedSchema), tags),
     expected
   );
 });

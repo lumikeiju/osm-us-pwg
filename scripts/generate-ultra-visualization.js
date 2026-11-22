@@ -12,6 +12,7 @@ const {
   getTierIndex,
   loadSchema,
   schemaLicenseNotice,
+  valueMatchesSpec,
 } = require("./pwg-schema");
 const { parseOptions } = require("./parse-options");
 
@@ -19,19 +20,9 @@ const DEFAULT_MODE = "tier";
 const DEFAULT_READINESS_TIER = "silver";
 const DEFAULT_PROVIDER = "postpass";
 const SUPPORTED_PROVIDERS = new Set(["postpass", "overpass"]);
-// Ultra loads transforms with btoa(), so this must stay ASCII-only.
-const POSTPASS_TAG_TRANSFORM = [
-  "# Postpass returns OSM tags as a nested object; flatten them so style filters can read each tag.",
-  "transform: |",
-  "  export default function (data) {",
-  "    for (const feature of data.features) {",
-  "      const { tags, ...rest } = feature.properties || {};",
-  "      feature.properties = { ...tags, ...rest };",
-  "    }",
-  "    return data;",
-  "  }",
-];
 const VISUALIZATIONS_DIR = path.resolve(__dirname, "..", "visualizations");
+const POSTPASS_TYPES = { node: "N", way: "W", relation: "R" };
+const VALIDATED_VALUES_PROPERTY = "@pwg:valid";
 
 const TIER_COLORS = {
   bronze: "#e58139",
@@ -44,7 +35,6 @@ const READINESS_NOT_READY_COLOR = "#ff1744";
 const BELOW_SCHEMA_COLOR = "#ff1744";
 const READINESS_READY_SIZE_SCALE = 0.5;
 const READINESS_READY_OPACITY = 0.55;
-const INVALID_NUMBER = -9007199254740991;
 
 const TIER_GLOW = {
   gold: {
@@ -188,96 +178,33 @@ function predicateExpression(predicate) {
   ]);
 }
 
-function numericStringExpression(valueExpression) {
-  return ["!=", ["to-number", valueExpression, INVALID_NUMBER], INVALID_NUMBER];
+function keyValueExpression(valueChecks, key, spec) {
+  const check = flow([key, spec]);
+  if (!valueChecks.has(check)) {
+    valueChecks.set(check, valueChecks.size);
+  }
+  return [
+    "in",
+    `,${valueChecks.get(check)},`,
+    ["to-string", ["get", VALIDATED_VALUES_PROPERTY]],
+  ];
 }
 
-function valueWithNumberSuffixExpression(valueExpression, suffix) {
-  const suffixStart = ["-", ["length", valueExpression], suffix.length];
-  return allExpression([
-    [">", ["length", valueExpression], suffix.length],
-    ["==", ["slice", valueExpression, suffixStart], suffix],
-    numericStringExpression(["slice", valueExpression, 0, suffixStart]),
-  ]);
-}
-
-function keyValueExpression(key, spec) {
-  if (!spec) {
-    return ["has", key];
-  }
-
-  const valueExpression = ["to-string", ["get", key]];
-  const nonEmpty = [">", ["length", valueExpression], 0];
-
-  if (spec.type === "enum") {
-    return anyExpression(
-      (spec.values ?? []).map((value) => ["==", ["get", key], String(value)])
-    );
-  }
-
-  if (spec.type === "boolean") {
-    return anyExpression(
-      ["yes", "no"].map((value) => ["==", ["get", key], value])
-    );
-  }
-
-  if (spec.type === "numeric") {
-    return allExpression([nonEmpty, numericStringExpression(valueExpression)]);
-  }
-
-  if (spec.type === "length") {
-    return allExpression([
-      nonEmpty,
-      anyExpression([
-        numericStringExpression(valueExpression),
-        ...["mm", "cm", "km", "in", "ft", "yd", "mi", "m"].map((unit) =>
-          valueWithNumberSuffixExpression(["downcase", valueExpression], unit)
-        ),
-      ]),
-    ]);
-  }
-
-  if (spec.type === "percent") {
-    return allExpression([
-      nonEmpty,
-      valueWithNumberSuffixExpression(valueExpression, "%"),
-    ]);
-  }
-
-  if (spec.type === "incline") {
-    return anyExpression([
-      ["==", valueExpression, "up"],
-      ["==", valueExpression, "down"],
-      valueWithNumberSuffixExpression(valueExpression, "%"),
-      valueWithNumberSuffixExpression(valueExpression, "°"),
-    ]);
-  }
-
-  const checks = [nonEmpty];
-  for (const value of spec.notValues ?? []) {
-    checks.push(["!=", valueExpression, String(value)]);
-  }
-  return allExpression(checks);
-}
-
-function entryExpression(schema, entry, tier) {
+function entryExpression({ schema, valueChecks }, entry, tier) {
   if (entry.requirement === "conditional" && entry.condition) {
     return null;
   }
 
   const spec = getActiveValueSpec(schema, entry, tier);
+  const checkKey = (key) => keyValueExpression(valueChecks, key, spec);
   let expression;
 
   if (entry.keySet?.mode === "oneOf") {
     expression = anyExpression(
-      entry.keySet.sets.map((set) =>
-        allExpression(set.map((key) => keyValueExpression(key, spec)))
-      )
+      entry.keySet.sets.map((set) => allExpression(set.map(checkKey)))
     );
   } else {
-    expression = allExpression(
-      expandEntryKeys(entry).map((key) => keyValueExpression(key, spec))
-    );
+    expression = allExpression(expandEntryKeys(entry).map(checkKey));
   }
 
   if (entry.requirement === "conditional" && entry.appliesWhen) {
@@ -290,12 +217,114 @@ function entryExpression(schema, entry, tier) {
   return expression;
 }
 
-function tierExpression(schema, feature, tier) {
+function tierExpression(rules, feature, tier) {
   const expressions = [predicateExpression(feature.identifier)];
-  for (const entry of entriesForTier(schema, feature, tier)) {
-    expressions.push(entryExpression(schema, entry, tier));
+  for (const entry of entriesForTier(rules.schema, feature, tier)) {
+    expressions.push(entryExpression(rules, entry, tier));
   }
   return allExpression(expressions);
+}
+
+function validateFeatureValues(data, checks, provider, matchesValue, property) {
+  for (const feature of data.features) {
+    let tags = feature.properties ?? {};
+    let properties = { ...tags };
+    if (provider === "postpass") {
+      const { tags: nestedTags, ...metadata } = properties;
+      tags = nestedTags ?? {};
+      properties = { ...tags, ...metadata };
+    }
+
+    // Keep the derived values in one scalar property for MapLibre's GeoJSON tiles.
+    const passed = [];
+    for (const [index, [key, spec]] of checks.entries()) {
+      if (Object.hasOwn(tags, key) && matchesValue(String(tags[key]), spec)) {
+        passed.push(index);
+      }
+    }
+    properties[property] = `,${passed.join(",")},`;
+    feature.properties = properties;
+  }
+  return data;
+}
+
+function valueTransform(valueChecks, provider) {
+  const checks = [...valueChecks.keys()].map((check) => JSON.parse(check));
+  const source = [
+    valueMatchesSpec.toString(),
+    validateFeatureValues.toString(),
+    `const checks = ${flow(checks)};`,
+    "export default function (data) {",
+    `  return validateFeatureValues(data, checks, ${flow(provider)}, valueMatchesSpec, ${flow(VALIDATED_VALUES_PROPERTY)});`,
+    "}",
+  ].join("\n");
+  // Ultra encodes the module with btoa(), which cannot handle arbitrary Unicode.
+  const ascii = source.replace(
+    /[^\x00-\x7f]/g,
+    (character) => `\\u${character.charCodeAt(0).toString(16).padStart(4, "0")}`
+  );
+  return [
+    "# Validate OSM tag values once per rule using the shared PWG evaluator.",
+    "transform: |",
+    ...ascii.split(/\r?\n/).map((line) => (line ? `  ${line}` : "")),
+  ];
+}
+
+function popupTemplate(provider) {
+  const postpass = provider === "postpass";
+  const skipValidation = `{% if tag[0] == ${flow(VALIDATED_VALUES_PROPERTY)} %}{% continue %}{% endif %}`;
+  const lines = [
+    ...(postpass
+      ? [
+          "{% assign id = osm_id %}",
+          "{% assign typeLabel = osm_type %}",
+          "{% case osm_type %}",
+          ...Object.entries(POSTPASS_TYPES).map(
+            ([type, code]) =>
+              `  {% when ${flow(code)} %}{% assign type = ${flow(type)} %}`
+          ),
+          "  {% else %}{% assign type = osm_type %}",
+          "{% endcase %}",
+        ]
+      : []),
+    "{% if type and id %}",
+    '  <h2>{{ typeLabel | escape }} <a href="https://www.openstreetmap.org/{{ type | escape }}/{{ id | escape }}" target="_blank">{{ id | escape }}</a> <a href="https://www.openstreetmap.org/edit?{{ type | escape }}={{ id | escape }}" target="_blank">Edit</a></h2>',
+    "{% endif %}",
+    `{% for tag in ${postpass ? "properties" : "tags"} %}`,
+    ...(postpass
+      ? [
+          `  ${skipValidation}`,
+          "  <code>{{ tag[0] | escape }} = {{ tag[1] | json | escape }}</code><br>",
+        ]
+      : [
+          "  {% if forloop.first %}<h3>Tags</h3>{% endif %}",
+          '  <code>{{ tag[0] | escape }} = {% if tag[0] contains "website" %}',
+          '    <a href="{{ tag[1] | escape }}" target="_blank">{{ tag[1] | escape }}</a>',
+          '  {% elsif tag[0] contains "wikidata" %}',
+          '    <a href="https://www.wikidata.org/wiki/{{ tag[1] | escape }}" target="_blank">{{ tag[1] | escape }}</a>',
+          '  {% elsif tag[0] contains "wikipedia" %}',
+          '    {% assign lang = tag[1] | split: ":" | first %}',
+          '    <a href="https://{{ lang | escape }}.wikipedia.org/wiki/{{ tag[1] | replace_first: lang, "" | replace_first: ":", "" | escape }}" target="_blank">{{ tag[1] | escape }}</a>',
+          "  {% else %}{{ tag[1] | escape }}{% endif %}</code><br>",
+        ]),
+    "{% endfor %}",
+    ...(!postpass
+      ? [
+          "{% assign showMeta = true %}",
+          "{% for tag in meta %}",
+          `  ${skipValidation}`,
+          "  {% if showMeta %}<h3>Meta</h3>{% assign showMeta = false %}{% endif %}",
+          '  <code>{{ tag[0] | escape }} = {% if tag[0] == "changeset" or tag[0] == "user" %}',
+          '    <a href="https://www.openstreetmap.org/{{ tag[0] }}/{{ tag[1] | escape }}" target="_blank">{{ tag[1] | escape }}</a>',
+          "  {% else %}{{ tag[1] | escape }}{% endif %}</code><br>",
+          "{% endfor %}",
+          "{% if coordinates %}",
+          '  <h3>Coordinates</h3><a href="geo:{{ coordinates[1] }},{{ coordinates[0] }}">{{ coordinates[1] | round: 6 }} / {{ coordinates[0] | round: 6 }}</a> <small>(lat/lon)</small>',
+          "{% endif %}",
+        ]
+      : []),
+  ];
+  return ["popupTemplate: |", ...lines.map((line) => `  ${line}`)];
 }
 
 function featureFilter(feature, geometryType) {
@@ -305,7 +334,8 @@ function featureFilter(feature, geometryType) {
   ]);
 }
 
-function tierColorExpression(schema, feature) {
+function tierColorExpression(rules, feature) {
+  const { schema } = rules;
   const parts = ["case"];
   for (const tier of [...schema.$usage.tierOrder].reverse()) {
     if (
@@ -314,47 +344,31 @@ function tierColorExpression(schema, feature) {
     ) {
       continue;
     }
-    parts.push(tierExpression(schema, feature, tier), TIER_COLORS[tier]);
+    parts.push(tierExpression(rules, feature, tier), TIER_COLORS[tier]);
   }
   parts.push(BELOW_SCHEMA_COLOR);
   return parts;
 }
 
-function readinessColorExpression(schema, feature, targetTier) {
+function readinessColorExpression(rules, feature, targetTier) {
   return [
     "case",
-    tierExpression(schema, feature, targetTier),
+    tierExpression(rules, feature, targetTier),
     TIER_COLORS[targetTier],
     READINESS_NOT_READY_COLOR,
   ];
 }
 
-function layerColorExpression(schema, mode, feature, targetTier) {
+function layerColorExpression(rules, mode, feature, targetTier) {
   if (mode === "readiness") {
-    return readinessColorExpression(schema, feature, targetTier);
+    return readinessColorExpression(rules, feature, targetTier);
   }
 
-  return tierColorExpression(schema, feature);
+  return tierColorExpression(rules, feature);
 }
 
-function layerFilter(schema, mode, feature, geometryType, targetTier) {
-  const filter = featureFilter(feature, geometryType);
-  if (mode !== "readiness") {
-    return filter;
-  }
-
-  if (
-    getTierIndex(schema, feature.identifier.minTier) >
-    getTierIndex(schema, targetTier)
-  ) {
-    return false;
-  }
-
-  return filter;
-}
-
-function readinessSizeExpression(schema, feature, targetTier, stops) {
-  const ready = tierExpression(schema, feature, targetTier);
+function readinessSizeExpression(rules, feature, targetTier, stops) {
+  const ready = tierExpression(rules, feature, targetTier);
   const interp = ["interpolate", ["linear"], ["zoom"]];
   for (const [zoom, size] of stops) {
     interp.push(zoom, [
@@ -367,17 +381,17 @@ function readinessSizeExpression(schema, feature, targetTier, stops) {
   return interp;
 }
 
-function readinessOpacityExpression(schema, feature, targetTier, baseOpacity) {
+function readinessOpacityExpression(rules, feature, targetTier, baseOpacity) {
   return [
     "case",
-    tierExpression(schema, feature, targetTier),
+    tierExpression(rules, feature, targetTier),
     READINESS_READY_OPACITY,
     baseOpacity,
   ];
 }
 
-function lineLayer(schema, mode, targetTier, featureId, feature) {
-  const filter = layerFilter(schema, mode, feature, "LineString", targetTier);
+function lineLayer(rules, mode, targetTier, featureId, feature) {
+  const filter = featureFilter(feature, "LineString");
   if (filter === false) {
     return [];
   }
@@ -390,15 +404,15 @@ function lineLayer(schema, mode, targetTier, featureId, feature) {
     "      type: line",
     `      filter: ${flow(filter)}`,
     "      paint:",
-    `        line-color: ${flow(layerColorExpression(schema, mode, feature, targetTier))}`,
+    `        line-color: ${flow(layerColorExpression(rules, mode, feature, targetTier))}`,
   ];
 
   if (mode === "readiness") {
     lines.push(
-      `        line-width: ${flow(readinessSizeExpression(schema, feature, targetTier, width.stops))}`
+      `        line-width: ${flow(readinessSizeExpression(rules, feature, targetTier, width.stops))}`
     );
     lines.push(
-      `        line-opacity: ${flow(readinessOpacityExpression(schema, feature, targetTier, baseOpacity))}`
+      `        line-opacity: ${flow(readinessOpacityExpression(rules, feature, targetTier, baseOpacity))}`
     );
   } else {
     lines.push(
@@ -415,8 +429,8 @@ function lineLayer(schema, mode, targetTier, featureId, feature) {
   return lines;
 }
 
-function circleLayer(schema, mode, targetTier, featureId, feature) {
-  const filter = layerFilter(schema, mode, feature, "Point", targetTier);
+function circleLayer(rules, mode, targetTier, featureId, feature) {
+  const filter = featureFilter(feature, "Point");
   if (filter === false) {
     return [];
   }
@@ -433,15 +447,15 @@ function circleLayer(schema, mode, targetTier, featureId, feature) {
     "      type: circle",
     `      filter: ${flow(filter)}`,
     "      paint:",
-    `        circle-color: ${flow(layerColorExpression(schema, mode, feature, targetTier))}`,
+    `        circle-color: ${flow(layerColorExpression(rules, mode, feature, targetTier))}`,
   ];
 
   if (mode === "readiness") {
     lines.push(
-      `        circle-radius: ${flow(readinessSizeExpression(schema, feature, targetTier, radiusStops))}`,
+      `        circle-radius: ${flow(readinessSizeExpression(rules, feature, targetTier, radiusStops))}`,
       '        circle-stroke-color: "#202020"',
-      `        circle-stroke-width: ${flow(["case", tierExpression(schema, feature, targetTier), Number((baseStrokeWidth * READINESS_READY_SIZE_SCALE).toFixed(3)), baseStrokeWidth])}`,
-      `        circle-opacity: ${flow(readinessOpacityExpression(schema, feature, targetTier, baseOpacity))}`
+      `        circle-stroke-width: ${flow(["case", tierExpression(rules, feature, targetTier), Number((baseStrokeWidth * READINESS_READY_SIZE_SCALE).toFixed(3)), baseStrokeWidth])}`,
+      `        circle-opacity: ${flow(readinessOpacityExpression(rules, feature, targetTier, baseOpacity))}`
     );
   } else {
     lines.push(
@@ -456,13 +470,10 @@ function circleLayer(schema, mode, targetTier, featureId, feature) {
   return lines;
 }
 
-function fillLayer(schema, mode, targetTier, featureId, feature) {
-  const filter = layerFilter(
-    schema,
-    mode,
+function fillLayer(rules, mode, targetTier, featureId, feature) {
+  const filter = featureFilter(
     feature,
-    feature.visualization?.geometryType || "Polygon",
-    targetTier
+    feature.visualization?.geometryType || "Polygon"
   );
   if (filter === false) {
     return [];
@@ -473,13 +484,14 @@ function fillLayer(schema, mode, targetTier, featureId, feature) {
     "      type: fill",
     `      filter: ${flow(filter)}`,
     "      paint:",
-    `        fill-color: ${flow(layerColorExpression(schema, mode, feature, targetTier))}`,
+    `        fill-color: ${flow(layerColorExpression(rules, mode, feature, targetTier))}`,
     `        fill-opacity: ${feature.visualization?.opacity ?? 0.25}`,
     '        fill-outline-color: "#ffffff"',
   ];
 }
 
-function tierGlowFilter(schema, feature, geometryType, tier) {
+function tierGlowFilter(rules, feature, geometryType, tier) {
+  const { schema } = rules;
   if (
     getTierIndex(schema, feature.identifier.minTier) >
     getTierIndex(schema, tier)
@@ -488,18 +500,18 @@ function tierGlowFilter(schema, feature, geometryType, tier) {
   }
   return allExpression([
     featureFilter(feature, geometryType),
-    tierExpression(schema, feature, tier),
+    tierExpression(rules, feature, tier),
   ]);
 }
 
-function lineGlowLayers(schema, mode, featureId, feature) {
+function lineGlowLayers(rules, mode, featureId, feature) {
   if (mode !== "tier") {
     return [];
   }
   const width = LINE_WIDTHS[featureId] ?? LINE_WIDTHS.default;
   const lines = [];
   for (const tier of ["gold", "diamond"]) {
-    const filter = tierGlowFilter(schema, feature, "LineString", tier);
+    const filter = tierGlowFilter(rules, feature, "LineString", tier);
     if (filter === false) {
       continue;
     }
@@ -523,13 +535,13 @@ function lineGlowLayers(schema, mode, featureId, feature) {
   return lines;
 }
 
-function circleGlowLayers(schema, mode, featureId, feature) {
+function circleGlowLayers(rules, mode, featureId, feature) {
   if (mode !== "tier") {
     return [];
   }
   const lines = [];
   for (const tier of ["gold", "diamond"]) {
-    const filter = tierGlowFilter(schema, feature, "Point", tier);
+    const filter = tierGlowFilter(rules, feature, "Point", tier);
     if (filter === false) {
       continue;
     }
@@ -554,12 +566,12 @@ function circleGlowLayers(schema, mode, featureId, feature) {
   return lines;
 }
 
-function circleShineLayer(schema, mode, featureId, feature) {
+function circleShineLayer(rules, mode, featureId, feature) {
   if (mode !== "tier") {
     return [];
   }
   // Shine appears for any tier that has a glow (gold or diamond).
-  const filter = tierGlowFilter(schema, feature, "Point", "gold");
+  const filter = tierGlowFilter(rules, feature, "Point", "gold");
   if (filter === false) {
     return [];
   }
@@ -581,57 +593,104 @@ function circleShineLayer(schema, mode, featureId, feature) {
   ];
 }
 
-function includesTrafficSigns(schema, mode, targetTier) {
-  const trafficSign = schema.features.traffic_sign;
-  return Boolean(
-    trafficSign &&
-      (mode !== "readiness" ||
-        getTierIndex(schema, trafficSign.identifier.minTier) <=
-          getTierIndex(schema, targetTier))
-  );
+// Overpass expresses OR as a union and AND as adjacent tag filters.
+function selectorAlternatives(expression, negated = false) {
+  if (typeof expression === "boolean") {
+    return expression !== negated ? [[]] : [];
+  }
+  const [operator, ...args] = expression;
+  switch (operator) {
+    case "!":
+      return selectorAlternatives(args[0], !negated);
+    case "all":
+    case "any": {
+      const branches = args.map((arg) => selectorAlternatives(arg, negated));
+      if ((operator === "any") !== negated) {
+        return branches.flat();
+      }
+      return branches.reduce(
+        (left, right) => left.flatMap((a) => right.map((b) => [...a, ...b])),
+        [[]]
+      );
+    }
+    case "has":
+      return [[{ key: args[0], negated }]];
+    case "==":
+      return [[{ key: args[0][1], value: args[1], negated }]];
+    default:
+      throw new Error(`Unsupported selector operator: ${operator}`);
+  }
 }
 
-function overpassQuery(schema, mode, targetTier) {
-  const includeTrafficSigns = includesTrafficSigns(schema, mode, targetTier);
+function querySelectors(features) {
+  return features.flatMap(([, feature]) => {
+    const alternatives = selectorAlternatives(
+      predicateExpression(feature.identifier)
+    );
+    return getFeatureElements(feature).flatMap((element) =>
+      alternatives.map((tags) => ({ element, tags }))
+    );
+  });
+}
 
+function overpassTagFilter({ key, value, negated }) {
+  const quotedKey = flow(key);
+  if (value === undefined) {
+    return `[${negated ? "!" : ""}${quotedKey}]`;
+  }
+  return `[${quotedKey}${negated ? "!=" : "="}${flow(value)}]`;
+}
+
+function overpassQuery(selectors) {
+  const statements = new Set(
+    selectors.map(
+      ({ element, tags }) =>
+        `  ${element}${tags.map(overpassTagFilter).join("")};`
+    )
+  );
   return [
     "[bbox:{{bbox}}];",
-    "(",
-    '  way[highway=footway][footway~"^(sidewalk|crossing|traffic_island|access_aisle)$"];',
-    '  way["area:highway"=footway];',
-    '  relation["area:highway"=footway];',
-    "  node[highway=crossing];",
-    "  node[barrier=kerb];",
-    "  way[highway][!footway];",
-    ...(schema.features.stairs ? ["  way[highway=steps];"] : []),
-    ...(includeTrafficSigns ? ["  node[traffic_sign];"] : []),
-    ");",
+    ...(statements.size ? ["(", ...statements, ");"] : []),
     "out geom;",
   ];
 }
 
-// Mirrors overpassQuery(). Postpass wraps this in a subquery, so no trailing semicolon.
-function postpassQuery(schema, mode, targetTier) {
-  const includeTrafficSigns = includesTrafficSigns(schema, mode, targetTier);
+function sqlString(value) {
+  return `'${value.replaceAll("'", "''")}'`;
+}
 
+function postpassTagFilter({ key, value, negated }) {
+  if (value === undefined) {
+    const has = `tags ? ${sqlString(key)}`;
+    return negated ? `NOT (${has})` : has;
+  }
+  // Negating equality also matches features where the tag is absent.
+  return `tags->>${sqlString(key)} ${negated ? "IS DISTINCT FROM" : "="} ${sqlString(value)}`;
+}
+
+// Postpass wraps this in a subquery, so no trailing semicolon.
+function postpassQuery(selectors) {
+  const conditions = new Set(
+    selectors.map(({ element, tags }) =>
+      [
+        `osm_type = ${sqlString(POSTPASS_TYPES[element])}`,
+        ...tags.map(postpassTagFilter),
+      ].join(" AND ")
+    )
+  );
   return [
     "SELECT osm_type, osm_id, tags, geom",
     "FROM postpass_pointlinepolygon",
     "WHERE geom && ST_MakeEnvelope({{wsen}}, 4326)",
-    "  AND (",
-    "    (osm_type = 'W' AND (",
-    "      (tags->>'highway' = 'footway' AND tags->>'footway' IN ('sidewalk', 'crossing', 'traffic_island', 'access_aisle'))",
-    "      OR tags->>'area:highway' = 'footway'",
-    "      OR (tags ? 'highway' AND NOT (tags ? 'footway'))",
-    ...(schema.features.stairs ? ["      OR tags->>'highway' = 'steps'"] : []),
-    "    ))",
-    "    OR (osm_type = 'R' AND tags->>'area:highway' = 'footway')",
-    "    OR (osm_type = 'N' AND (",
-    "      tags->>'highway' = 'crossing'",
-    "      OR tags->>'barrier' = 'kerb'",
-    ...(includeTrafficSigns ? ["      OR tags ? 'traffic_sign'"] : []),
-    "    ))",
-    "  )",
+    ...(conditions.size
+      ? [
+          "  AND (",
+          ...[...conditions].map(
+            (condition, index) => `    ${index ? "OR " : ""}(${condition})`
+          ),
+          "  )",
+        ]
+      : ["  AND FALSE"]),
   ];
 }
 
@@ -653,15 +712,10 @@ function viewDescription(schema, mode, targetTier) {
   return "Schema-generated PWG tier visualization. Colors indicate the highest automatically satisfied PWG tier. Red features match a feature identifier but do not yet satisfy its minimum-tier requirements and need review.";
 }
 
-function defaultOutputPath(mode, targetTier) {
-  if (mode === "readiness") {
-    return path.resolve(
-      VISUALIZATIONS_DIR,
-      `pwg_schema_${targetTier}_readiness.ultra`
-    );
-  }
-
-  return path.resolve(VISUALIZATIONS_DIR, "pwg_schema_tiers.ultra");
+function defaultOutputPath(mode, targetTier, provider) {
+  const view = mode === "readiness" ? `${targetTier}_readiness` : "tiers";
+  const suffix = provider === DEFAULT_PROVIDER ? "" : `_${provider}`;
+  return path.resolve(VISUALIZATIONS_DIR, `pwg_schema_${view}${suffix}.ultra`);
 }
 
 function generateUltra(schema, options = {}) {
@@ -680,45 +734,49 @@ function generateUltra(schema, options = {}) {
     );
   }
 
-  if (mode === "readiness") {
-    getTierIndex(schema, targetTier);
+  const maxTierIndex =
+    mode === "readiness" ? getTierIndex(schema, targetTier) : Infinity;
+  const features = Object.entries(schema.features).filter(
+    ([, feature]) =>
+      getTierIndex(schema, feature.identifier.minTier) <= maxTierIndex
+  );
+  const rules = { schema, valueChecks: new Map() };
+  const layers = [];
+  for (const [featureId, feature] of features) {
+    const elements = getFeatureElements(feature);
+    if (feature.visualization?.layerType === "fill") {
+      layers.push(...fillLayer(rules, mode, targetTier, featureId, feature));
+    } else if (elements.includes("way")) {
+      layers.push(...lineGlowLayers(rules, mode, featureId, feature));
+      layers.push(...lineLayer(rules, mode, targetTier, featureId, feature));
+    }
+    if (elements.includes("node")) {
+      layers.push(...circleGlowLayers(rules, mode, featureId, feature));
+      layers.push(...circleShineLayer(rules, mode, featureId, feature));
+      layers.push(...circleLayer(rules, mode, targetTier, featureId, feature));
+    }
   }
 
-  const lines = [
+  const selectors = querySelectors(features);
+  const query =
+    provider === "postpass"
+      ? postpassQuery(selectors)
+      : overpassQuery(selectors);
+  return [
     "---",
     ...schemaLicenseNotice(schema).map((line) => (line ? `# ${line}` : "#")),
     `title: ${viewTitle(schema, mode, targetTier)}`,
     `description: ${viewDescription(schema, mode, targetTier)}`,
-    ...(provider === "postpass"
-      ? ["type: postpass", ...POSTPASS_TAG_TRANSFORM]
-      : []),
+    `type: ${provider}`,
+    ...popupTemplate(provider),
+    ...valueTransform(rules.valueChecks, provider),
     "style:",
     "  extends: https://styles.trailsta.sh/protomaps-black.json",
-    "  layers:",
-  ];
-
-  for (const [featureId, feature] of Object.entries(schema.features)) {
-    const elements = getFeatureElements(feature);
-    if (feature.visualization?.layerType === "fill") {
-      lines.push(...fillLayer(schema, mode, targetTier, featureId, feature));
-    } else if (elements.includes("way")) {
-      lines.push(...lineGlowLayers(schema, mode, featureId, feature));
-      lines.push(...lineLayer(schema, mode, targetTier, featureId, feature));
-    }
-
-    if (elements.includes("node")) {
-      lines.push(...circleGlowLayers(schema, mode, featureId, feature));
-      lines.push(...circleShineLayer(schema, mode, featureId, feature));
-      lines.push(...circleLayer(schema, mode, targetTier, featureId, feature));
-    }
-  }
-
-  const query =
-    provider === "postpass"
-      ? postpassQuery(schema, mode, targetTier)
-      : overpassQuery(schema, mode, targetTier);
-  lines.push("---", ...query, "");
-  return lines.join("\n");
+    ...(layers.length ? ["  layers:", ...layers] : ["  layers: []"]),
+    "---",
+    ...query,
+    "",
+  ].join("\n");
 }
 
 function main() {
@@ -730,7 +788,7 @@ function main() {
   const targetTier = args.targetTier || DEFAULT_READINESS_TIER;
   const provider = args.provider || DEFAULT_PROVIDER;
   const outputPath = path.resolve(
-    args.output || defaultOutputPath(mode, targetTier)
+    args.output || defaultOutputPath(mode, targetTier, provider)
   );
   const schema = loadSchema(schemaPath);
 
