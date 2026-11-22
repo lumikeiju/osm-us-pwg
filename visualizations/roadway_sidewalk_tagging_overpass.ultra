@@ -1,0 +1,68 @@
+---
+# SPDX-FileCopyrightText: OpenStreetMap US Pedestrian Working Group contributors
+# SPDX-License-Identifier: CC0-1.0
+# Dedicated to the public domain under CC0 1.0: https://creativecommons.org/publicdomain/zero/1.0/
+#
+# Styled Overpass QL query for use in Ultra (https://overpass-ultra.us)
+type: overpass
+style:
+  extends: https://styles.trailsta.sh/protomaps-black.json
+  layers:
+    - type: line
+      filter:
+        - any
+        - [ ==, [ get, 'sidewalk' ], separate ]
+        - [ ==, [ get, 'sidewalk:left' ], separate ]
+        - [ ==, [ get, 'sidewalk:right' ], separate ]
+        - [ ==, [ get, 'sidewalk:both' ], separate ]
+      paint: &paint
+        line-width: 5
+        line-color: "blue"
+    - type: line
+      filter:
+        - any
+        - [ ==, [ get, 'sidewalk' ], yes ]
+        - [ ==, [ get, 'sidewalk:left' ], yes ]
+        - [ ==, [ get, 'sidewalk:right' ], yes ]
+        - [ ==, [ get, 'sidewalk:both' ], yes ]
+      paint:
+        <<: *paint
+        line-color: "#F26419"
+    - type: line
+      filter:
+        - any
+        - [ ==, [ get, 'sidewalk' ], no ]
+        - [ ==, [ get, 'sidewalk:left' ], no ]
+        - [ ==, [ get, 'sidewalk:right' ], no ]
+        - [ ==, [ get, 'sidewalk:both' ], no ]
+      paint:
+        <<: *paint
+        line-color: "#D81159"
+    - type: line
+      filter:
+        - any
+        - [ ==, [ get, 'footway' ], sidewalk ]
+      paint:
+        line-width: 1
+        line-color: "#73D2DE"
+    - type: line
+      filter:
+        - any
+        - [ ==, [ get, 'footway' ], traffic_island ]
+      paint:
+        line-width: 2
+        line-color: "#ADC58B"
+    - type: line
+      filter:
+        - any
+        - [ ==, [ get, 'footway' ], crossing ]
+      paint:
+        line-width: 2
+        line-color: "#FBB13C"
+---
+[bbox:{{bbox}}];
+(
+  way["footway"];
+  way[~"sidewalk"~"separate|yes|no"];
+);
+out geom;

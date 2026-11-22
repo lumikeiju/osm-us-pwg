@@ -6,6 +6,23 @@ All notable changes to this `osm-us-pwg` repository are documented here, using t
 
 Release headings below refer to the **repository version**. Individual components, including the **PWG Schema** and **PWG Guide**, have independent versions and release cycles; their versions are named explicitly in entries that concern them. See [Versioning](README.md#versioning) for the distinction.
 
+## v1.3.0 (2026-11-21)
+
+### Added
+
+- Added Overpass alternatives for Silver Readiness, Curb Type, Sidewalk Tags on Roadways, and Tactile Paving visualizations. Postpass remains the default.
+
+### Changed
+
+- Renamed the Postpass tag maps from `.yaml` to `.ultra` and updated the README links.
+- Generated Ultra maps now share the schema query tool's tag-value checks.
+- Generated Postpass and Overpass queries now select features using the schema's identifiers, element types, and readiness tier.
+
+### Fixed
+
+- Overpass maps now default to `_overpass.ultra` filenames so generating one no longer overwrites the Postpass map.
+- Kept internal validation IDs out of generated map popups without changing the styling.
+
 ## v1.2.0 (2026-11-11)
 
 ### Added

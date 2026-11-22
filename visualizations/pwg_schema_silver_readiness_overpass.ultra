@@ -1,0 +1,180 @@
+---
+# SPDX-FileCopyrightText: OpenStreetMap US Pedestrian Working Group and OpenStreetMap Wiki contributors
+# SPDX-License-Identifier: CC-BY-SA-2.0
+#
+# Adapted from PWG Schema v1.1.1 by the OpenStreetMap US Pedestrian Working Group and OpenStreetMap Wiki contributors:
+# https://wiki.openstreetmap.org/wiki/Foundation/Local_Chapters/United_States/Pedestrian_Working_Group/Schema
+# Licensed under CC BY-SA 2.0: https://creativecommons.org/licenses/by-sa/2.0/
+title: PWG Schema Silver Readiness View
+description: Schema-generated Silver readiness visualization. #cccccc gray/silver features satisfy Silver tier requirements for accessibility-focused applications; #ff1744 red features match a PWG feature identifier but are not yet Silver-ready. Features introduced above Silver are omitted.
+type: overpass
+popupTemplate: |
+  {% if type and id %}
+    <h2>{{ typeLabel | escape }} <a href="https://www.openstreetmap.org/{{ type | escape }}/{{ id | escape }}" target="_blank">{{ id | escape }}</a> <a href="https://www.openstreetmap.org/edit?{{ type | escape }}={{ id | escape }}" target="_blank">Edit</a></h2>
+  {% endif %}
+  {% for tag in tags %}
+    {% if forloop.first %}<h3>Tags</h3>{% endif %}
+    <code>{{ tag[0] | escape }} = {% if tag[0] contains "website" %}
+      <a href="{{ tag[1] | escape }}" target="_blank">{{ tag[1] | escape }}</a>
+    {% elsif tag[0] contains "wikidata" %}
+      <a href="https://www.wikidata.org/wiki/{{ tag[1] | escape }}" target="_blank">{{ tag[1] | escape }}</a>
+    {% elsif tag[0] contains "wikipedia" %}
+      {% assign lang = tag[1] | split: ":" | first %}
+      <a href="https://{{ lang | escape }}.wikipedia.org/wiki/{{ tag[1] | replace_first: lang, "" | replace_first: ":", "" | escape }}" target="_blank">{{ tag[1] | escape }}</a>
+    {% else %}{{ tag[1] | escape }}{% endif %}</code><br>
+  {% endfor %}
+  {% assign showMeta = true %}
+  {% for tag in meta %}
+    {% if tag[0] == "@pwg:valid" %}{% continue %}{% endif %}
+    {% if showMeta %}<h3>Meta</h3>{% assign showMeta = false %}{% endif %}
+    <code>{{ tag[0] | escape }} = {% if tag[0] == "changeset" or tag[0] == "user" %}
+      <a href="https://www.openstreetmap.org/{{ tag[0] }}/{{ tag[1] | escape }}" target="_blank">{{ tag[1] | escape }}</a>
+    {% else %}{{ tag[1] | escape }}{% endif %}</code><br>
+  {% endfor %}
+  {% if coordinates %}
+    <h3>Coordinates</h3><a href="geo:{{ coordinates[1] }},{{ coordinates[0] }}">{{ coordinates[1] | round: 6 }} / {{ coordinates[0] | round: 6 }}</a> <small>(lat/lon)</small>
+  {% endif %}
+# Validate OSM tag values once per rule using the shared PWG evaluator.
+transform: |
+  function valueMatchesSpec(value, spec) {
+    if (value === undefined) {
+      return false;
+    }
+
+    const stringValue = String(value).trim();
+    if (spec?.notValues?.map(String).includes(stringValue)) {
+      return false;
+    }
+
+    if (!spec) {
+      return stringValue.length > 0;
+    }
+
+    switch (spec.type) {
+      case "enum":
+        return (spec.values ?? []).map(String).includes(stringValue);
+      case "openEnum":
+      case "free":
+        return stringValue.length > 0;
+      case "boolean":
+        return ["yes", "no"].includes(stringValue);
+      case "numeric":
+        return stringValue !== "" && Number.isFinite(Number(stringValue));
+      case "length":
+        return /^-?\d+(?:\.\d+)?(?:\s*(?:mm|cm|m|km|in|ft|yd|mi))?$/i.test(
+          stringValue
+        );
+      case "percent":
+        return /^-?\d+(?:\.\d+)?%$/.test(stringValue);
+      case "incline":
+        return /^(?:up|down|[+-]?\d+(?:\.\d+)?(?:%|\u00b0))$/.test(stringValue);
+      default:
+        return stringValue.length > 0;
+    }
+  }
+  function validateFeatureValues(data, checks, provider, matchesValue, property) {
+    for (const feature of data.features) {
+      let tags = feature.properties ?? {};
+      let properties = { ...tags };
+      if (provider === "postpass") {
+        const { tags: nestedTags, ...metadata } = properties;
+        tags = nestedTags ?? {};
+        properties = { ...tags, ...metadata };
+      }
+
+      // Keep the derived values in one scalar property for MapLibre's GeoJSON tiles.
+      const passed = [];
+      for (const [index, [key, spec]] of checks.entries()) {
+        if (Object.hasOwn(tags, key) && matchesValue(String(tags[key]), spec)) {
+          passed.push(index);
+        }
+      }
+      properties[property] = `,${passed.join(",")},`;
+      feature.properties = properties;
+    }
+    return data;
+  }
+  const checks = [["surface",{"type":"openEnum","values":["concrete","asphalt"]}],["crossing:markings",{"type":"openEnum","values":["zebra","lines","no"],"notValues":["yes"]}],["crossing:signals",{"type":"enum","values":["yes","no"]}],["crossing:island",{"type":"enum","values":["separate","no"]}],["tactile_paving",{"type":"enum","values":["yes","no","partial"]}],["kerb",{"type":"enum","values":["raised","lowered","flush","rolled","no"]}],["tactile_paving",{"type":"enum","values":["yes","no"]}],["access_aisle:markings",{"type":"openEnum","values":["no","yes","zebra","ladder:skewed"]}],["incline",{"type":"enum","values":["up","down"]}],["ramp",{"type":"enum","values":["yes","no"]}],["handrail",{"type":"openEnum","values":["yes","no"]}],["sidewalk:both",{"type":"enum","values":["no","separate"]}],["sidewalk:left",{"type":"enum","values":["no","separate"]}],["sidewalk:right",{"type":"enum","values":["no","separate"]}]];
+  export default function (data) {
+    return validateFeatureValues(data, checks, "overpass", valueMatchesSpec, "@pwg:valid");
+  }
+style:
+  extends: https://styles.trailsta.sh/protomaps-black.json
+  layers:
+    - id: readiness-sidewalk
+      type: line
+      filter: ["all",["==",["geometry-type"],"LineString"],["all",["==",["get","highway"],"footway"],["==",["get","footway"],"sidewalk"]]]
+      paint:
+        line-color: ["case",["all",["all",["==",["get","highway"],"footway"],["==",["get","footway"],"sidewalk"]],["in",",0,",["to-string",["get","@pwg:valid"]]]],"#cccccc","#ff1744"]
+        line-width: ["interpolate",["linear"],["zoom"],13,["case",["all",["all",["==",["get","highway"],"footway"],["==",["get","footway"],"sidewalk"]],["in",",0,",["to-string",["get","@pwg:valid"]]]],1,2],17,["case",["all",["all",["==",["get","highway"],"footway"],["==",["get","footway"],"sidewalk"]],["in",",0,",["to-string",["get","@pwg:valid"]]]],3,6]]
+        line-opacity: ["case",["all",["all",["==",["get","highway"],"footway"],["==",["get","footway"],"sidewalk"]],["in",",0,",["to-string",["get","@pwg:valid"]]]],0.55,0.9]
+    - id: readiness-crossing_way
+      type: line
+      filter: ["all",["==",["geometry-type"],"LineString"],["all",["==",["get","highway"],"footway"],["==",["get","footway"],"crossing"]]]
+      paint:
+        line-color: ["case",["all",["all",["==",["get","highway"],"footway"],["==",["get","footway"],"crossing"]],["in",",1,",["to-string",["get","@pwg:valid"]]],["in",",2,",["to-string",["get","@pwg:valid"]]],["in",",0,",["to-string",["get","@pwg:valid"]]],["in",",3,",["to-string",["get","@pwg:valid"]]]],"#cccccc","#ff1744"]
+        line-width: ["interpolate",["linear"],["zoom"],13,["case",["all",["all",["==",["get","highway"],"footway"],["==",["get","footway"],"crossing"]],["in",",1,",["to-string",["get","@pwg:valid"]]],["in",",2,",["to-string",["get","@pwg:valid"]]],["in",",0,",["to-string",["get","@pwg:valid"]]],["in",",3,",["to-string",["get","@pwg:valid"]]]],1,2],17,["case",["all",["all",["==",["get","highway"],"footway"],["==",["get","footway"],"crossing"]],["in",",1,",["to-string",["get","@pwg:valid"]]],["in",",2,",["to-string",["get","@pwg:valid"]]],["in",",0,",["to-string",["get","@pwg:valid"]]],["in",",3,",["to-string",["get","@pwg:valid"]]]],3,6]]
+        line-opacity: ["case",["all",["all",["==",["get","highway"],"footway"],["==",["get","footway"],"crossing"]],["in",",1,",["to-string",["get","@pwg:valid"]]],["in",",2,",["to-string",["get","@pwg:valid"]]],["in",",0,",["to-string",["get","@pwg:valid"]]],["in",",3,",["to-string",["get","@pwg:valid"]]]],0.55,0.9]
+        line-dasharray: [1.2,1.2]
+    - id: readiness-crossing_node
+      type: circle
+      filter: ["all",["==",["geometry-type"],"Point"],["all",["==",["get","highway"],"crossing"],["!",["has","footway"]]]]
+      paint:
+        circle-color: ["case",["all",["all",["==",["get","highway"],"crossing"],["!",["has","footway"]]],["in",",1,",["to-string",["get","@pwg:valid"]]],["in",",2,",["to-string",["get","@pwg:valid"]]],["in",",4,",["to-string",["get","@pwg:valid"]]],["in",",3,",["to-string",["get","@pwg:valid"]]]],"#cccccc","#ff1744"]
+        circle-radius: ["interpolate",["linear"],["zoom"],13,["case",["all",["all",["==",["get","highway"],"crossing"],["!",["has","footway"]]],["in",",1,",["to-string",["get","@pwg:valid"]]],["in",",2,",["to-string",["get","@pwg:valid"]]],["in",",4,",["to-string",["get","@pwg:valid"]]],["in",",3,",["to-string",["get","@pwg:valid"]]]],1.5,3],17,["case",["all",["all",["==",["get","highway"],"crossing"],["!",["has","footway"]]],["in",",1,",["to-string",["get","@pwg:valid"]]],["in",",2,",["to-string",["get","@pwg:valid"]]],["in",",4,",["to-string",["get","@pwg:valid"]]],["in",",3,",["to-string",["get","@pwg:valid"]]]],4.5,9]]
+        circle-stroke-color: "#202020"
+        circle-stroke-width: ["case",["all",["all",["==",["get","highway"],"crossing"],["!",["has","footway"]]],["in",",1,",["to-string",["get","@pwg:valid"]]],["in",",2,",["to-string",["get","@pwg:valid"]]],["in",",4,",["to-string",["get","@pwg:valid"]]],["in",",3,",["to-string",["get","@pwg:valid"]]]],0.7,1.4]
+        circle-opacity: ["case",["all",["all",["==",["get","highway"],"crossing"],["!",["has","footway"]]],["in",",1,",["to-string",["get","@pwg:valid"]]],["in",",2,",["to-string",["get","@pwg:valid"]]],["in",",4,",["to-string",["get","@pwg:valid"]]],["in",",3,",["to-string",["get","@pwg:valid"]]]],0.55,0.95]
+    - id: readiness-curb
+      type: circle
+      filter: ["all",["==",["geometry-type"],"Point"],["==",["get","barrier"],"kerb"]]
+      paint:
+        circle-color: ["case",["all",["==",["get","barrier"],"kerb"],["in",",5,",["to-string",["get","@pwg:valid"]]],["in",",6,",["to-string",["get","@pwg:valid"]]]],"#cccccc","#ff1744"]
+        circle-radius: ["interpolate",["linear"],["zoom"],13,["case",["all",["==",["get","barrier"],"kerb"],["in",",5,",["to-string",["get","@pwg:valid"]]],["in",",6,",["to-string",["get","@pwg:valid"]]]],1.5,3],17,["case",["all",["==",["get","barrier"],"kerb"],["in",",5,",["to-string",["get","@pwg:valid"]]],["in",",6,",["to-string",["get","@pwg:valid"]]]],4.5,9]]
+        circle-stroke-color: "#202020"
+        circle-stroke-width: ["case",["all",["==",["get","barrier"],"kerb"],["in",",5,",["to-string",["get","@pwg:valid"]]],["in",",6,",["to-string",["get","@pwg:valid"]]]],0.7,1.4]
+        circle-opacity: ["case",["all",["==",["get","barrier"],"kerb"],["in",",5,",["to-string",["get","@pwg:valid"]]],["in",",6,",["to-string",["get","@pwg:valid"]]]],0.55,0.95]
+    - id: readiness-traffic_island
+      type: line
+      filter: ["all",["==",["geometry-type"],"LineString"],["all",["==",["get","highway"],"footway"],["==",["get","footway"],"traffic_island"]]]
+      paint:
+        line-color: ["case",["all",["all",["==",["get","highway"],"footway"],["==",["get","footway"],"traffic_island"]],["in",",0,",["to-string",["get","@pwg:valid"]]]],"#cccccc","#ff1744"]
+        line-width: ["interpolate",["linear"],["zoom"],13,["case",["all",["all",["==",["get","highway"],"footway"],["==",["get","footway"],"traffic_island"]],["in",",0,",["to-string",["get","@pwg:valid"]]]],1,2],17,["case",["all",["all",["==",["get","highway"],"footway"],["==",["get","footway"],"traffic_island"]],["in",",0,",["to-string",["get","@pwg:valid"]]]],3,6]]
+        line-opacity: ["case",["all",["all",["==",["get","highway"],"footway"],["==",["get","footway"],"traffic_island"]],["in",",0,",["to-string",["get","@pwg:valid"]]]],0.55,0.9]
+        line-dasharray: [4,2]
+    - id: readiness-access_aisle
+      type: line
+      filter: ["all",["==",["geometry-type"],"LineString"],["all",["==",["get","highway"],"footway"],["==",["get","footway"],"access_aisle"]]]
+      paint:
+        line-color: ["case",["all",["all",["==",["get","highway"],"footway"],["==",["get","footway"],"access_aisle"]],["in",",7,",["to-string",["get","@pwg:valid"]]],["in",",0,",["to-string",["get","@pwg:valid"]]]],"#cccccc","#ff1744"]
+        line-width: ["interpolate",["linear"],["zoom"],13,["case",["all",["all",["==",["get","highway"],"footway"],["==",["get","footway"],"access_aisle"]],["in",",7,",["to-string",["get","@pwg:valid"]]],["in",",0,",["to-string",["get","@pwg:valid"]]]],1,2],17,["case",["all",["all",["==",["get","highway"],"footway"],["==",["get","footway"],"access_aisle"]],["in",",7,",["to-string",["get","@pwg:valid"]]],["in",",0,",["to-string",["get","@pwg:valid"]]]],3,6]]
+        line-opacity: ["case",["all",["all",["==",["get","highway"],"footway"],["==",["get","footway"],"access_aisle"]],["in",",7,",["to-string",["get","@pwg:valid"]]],["in",",0,",["to-string",["get","@pwg:valid"]]]],0.55,0.9]
+        line-dasharray: [0.6,1.3]
+    - id: readiness-stairs
+      type: line
+      filter: ["all",["==",["geometry-type"],"LineString"],["==",["get","highway"],"steps"]]
+      paint:
+        line-color: ["case",["all",["==",["get","highway"],"steps"],["in",",0,",["to-string",["get","@pwg:valid"]]],["in",",8,",["to-string",["get","@pwg:valid"]]],["in",",9,",["to-string",["get","@pwg:valid"]]],["in",",10,",["to-string",["get","@pwg:valid"]]]],"#cccccc","#ff1744"]
+        line-width: ["interpolate",["linear"],["zoom"],13,["case",["all",["==",["get","highway"],"steps"],["in",",0,",["to-string",["get","@pwg:valid"]]],["in",",8,",["to-string",["get","@pwg:valid"]]],["in",",9,",["to-string",["get","@pwg:valid"]]],["in",",10,",["to-string",["get","@pwg:valid"]]]],1,2],17,["case",["all",["==",["get","highway"],"steps"],["in",",0,",["to-string",["get","@pwg:valid"]]],["in",",8,",["to-string",["get","@pwg:valid"]]],["in",",9,",["to-string",["get","@pwg:valid"]]],["in",",10,",["to-string",["get","@pwg:valid"]]]],3,6]]
+        line-opacity: ["case",["all",["==",["get","highway"],"steps"],["in",",0,",["to-string",["get","@pwg:valid"]]],["in",",8,",["to-string",["get","@pwg:valid"]]],["in",",9,",["to-string",["get","@pwg:valid"]]],["in",",10,",["to-string",["get","@pwg:valid"]]]],0.55,0.9]
+    - id: readiness-roadway
+      type: line
+      filter: ["all",["==",["geometry-type"],"LineString"],["all",["has","highway"],["all",["!",["has","footway"]],["!",["==",["get","highway"],"steps"]]]]]
+      paint:
+        line-color: ["case",["all",["all",["has","highway"],["all",["!",["has","footway"]],["!",["==",["get","highway"],"steps"]]]],["any",["in",",11,",["to-string",["get","@pwg:valid"]]],["all",["in",",12,",["to-string",["get","@pwg:valid"]]],["in",",13,",["to-string",["get","@pwg:valid"]]]]]],"#cccccc","#ff1744"]
+        line-width: ["interpolate",["linear"],["zoom"],13,["case",["all",["all",["has","highway"],["all",["!",["has","footway"]],["!",["==",["get","highway"],"steps"]]]],["any",["in",",11,",["to-string",["get","@pwg:valid"]]],["all",["in",",12,",["to-string",["get","@pwg:valid"]]],["in",",13,",["to-string",["get","@pwg:valid"]]]]]],0.4,0.8],17,["case",["all",["all",["has","highway"],["all",["!",["has","footway"]],["!",["==",["get","highway"],"steps"]]]],["any",["in",",11,",["to-string",["get","@pwg:valid"]]],["all",["in",",12,",["to-string",["get","@pwg:valid"]]],["in",",13,",["to-string",["get","@pwg:valid"]]]]]],1,2]]
+        line-opacity: ["case",["all",["all",["has","highway"],["all",["!",["has","footway"]],["!",["==",["get","highway"],"steps"]]]],["any",["in",",11,",["to-string",["get","@pwg:valid"]]],["all",["in",",12,",["to-string",["get","@pwg:valid"]]],["in",",13,",["to-string",["get","@pwg:valid"]]]]]],0.55,0.9]
+        line-dasharray: [3,2]
+---
+[bbox:{{bbox}}];
+(
+  way["highway"="footway"]["footway"="sidewalk"];
+  way["highway"="footway"]["footway"="crossing"];
+  node["highway"="crossing"][!"footway"];
+  node["barrier"="kerb"];
+  way["highway"="footway"]["footway"="traffic_island"];
+  way["highway"="footway"]["footway"="access_aisle"];
+  way["highway"="steps"];
+  way["highway"][!"footway"]["highway"!="steps"];
+);
+out geom;
