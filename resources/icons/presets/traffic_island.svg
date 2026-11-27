@@ -2,103 +2,201 @@
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 
 <svg
-   width="16"
-   height="16"
-   viewBox="0 0 16 16"
-   version="1.1"
-   id="svg1"
-   inkscape:version="1.2.2 (b0a8486541, 2022-12-01)"
-   sodipodi:docname="traffic_island.svg"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
-   xmlns="http://www.w3.org/2000/svg"
-   xmlns:svg="http://www.w3.org/2000/svg"
-   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-   xmlns:cc="http://creativecommons.org/ns#">
+  width="256"
+  height="256"
+  viewBox="0 0 256 256"
+  version="1.1"
+  id="svg1"
+  inkscape:version="1.4.4 (dcaf3e7, 2026-05-05)"
+  sodipodi:docname="traffic_island.svg"
+  xml:space="preserve"
+  inkscape:export-filename="traffic_island_256.png"
+  inkscape:export-xdpi="96"
+  inkscape:export-ydpi="96"
+  xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+  xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+  xmlns="http://www.w3.org/2000/svg"
+  xmlns:svg="http://www.w3.org/2000/svg"
+  xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+  xmlns:cc="http://creativecommons.org/ns#">
   <sodipodi:namedview
-     id="namedview1"
-     pagecolor="#505050"
-     bordercolor="#eeeeee"
-     borderopacity="1"
-     inkscape:showpageshadow="0"
-     inkscape:pageopacity="0"
-     inkscape:pagecheckerboard="true"
-     inkscape:deskcolor="#505050"
-     inkscape:document-units="px"
-     showgrid="true"
-     inkscape:zoom="45.254834"
-     inkscape:cx="7.9328542"
-     inkscape:cy="9.5680386"
-     inkscape:current-layer="layer1"
-     inkscape:window-width="1920"
-     inkscape:window-height="1016"
-     inkscape:window-x="0"
-     inkscape:window-y="0"
-     inkscape:window-maximized="1">
+    id="namedview1"
+    pagecolor="#505050"
+    bordercolor="#eeeeee"
+    borderopacity="1"
+    inkscape:showpageshadow="0"
+    inkscape:pageopacity="0"
+    inkscape:pagecheckerboard="true"
+    inkscape:deskcolor="#505050"
+    inkscape:document-units="px"
+    showgrid="true"
+    inkscape:zoom="4.5585938"
+    inkscape:cx="128"
+    inkscape:cy="128"
+    inkscape:current-layer="traffic_island-layer"
+    inkscape:window-width="2560"
+    inkscape:window-height="1369"
+    inkscape:window-x="1912"
+    inkscape:window-y="-8"
+    inkscape:window-maximized="1">
     <inkscape:grid
-       id="grid1"
-       units="px"
-       originx="0"
-       originy="0"
-       spacingx="1"
-       spacingy="1"
-       empcolor="#0099e5"
-       empopacity="0.30196078"
-       color="#0099e5"
-       opacity="0.14901961"
-       empspacing="8"
-       dotted="false"
-       gridanglex="30"
-       gridanglez="30"
-       visible="true" />
+      id="grid1"
+      units="px"
+      originx="512"
+      originy="512"
+      spacingx="1"
+      spacingy="1"
+      empcolor="#0099e5"
+      empopacity="0.30196078"
+      color="#0099e5"
+      opacity="0.14901961"
+      empspacing="8"
+      dotted="false"
+      gridanglex="30"
+      gridanglez="30"
+      visible="true" />
   </sodipodi:namedview>
   <defs
-     id="defs1" />
+    id="defs1" />
   <g
-     inkscape:label="Layer 1"
-     inkscape:groupmode="layer"
-     id="layer1">
+    inkscape:label="traffic_island"
+    inkscape:groupmode="layer"
+    id="traffic_island-layer"
+    style="display:inline">
     <rect
-       style="fill:#ffffff;stroke-width:2;stroke-miterlimit:5.5;paint-order:stroke fill markers;stop-color:#000000;fill-opacity:1;stroke:#000000;stroke-opacity:1"
-       id="rect358"
-       width="14"
-       height="14"
-       x="1"
-       y="1" />
+      style="display:inline;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:16;stroke-dasharray:none"
+      id="background"
+      width="240"
+      height="240"
+      x="8"
+      y="8"
+      inkscape:label="background" />
+    <circle
+      style="fill:none;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:8;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1"
+      id="sign-outline"
+      cx="128"
+      cy="64"
+      r="30"
+      inkscape:label="sign-outline" />
     <path
-       id="path1340"
-       style="color:#000000;fill:#000000;fill-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;-inkscape-stroke:none"
-       inkscape:label="island"
-       d="m 11,10.685117 c 0,0 0.536447,0.104778 1.027344,0.256289 0.508828,0.157046 0.914989,0.345381 1.177734,0.53711 0.262745,0.191727 0.367188,0.368733 0.367188,0.521484 0,0.152751 -0.104443,0.329757 -0.367188,0.521484 -0.262745,0.191729 -0.668906,0.380064 -1.177734,0.53711 C 11.009686,13.372685 9.5798063,13.572266 8,13.572266 c -1.5798063,0 -3.0096861,-0.199581 -4.0273438,-0.513672 C 3.4638274,12.901548 3.0576667,12.713213 2.7949219,12.521484 2.532177,12.329757 2.4277344,12.152751 2.4277344,12 c 0,-0.152751 0.1044426,-0.329757 0.3671875,-0.521484 0.2627448,-0.191729 0.6689055,-0.380064 1.1777343,-0.53711 C 4.493362,10.780695 5.0011023,10.69313 5.0011023,10.69313 l 0.1582031,-0.447266 c 0,0 -0.7101052,0.101074 -1.3136023,0.287339 C 3.3075256,10.699308 2.8657689,10.895309 2.5429688,11.130859 2.2201685,11.366411 2,11.65964 2,12 c 0,0.34036 0.2201685,0.633589 0.5429688,0.869141 0.3228001,0.23555 0.7645568,0.431551 1.3027343,0.597656 C 4.9220582,13.799006 6.3844505,14 8,14 c 1.6155495,0 3.077942,-0.200994 4.154297,-0.533203 0.538177,-0.166105 0.979935,-0.362106 1.302734,-0.597656 C 13.779832,12.633589 14,12.34036 14,12 14,11.65964 13.779832,11.366411 13.457031,11.130859 13.134232,10.895309 12.692474,10.699308 12.154297,10.533203 11.571771,10.353411 10.80664,10.231992 10.80664,10.231992 Z"
-       sodipodi:nodetypes="csssssssssssccssssssssssscc" />
-    <path
-       d="m 9.470588,2.5882353 c 0,0.6453736 -0.560001,1.1778176 -1.2559301,1.1778176 -0.6880232,0 -1.2480251,-0.5324441 -1.2480251,-1.1778177 0,-0.6534417 0.5600019,-1.1778124 1.2480251,-1.1778124 0.6959781,0 1.2559301,0.5243707 1.2559301,1.1778125 z M 7,4.235294 H 7.7647059 L 12,7.2941176 V 8 H 11.529412 L 9,6.1764705 V 8 l 1,1.8823528 0.999946,2.3529732 -0.529411,0.470587 -0.4705529,-9e-6 L 9,10.352942 7,7.5294117 V 5.3529411 l -1.2352941,1 -1,1.6470589 H 4 V 7.5294117 L 4.7647059,6.117647 Z M 7.4117647,9.117648 6.2352941,12.705883 H 5.7647059 L 5.2352941,12.235295 6.6470046,8.2353255 Z"
-       id="pedestrian"
-       style="stroke-width:0.803351;image-rendering:auto"
-       inkscape:label="pedestrian"
-       sodipodi:nodetypes="ssssscccccccccccccccccccccccccc">
-      <desc
-         id="desc4">From the CC0 icon set Temaki</desc>
-      <title
-         id="title4">Pedestrian Icon</title>
-    </path>
+      d="m 112,56 8,-8 16,16 8,-8 v 24 h -24 l 8,-8 z"
+      id="sign-arrow"
+      style="display:inline;stroke-width:5.2769"
+      sodipodi:nodetypes="cccccccc"
+      inkscape:label="sign-arrow" />
+    <rect
+      style="display:inline;fill:#000000;fill-opacity:1;stroke:none;stroke-width:16;stroke-dasharray:none"
+      id="stripe-6"
+      width="16"
+      height="64"
+      x="224"
+      y="144"
+      inkscape:label="stripe-6" />
+    <rect
+      style="display:inline;fill:#000000;fill-opacity:1;stroke:none;stroke-width:16;stroke-dasharray:none"
+      id="stripe-5"
+      width="8"
+      height="64"
+      x="204"
+      y="144"
+      inkscape:label="stripe-5" />
+    <rect
+      style="display:inline;fill:#000000;fill-opacity:1;stroke:none;stroke-width:16;stroke-dasharray:none"
+      id="stripe-4"
+      width="16"
+      height="64"
+      x="176"
+      y="144"
+      inkscape:label="stripe-4" />
+    <rect
+      style="display:inline;fill:#000000;fill-opacity:1;stroke:none;stroke-width:16;stroke-dasharray:none"
+      id="stripe-3"
+      width="16"
+      height="64"
+      x="64"
+      y="144"
+      inkscape:label="stripe-3" />
+    <rect
+      style="display:inline;fill:#000000;fill-opacity:1;stroke:none;stroke-width:16;stroke-dasharray:none"
+      id="stripe-2"
+      width="8"
+      height="64"
+      x="44"
+      y="144"
+      inkscape:label="stripe-2" />
+    <rect
+      style="display:inline;fill:#000000;fill-opacity:1;stroke:none;stroke-width:16;stroke-dasharray:none"
+      id="stripe-1"
+      width="16"
+      height="64"
+      x="16"
+      y="144"
+      inkscape:label="stripe-1" />
+    <rect
+      style="display:inline;fill:#000000;fill-opacity:1;stroke:none;stroke-width:16;stroke-dasharray:none"
+      id="sign-post"
+      width="8"
+      height="58"
+      x="124"
+      y="94"
+      inkscape:label="sign-post" />
+    <rect
+      style="display:inline;fill:#000000;stroke-width:8"
+      id="island-bottom"
+      width="64"
+      height="16"
+      x="96"
+      y="216"
+      inkscape:label="island-bottom" />
+    <rect
+      style="display:inline;fill:#000000;stroke-width:9.79796"
+      id="island-top-2"
+      width="24"
+      height="16"
+      x="136"
+      y="120"
+      inkscape:label="island-top-2" />
+    <rect
+      style="display:inline;fill:#000000;stroke-width:9.79796"
+      id="island-top-1"
+      width="24"
+      height="16"
+      x="96"
+      y="120"
+      inkscape:label="island-top-1" />
+    <rect
+      style="display:inline;fill:#000000;stroke-width:8"
+      id="island-right"
+      width="16"
+      height="112"
+      x="160"
+      y="120"
+      inkscape:label="island-right" />
+    <rect
+      style="display:inline;fill:#000000;stroke-width:8"
+      id="island-left"
+      width="16"
+      height="112"
+      x="80"
+      y="120"
+      inkscape:label="island-left" />
   </g>
   <metadata
-     id="metadata1">
+    id="metadata1">
     <rdf:RDF>
       <cc:Work
-         rdf:about="">
+        rdf:about="">
         <cc:license
-           rdf:resource="http://creativecommons.org/publicdomain/zero/1.0/" />
+          rdf:resource="http://creativecommons.org/publicdomain/zero/1.0/" />
       </cc:Work>
       <cc:License
-         rdf:about="http://creativecommons.org/publicdomain/zero/1.0/">
+        rdf:about="http://creativecommons.org/publicdomain/zero/1.0/">
         <cc:permits
-           rdf:resource="http://creativecommons.org/ns#Reproduction" />
+          rdf:resource="http://creativecommons.org/ns#Reproduction" />
         <cc:permits
-           rdf:resource="http://creativecommons.org/ns#Distribution" />
+          rdf:resource="http://creativecommons.org/ns#Distribution" />
         <cc:permits
-           rdf:resource="http://creativecommons.org/ns#DerivativeWorks" />
+          rdf:resource="http://creativecommons.org/ns#DerivativeWorks" />
       </cc:License>
     </rdf:RDF>
   </metadata>

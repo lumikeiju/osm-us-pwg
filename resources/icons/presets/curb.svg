@@ -1,65 +1,119 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
 <svg
-   version="1.1"
-   x="0"
-   y="0"
-   viewBox="0 0 16 16"
-   id="svg1590"
-   sodipodi:docname="curb.svg"
-   width="16"
-   height="16"
-   inkscape:version="1.2.2 (b0a8486541, 2022-12-01)"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
-   xmlns="http://www.w3.org/2000/svg"
-   xmlns:svg="http://www.w3.org/2000/svg">
-  <defs
-     id="defs1594" />
+  width="256"
+  height="256"
+  viewBox="0 0 256 256"
+  version="1.1"
+  id="svg1"
+  inkscape:version="1.4.4 (dcaf3e7, 2026-05-05)"
+  sodipodi:docname="curb.svg"
+  xml:space="preserve"
+  inkscape:export-filename="crossing_way_256.png"
+  inkscape:export-xdpi="96"
+  inkscape:export-ydpi="96"
+  xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+  xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+  xmlns="http://www.w3.org/2000/svg"
+  xmlns:svg="http://www.w3.org/2000/svg"
+  xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+  xmlns:cc="http://creativecommons.org/ns#">
   <sodipodi:namedview
-     id="namedview1592"
-     pagecolor="#505050"
-     bordercolor="#eeeeee"
-     borderopacity="1"
-     inkscape:showpageshadow="false"
-     inkscape:pageopacity="0"
-     inkscape:pagecheckerboard="true"
-     inkscape:deskcolor="#505050"
-     showgrid="true"
-     inkscape:zoom="29.933335"
-     inkscape:cx="5.3118038"
-     inkscape:cy="9.7884182"
-     inkscape:window-width="1920"
-     inkscape:window-height="1016"
-     inkscape:window-x="0"
-     inkscape:window-y="0"
-     inkscape:window-maximized="1"
-     inkscape:current-layer="svg1590">
+    id="namedview1"
+    pagecolor="#505050"
+    bordercolor="#eeeeee"
+    borderopacity="1"
+    inkscape:showpageshadow="0"
+    inkscape:pageopacity="0"
+    inkscape:pagecheckerboard="true"
+    inkscape:deskcolor="#505050"
+    inkscape:document-units="px"
+    showgrid="true"
+    inkscape:zoom="4.5585938"
+    inkscape:cx="128"
+    inkscape:cy="128"
+    inkscape:current-layer="curb-layer"
+    inkscape:window-width="2560"
+    inkscape:window-height="1369"
+    inkscape:window-x="1912"
+    inkscape:window-y="-8"
+    inkscape:window-maximized="1">
     <inkscape:grid
-       type="xygrid"
-       id="grid1328"
-       empspacing="8"
-       originx="0"
-       originy="0" />
+      id="grid1"
+      units="px"
+      originx="512"
+      originy="512"
+      spacingx="1"
+      spacingy="1"
+      empcolor="#0099e5"
+      empopacity="0.30196078"
+      color="#0099e5"
+      opacity="0.14901961"
+      empspacing="8"
+      dotted="false"
+      gridanglex="30"
+      gridanglez="30"
+      visible="true" />
   </sodipodi:namedview>
-  <circle
-     style="fill:#ffffff;stroke:#000000;stroke-width:2;stroke-linecap:round;stroke-miterlimit:5.5;stroke-dasharray:none;stop-color:#000000;paint-order:stroke fill markers"
-     id="path1765"
-     cx="8"
-     cy="8"
-     r="7" />
-  <path
-     d="m 3,4 5,4 v 4 H 3 Z"
-     id="path1584"
-     style="stroke-width:0.659615"
-     sodipodi:nodetypes="ccccc" />
-  <path
-     d="m 9,10 h 4 v 2 H 9 Z"
-     id="path1586"
-     style="stroke-width:0.659615"
-     sodipodi:nodetypes="ccccc" />
-  <path
-     d="M 8,4 9,3 11,5 12,4 V 7 H 9 l 1,-1 z"
-     id="path1588"
-     style="stroke-width:0.659615"
-     sodipodi:nodetypes="cccccccc" />
+  <defs
+    id="defs1" />
+  <g
+    inkscape:label="curb"
+    inkscape:groupmode="layer"
+    id="curb-layer"
+    style="display:inline">
+    <rect
+      style="display:inline;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:16;stroke-dasharray:none"
+      id="background"
+      width="240"
+      height="240"
+      x="8"
+      y="8"
+      inkscape:label="background" />
+    <circle
+      style="display:inline;fill:none;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:16;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1"
+      id="circle"
+      cx="128"
+      cy="128"
+      r="120"
+      inkscape:label="circle" />
+    <path
+      d="m 136,72 16,-16 32,32 16,-16 v 48 h -48 l 16,-16 z"
+      id="figure-3"
+      style="display:inline;stroke-width:10.5538"
+      sodipodi:nodetypes="cccccccc"
+      inkscape:label="figure-3" />
+    <path
+      d="m 144,160 h 64 v 32 h -64 z"
+      id="figure-2"
+      style="display:inline;stroke-width:10.5538"
+      sodipodi:nodetypes="ccccc"
+      inkscape:label="figure-2" />
+    <path
+      d="m 48,64 80,64 v 64 H 48 Z"
+      id="figure-1"
+      style="display:inline;stroke-width:10.5538"
+      sodipodi:nodetypes="ccccc"
+      inkscape:label="figure-1" />
+  </g>
+  <metadata
+    id="metadata1">
+    <rdf:RDF>
+      <cc:Work
+        rdf:about="">
+        <cc:license
+          rdf:resource="http://creativecommons.org/publicdomain/zero/1.0/" />
+      </cc:Work>
+      <cc:License
+        rdf:about="http://creativecommons.org/publicdomain/zero/1.0/">
+        <cc:permits
+          rdf:resource="http://creativecommons.org/ns#Reproduction" />
+        <cc:permits
+          rdf:resource="http://creativecommons.org/ns#Distribution" />
+        <cc:permits
+          rdf:resource="http://creativecommons.org/ns#DerivativeWorks" />
+      </cc:License>
+    </rdf:RDF>
+  </metadata>
 </svg>
