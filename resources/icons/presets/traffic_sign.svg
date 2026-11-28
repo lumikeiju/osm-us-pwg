@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+  width="256"
+  height="256"
+  viewBox="0 0 256 256"
+  version="1.1"
+  id="svg1"
+  inkscape:version="1.4.4 (dcaf3e7, 2026-05-05)"
+  sodipodi:docname="traffic_sign.svg"
+  xml:space="preserve"
+  inkscape:export-filename="traffic_sign_256.png"
+  inkscape:export-xdpi="96"
+  inkscape:export-ydpi="96"
+  xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+  xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+  xmlns="http://www.w3.org/2000/svg"
+  xmlns:svg="http://www.w3.org/2000/svg"
+  xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+  xmlns:cc="http://creativecommons.org/ns#">
+  <sodipodi:namedview
+    id="namedview1"
+    pagecolor="#505050"
+    bordercolor="#eeeeee"
+    borderopacity="1"
+    inkscape:showpageshadow="0"
+    inkscape:pageopacity="0"
+    inkscape:pagecheckerboard="true"
+    inkscape:deskcolor="#505050"
+    inkscape:document-units="px"
+    showgrid="true"
+    inkscape:zoom="4.5585938"
+    inkscape:cx="128"
+    inkscape:cy="128"
+    inkscape:current-layer="traffic_sign-layer"
+    inkscape:window-width="2560"
+    inkscape:window-height="1369"
+    inkscape:window-x="1912"
+    inkscape:window-y="-8"
+    inkscape:window-maximized="1">
+    <inkscape:grid
+      id="grid1"
+      units="px"
+      originx="512"
+      originy="512"
+      spacingx="1"
+      spacingy="1"
+      empcolor="#0099e5"
+      empopacity="0.30196078"
+      color="#0099e5"
+      opacity="0.14901961"
+      empspacing="8"
+      dotted="false"
+      gridanglex="30"
+      gridanglez="30"
+      visible="true" />
+  </sodipodi:namedview>
+  <defs
+    id="defs1" />
+  <g
+    inkscape:label="traffic_sign"
+    inkscape:groupmode="layer"
+    id="traffic_sign-layer"
+    style="display:inline">
+    <rect
+      style="display:inline;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:16;stroke-dasharray:none"
+      id="background"
+      width="240"
+      height="240"
+      x="8"
+      y="8"
+      inkscape:label="background" />
+    <circle
+      style="display:inline;fill:none;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:16;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1"
+      id="circle"
+      cx="128"
+      cy="128"
+      r="120"
+      inkscape:label="circle" />
+    <rect
+      style="display:inline;fill:#000000;fill-opacity:1;stroke:none;stroke-width:8;stroke-dasharray:none;stroke-opacity:1"
+      id="sign-post"
+      width="16"
+      height="40"
+      x="120"
+      y="208"
+      inkscape:label="sign-post" />
+    <rect
+      style="fill:#000000;fill-opacity:1;stroke:none;stroke-width:8;stroke-dasharray:none;stroke-opacity:1"
+      id="sign-outer"
+      width="144"
+      height="144"
+      x="109.01933"
+      y="-72"
+      transform="rotate(45)"
+      inkscape:label="sign-outer" />
+    <rect
+      style="display:inline;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:8;stroke-dasharray:none;stroke-opacity:1"
+      id="sign-inner"
+      width="112"
+      height="112"
+      x="-56"
+      y="-237.01933"
+      transform="rotate(135)"
+      inkscape:label="sign-inner" />
+    <path
+      d="m 140.5,90.005572 c 0,5.485675 -4.76001,10.011448 -10.67541,10.011448 -5.8482,0 -10.60821,-4.525773 -10.60821,-10.011448 0,-5.554254 4.76001,-10.011404 10.60821,-10.011404 5.91581,0 10.67541,4.45715 10.67541,10.011404 z m -21,13.999998 h 6.5 l 36,26 v 6 h -4 l -21.5,-15.5 v 15.5 l 8.5,16 8.49954,20.00026 -4.5,4 -3.99969,-8e-5 -8.49985,-20.00018 -17,-24 v -18.5 l -10.5,8.5 -8.5,14 H 94 v -4 l 6.5,-12 z m 3.5,41.5 -10,30.5 h -4 l -4.5,-4 11.99954,-33.99974 z"
+      id="pedestrian"
+      style="display:inline;stroke-width:6.8285;image-rendering:auto"
+      inkscape:label="pedestrian"
+      sodipodi:nodetypes="ssssscccccccccccccccccccccccccc">
+      <desc
+        id="desc4">From the CC0 icon set Temaki</desc>
+      <title
+        id="title4">Pedestrian Icon</title>
+    </path>
+  </g>
+  <metadata
+    id="metadata1">
+    <rdf:RDF>
+      <cc:Work
+        rdf:about="">
+        <cc:license
+          rdf:resource="http://creativecommons.org/publicdomain/zero/1.0/" />
+      </cc:Work>
+      <cc:License
+        rdf:about="http://creativecommons.org/publicdomain/zero/1.0/">
+        <cc:permits
+          rdf:resource="http://creativecommons.org/ns#Reproduction" />
+        <cc:permits
+          rdf:resource="http://creativecommons.org/ns#Distribution" />
+        <cc:permits
+          rdf:resource="http://creativecommons.org/ns#DerivativeWorks" />
+      </cc:License>
+    </rdf:RDF>
+  </metadata>
+</svg>

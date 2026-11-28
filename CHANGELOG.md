@@ -6,6 +6,12 @@ All notable changes to this `osm-us-pwg` repository are documented here, using t
 
 Release headings below refer to the **repository version**. Individual components, including the **PWG Schema** and **PWG Guide**, have independent versions and release cycles; their versions are named explicitly in entries that concern them. See [Versioning](README.md#versioning) for the distinction.
 
+## v1.4.0 (2026-11-27)
+
+### Added
+
+- Embedded icons for the JOSM preset.
+
 ## v1.3.0 (2026-11-21)
 
 ### Added

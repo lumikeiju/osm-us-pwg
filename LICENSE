@@ -15,15 +15,17 @@ Creative Commons Attribution-ShareAlike 2.0 (LICENSES/CC-BY-SA-2.0.txt)
 
 Creative Commons Zero 1.0 Universal (LICENSES/CC0-1.0.txt)
   - The JOSM validator rules: validators/
-  - The hand-written Ultra tag maps: visualizations/*.yaml
+  - The hand-written Ultra tag maps and their Overpass variants:
+    .ultra files in visualizations/ without the pwg_schema_ prefix.
   - The tier icons: resources/icons/tiers/*.svg and *.png
+  - The preset icons: resources/icons/presets/*.svg and *.png
 
 MIT License (LICENSES/MIT.txt)
   - Scripts, tests, and examples: scripts/, tests/, examples/
   - Repository configuration: .github/, .editorconfig, .gitignore,
     .prettierrc.js
-  Files produced by the scripts are not covered by the MIT License. They are
-  adaptations of the schema they are generated from and carry its license.
+  Schema-generated files are not covered by the MIT License. They carry
+  the schema's license; embedded icons retain their own licenses.
 
 Copyright OpenStreetMap US Pedestrian Working Group contributors. The PWG
 Schema and PWG Guide are also published on the OpenStreetMap Wiki, where the

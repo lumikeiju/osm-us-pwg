@@ -174,12 +174,18 @@ test("schema-generated assets begin with their CC BY-SA 2.0 attribution notice",
 
 test("preset icon encoding is independent of checkout line endings", (t) => {
   const root = createWorkspace(t);
-  const icons = path.join(root, "resources", "icons", "tiers");
   for (const newline of ["\n", "\r\n"]) {
-    for (const tier of ["bronze", "silver", "gold", "diamond"]) {
-      const iconPath = path.join(icons, `${tier}.svg`);
-      const source = fs.readFileSync(iconPath, "utf8").replaceAll("\r\n", "\n");
-      fs.writeFileSync(iconPath, source.replaceAll("\n", newline));
+    for (const directory of ["tiers", "presets"]) {
+      const icons = path.join(root, "resources", "icons", directory);
+      for (const file of fs
+        .readdirSync(icons)
+        .filter((name) => name.endsWith(".svg"))) {
+        const iconPath = path.join(icons, file);
+        const source = fs
+          .readFileSync(iconPath, "utf8")
+          .replaceAll("\r\n", "\n");
+        fs.writeFileSync(iconPath, source.replaceAll("\n", newline));
+      }
     }
     const result = runScript(root, "generate-josm-preset.js");
     assert.equal(result.status, 0, result.stderr);
@@ -189,6 +195,81 @@ test("preset icon encoding is independent of checkout line endings", (t) => {
       `Preset differs with ${JSON.stringify(newline)} SVG newlines`
     );
   }
+});
+
+test("preset embeds the group and feature icons for each supported schema", (t) => {
+  const root = createWorkspace(t);
+  const assertIcon = (tag, directory, name) => {
+    const icon = tag?.match(
+      /\sicon="data:image\/svg\+xml;base64,([A-Za-z0-9+/]+={0,2})"/
+    );
+    assert.ok(icon, `Missing embedded SVG icon for ${name}`);
+    assert.equal(
+      Buffer.from(icon[1], "base64").toString("utf8"),
+      normalizedContents(
+        path.join(root, "resources", "icons", directory, `${name}.svg`)
+      ),
+      `Unexpected SVG icon for ${name}`
+    );
+  };
+  for (const schemaPath of [
+    path.join(root, "schema", "1.0.1.json"),
+    path.join(root, CURRENT_SCHEMA_RELATIVE_PATH),
+  ]) {
+    const schema = JSON.parse(fs.readFileSync(schemaPath, "utf8"));
+    const result = runScript(root, "generate-josm-preset.js", [
+      "--schema",
+      schemaPath,
+    ]);
+    assert.equal(result.status, 0, result.stderr);
+    const preset = normalizedContents(
+      path.join(root, "presets", "pwg_schema.xml")
+    );
+    const header = preset.slice(0, preset.indexOf("<presets "));
+    assert.match(
+      header,
+      /Preset icon support initially contributed by Josh Carlson/
+    );
+    assert.match(
+      header,
+      /Tier and preset icons are CC0 1\.0: https:\/\/creativecommons\.org\/publicdomain\/zero\/1\.0\//
+    );
+    assert.match(header, /Pedestrian figures adapted from Temaki \(CC0 1\.0\)/);
+    assertIcon(preset.match(/<group\s[^>]*>/)?.[0], "tiers", "gold");
+    const items = preset.match(/<item\s[^>]*>/g) ?? [];
+    const featureIds = Object.keys(schema.features);
+    assert.equal(items.length, featureIds.length);
+    for (const [index, featureId] of featureIds.entries()) {
+      assert.equal(
+        items[index].match(/\sname="([^"]+)"/)?.[1],
+        `${String(index + 1).padStart(2, "0")}. ${schema.features[featureId].name}`
+      );
+      assertIcon(items[index], "presets", featureId);
+    }
+  }
+});
+
+test("preset generation reports missing feature icons", (t) => {
+  const root = createWorkspace(t);
+  const output = path.join(root, "presets", "pwg_schema.xml");
+  fs.writeFileSync(output, "previous preset");
+  fs.rmSync(path.join(root, "resources", "icons", "presets", "sidewalk.svg"));
+  const result = runScript(root, "generate-josm-preset.js");
+  assert.equal(result.status, 1);
+  assert.match(result.stderr, /Missing SVG icon:.*sidewalk\.svg/);
+  assert.equal(normalizedContents(output), "previous preset");
+});
+
+test("preset generation rejects path separators in feature icon IDs", (t) => {
+  const root = createWorkspace(t);
+  const schemaPath = path.join(root, CURRENT_SCHEMA_RELATIVE_PATH);
+  const schema = JSON.parse(fs.readFileSync(schemaPath, "utf8"));
+  schema.features["custom/sidewalk"] = schema.features.sidewalk;
+  fs.writeFileSync(schemaPath, JSON.stringify(schema));
+  const result = runScript(root, "generate-josm-preset.js");
+  assert.equal(result.status, 1);
+  assert.match(result.stderr, /Invalid SVG icon ID "custom\/sidewalk"/);
+  assert.deepEqual(outputFiles(root), []);
 });
 
 test("preset handles tiered identifier fields and valued exclusions", (t) => {

@@ -29,6 +29,14 @@ const TIER_ICON_DIRECTORY = path.resolve(
 );
 const tierIconDataUris = new Map();
 
+const PRESET_ICON_DIRECTORY = path.resolve(
+  __dirname,
+  "..",
+  "resources",
+  "icons",
+  "presets"
+);
+
 function escapeXml(value) {
   return String(value)
     .replaceAll("&", "&amp;")
@@ -187,12 +195,29 @@ function josmTypeForFeature(feature) {
     .join(",");
 }
 
+function iconDataUri(directory, name) {
+  if (typeof name !== "string" || !name || /[^a-z0-9_-]/i.test(name)) {
+    throw new Error(
+      `Invalid SVG icon ID ${JSON.stringify(name)}: use letters, digits, underscores, or hyphens`
+    );
+  }
+
+  const iconPath = path.join(directory, `${name}.svg`);
+  let source;
+  try {
+    source = fs.readFileSync(iconPath, "utf8").replaceAll("\r\n", "\n");
+  } catch (error) {
+    if (error.code !== "ENOENT") {
+      throw error;
+    }
+    throw new Error(`Missing SVG icon: ${iconPath}`, { cause: error });
+  }
+  return `data:image/svg+xml;base64,${Buffer.from(source, "utf8").toString("base64")}`;
+}
+
 function tierIconDataUri(tier) {
   if (!tierIconDataUris.has(tier)) {
-    const iconPath = path.join(TIER_ICON_DIRECTORY, `${tier}.svg`);
-    const source = fs.readFileSync(iconPath, "utf8").replaceAll("\r\n", "\n");
-    const icon = Buffer.from(source, "utf8").toString("base64");
-    tierIconDataUris.set(tier, `data:image/svg+xml;base64,${icon}`);
+    tierIconDataUris.set(tier, iconDataUri(TIER_ICON_DIRECTORY, tier));
   }
 
   return tierIconDataUris.get(tier);
@@ -216,16 +241,23 @@ function generatePreset(schema) {
     '<?xml version="1.0" encoding="UTF-8"?>',
     "<!--",
     ...schemaLicenseNotice(schema).map((line) => (line ? `  ${line}` : "")),
+    "",
+    "  Preset icon support initially contributed by Josh Carlson:",
+    "  https://github.com/lumikeiju/osm-us-pwg/pull/10",
+    "  Tier and preset icons are CC0 1.0: https://creativecommons.org/publicdomain/zero/1.0/",
+    "  Icon sources: https://github.com/lumikeiju/osm-us-pwg/tree/main/resources/icons",
+    "  Pedestrian figures adapted from Temaki (CC0 1.0):",
+    "  https://github.com/rapideditor/temaki/blob/main/icons/pedestrian.svg",
     "-->",
     '<presets xmlns="http://josm.openstreetmap.de/tagging-preset-1.0">',
     `  <!-- Generated from ${escapeXml(schema.sourceDocument)} and schema/${escapeXml(schema.version)}.json by scripts/generate-josm-preset.js. -->`,
-    `  <group name="PWG Schema v${escapeXml(schema.version)}">`,
+    `  <group name="PWG Schema v${escapeXml(schema.version)}" icon="${escapeXml(tierIconDataUri("gold"))}">`,
   ];
 
   let itemNumber = 1;
   for (const [featureId, feature] of Object.entries(schema.features)) {
     lines.push(
-      `    <item name="${String(itemNumber).padStart(2, "0")}. ${escapeXml(feature.name)}" type="${escapeXml(josmTypeForFeature(feature))}">`
+      `    <item name="${String(itemNumber).padStart(2, "0")}. ${escapeXml(feature.name)}" type="${escapeXml(josmTypeForFeature(feature))}" icon="${escapeXml(iconDataUri(PRESET_ICON_DIRECTORY, featureId))}">`
     );
     lines.push(
       `      <label text="${escapeXml(`${feature.name} (${feature.identifier.minTier}+)`)}" />`
