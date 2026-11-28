@@ -19,13 +19,19 @@ SPDX-FileCopyrightText = "OpenStreetMap US Pedestrian Working Group contributors
 SPDX-License-Identifier = "CC-BY-SA-2.0"
 
 [[annotations]]
+path = ["resources/icons/presets/*.svg", "resources/icons/presets/*.png"]
+precedence = "override"
+SPDX-FileCopyrightText = "OpenStreetMap US Pedestrian Working Group contributors"
+SPDX-License-Identifier = "CC0-1.0"
+
+[[annotations]]
 path = ["resources/icons/tiers/*.svg", "resources/icons/tiers/*.png"]
 precedence = "override"
 SPDX-FileCopyrightText = "OpenStreetMap US Pedestrian Working Group contributors"
 SPDX-License-Identifier = "CC0-1.0"
 
 [[annotations]]
-path = ["resources/images/hero-*.png"]
+path = ["resources/images/hero.png"]
 precedence = "override"
 SPDX-FileCopyrightText = [
   "OpenStreetMap US Pedestrian Working Group and OpenStreetMap Wiki contributors",
