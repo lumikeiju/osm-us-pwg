@@ -4,7 +4,7 @@
 
 Tools and reference material for mapping sidewalks, crossings, curbs, and other pedestrian infrastructure in [OpenStreetMap](https://www.openstreetmap.org/), from the [OpenStreetMap US Pedestrian Working Group](https://wiki.openstreetmap.org/wiki/Foundation/Local_Chapters/United_States/Pedestrian_Working_Group) (PWG).
 
-[![Pedestrian features colored by their highest PWG Schema tier in Ultra](resources/images/hero-dark.png)](https://overpass-ultra.us/#query=url:https%3A%2F%2Fraw.githubusercontent.com%2Flumikeiju%2Fosm-us-pwg%2Fmain%2Fvisualizations%2Fpwg_schema_tiers.ultra)
+[![Pedestrian features colored by their highest PWG Schema tier in Ultra](resources/images/hero.png)](https://overpass-ultra.us/#query=url:https%3A%2F%2Fraw.githubusercontent.com%2Flumikeiju%2Fosm-us-pwg%2Fmain%2Fvisualizations%2Fpwg_schema_tiers.ultra)
 
 _The [PWG Schema Tier View](#pwg-schema-maps) in Ultra. Select the image to open the live map. Map data © [OpenStreetMap contributors](https://www.openstreetmap.org/copyright)._
 
@@ -30,9 +30,9 @@ The maps and JOSM paint style below use these colors, plus **red** (`#ff1744`) f
 
 ## Visualizations
 
-Ready-made maps for [Ultra](https://overpass-ultra.us/), a free web app that draws live OpenStreetMap data. No account or installation needed. The maps get their data from [Postpass](https://github.com/woodpeck/postpass), a public OpenStreetMap SQL service hosted by Geofabrik, rather than the often-overloaded Overpass API.
+Ready-made maps for [Ultra](https://overpass-ultra.us/), a free web app that draws live OpenStreetMap data. No account or installation needed. The default maps use [Postpass](https://github.com/woodpeck/postpass), a public OpenStreetMap SQL service hosted by Geofabrik. Overpass alternatives are listed below for the tag maps.
 
-1. Select **Open in Ultra** next to a map.
+1. Select an Ultra link next to a map for the provider you want to use.
 2. Move to the area you want to check. A neighborhood or small town works best; large areas can be slow to load.
 3. Select **Run** in the top-left corner.
 
@@ -40,20 +40,20 @@ Ready-made maps for [Ultra](https://overpass-ultra.us/), a free web app that dra
 
 These maps are generated from PWG Schema 1.1.1 and cover all of its features.
 
-| Map                                  | What it shows                                                                                                                                                     | Links                                                                                                                                                                                                                                         |
-| ------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **PWG Schema Tier View**             | Each feature in the color of the highest tier it meets. Red features match a PWG feature but don't yet meet its minimum tier.                                     | [Open in Ultra](https://overpass-ultra.us/#query=url:https%3A%2F%2Fraw.githubusercontent.com%2Flumikeiju%2Fosm-us-pwg%2Fmain%2Fvisualizations%2Fpwg_schema_tiers.ultra) · [File](visualizations/pwg_schema_tiers.ultra)                       |
-| **PWG Schema Silver Readiness View** | Which features meet Silver, the tier for accessibility-focused applications (gray), and which still need work (red). Features that start above Silver are hidden. | [Open in Ultra](https://overpass-ultra.us/#query=url:https%3A%2F%2Fraw.githubusercontent.com%2Flumikeiju%2Fosm-us-pwg%2Fmain%2Fvisualizations%2Fpwg_schema_silver_readiness.ultra) · [File](visualizations/pwg_schema_silver_readiness.ultra) |
+| Map                                  | What it shows                                                                                                                                                     | Links                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
+| ------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **PWG Schema Tier View**             | Each feature in the color of the highest tier it meets. Red features match a PWG feature but don't yet meet its minimum tier.                                     | • [Postpass in Ultra](https://overpass-ultra.us/#query=url:https%3A%2F%2Fraw.githubusercontent.com%2Flumikeiju%2Fosm-us-pwg%2Fmain%2Fvisualizations%2Fpwg_schema_tiers.ultra)<br>• [Postpass file](visualizations/pwg_schema_tiers.ultra)<br>• [Overpass file](visualizations/pwg_schema_tiers_overpass.ultra)                                                                                                                                                                                                                                                                                                                                  |
+| **PWG Schema Silver Readiness View** | Which features meet Silver, the tier for accessibility-focused applications (gray), and which still need work (red). Features that start above Silver are hidden. | • [Postpass in Ultra](https://overpass-ultra.us/#query=url:https%3A%2F%2Fraw.githubusercontent.com%2Flumikeiju%2Fosm-us-pwg%2Fmain%2Fvisualizations%2Fpwg_schema_silver_readiness.ultra)<br>• [Postpass file](visualizations/pwg_schema_silver_readiness.ultra)<br>• [Overpass file](visualizations/pwg_schema_silver_readiness_overpass.ultra)                                                                                                                                                                                                                                                    |
 
 Colors are based on tags that can be checked automatically. Some requirements depend on real-world conditions, such as whether a sidewalk is on a hill, so confirm those with imagery or in person.
 
 ### Tag maps
 
-| Map                           | What it shows                                                                                                                | Links                                                                                                                                                                                                                                 |
-| ----------------------------- | ---------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Curb Type**                 | Curbs colored by `kerb=raised`, `lowered`, `flush`, or `no`                                                                  | [Open in Ultra](https://overpass-ultra.us/#query=url:https%3A%2F%2Fraw.githubusercontent.com%2Flumikeiju%2Fosm-us-pwg%2Fmain%2Fvisualizations%2Fcurb_type.yaml) · [File](visualizations/curb_type.yaml)                               |
-| **Sidewalk Tags on Roadways** | Roads colored by their `sidewalk*=yes`, `no`, or `separate` tags, alongside mapped sidewalks, crossings, and traffic islands | [Open in Ultra](https://overpass-ultra.us/#query=url:https%3A%2F%2Fraw.githubusercontent.com%2Flumikeiju%2Fosm-us-pwg%2Fmain%2Fvisualizations%2Froadway_sidewalk_tagging.yaml) · [File](visualizations/roadway_sidewalk_tagging.yaml) |
-| **Tactile Paving**            | Points colored by `tactile_paving=yes` or `no`                                                                               | [Open in Ultra](https://overpass-ultra.us/#query=url:https%3A%2F%2Fraw.githubusercontent.com%2Flumikeiju%2Fosm-us-pwg%2Fmain%2Fvisualizations%2Ftactile_paving.yaml) · [File](visualizations/tactile_paving.yaml)                     |
+| Map                           | What it shows                                                                                                                | Links                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
+| ----------------------------- | ---------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Curb Type**                 | Curbs colored by `kerb=raised`, `lowered`, `flush`, or `no`                                                                  | • [Postpass in Ultra](https://overpass-ultra.us/#query=url:https%3A%2F%2Fraw.githubusercontent.com%2Flumikeiju%2Fosm-us-pwg%2Fmain%2Fvisualizations%2Fcurb_type.ultra)<br>• [Postpass file](visualizations/curb_type.ultra)<br>• [Overpass file](visualizations/curb_type_overpass.ultra) |
+| **Sidewalk Tags on Roadways** | Roads colored by their `sidewalk*=yes`, `no`, or `separate` tags, alongside mapped sidewalks, crossings, and traffic islands | • [Postpass in Ultra](https://overpass-ultra.us/#query=url:https%3A%2F%2Fraw.githubusercontent.com%2Flumikeiju%2Fosm-us-pwg%2Fmain%2Fvisualizations%2Froadway_sidewalk_tagging.ultra)<br>• [Postpass file](visualizations/roadway_sidewalk_tagging.ultra)<br>• [Overpass file](visualizations/roadway_sidewalk_tagging_overpass.ultra) |
+| **Tactile Paving**            | Points colored by `tactile_paving=yes` or `no`                                                                               | • [Postpass in Ultra](https://overpass-ultra.us/#query=url:https%3A%2F%2Fraw.githubusercontent.com%2Flumikeiju%2Fosm-us-pwg%2Fmain%2Fvisualizations%2Ftactile_paving.ultra)<br>• [Postpass file](visualizations/tactile_paving.ultra)<br>• [Overpass file](visualizations/tactile_paving_overpass.ultra) |
 
 You can also paste a file's contents into Ultra's editor. To change colors or line styles, edit the style there; the [MapLibre Style Spec](https://maplibre.org/maplibre-style-spec/) lists every option.
 
@@ -200,7 +200,7 @@ Checks the schema's structure and runs the example queries against it.
 
 ### Regenerating assets
 
-Regenerate the JOSM presets, paint style, and both schema-generated Ultra maps:
+Regenerate the JOSM presets, paint style, and schema-generated Ultra maps:
 
 ```powershell
 node scripts/generate-all.js
@@ -219,10 +219,10 @@ node scripts/generate-ultra-visualization.js
 node scripts/generate-ultra-visualization.js --mode readiness --targetTier silver
 ```
 
-The schema-generated Ultra maps query Postpass by default. To make an Overpass version, for example while Postpass is unavailable, add `--provider overpass` and an `--output` path so the checked-in maps aren't overwritten:
+The schema-generated Ultra maps query Postpass by default. Use `--provider overpass` for an Overpass version, for example while Postpass is unavailable. The default Overpass filename ends in `_overpass.ultra`, so it won't overwrite the Postpass map. Use `--output` to set a different path explicitly:
 
 ```powershell
-node scripts/generate-ultra-visualization.js --provider overpass --output pwg_schema_tiers_overpass.ultra
+node scripts/generate-ultra-visualization.js --provider overpass
 ```
 
 ### Testing
@@ -236,7 +236,6 @@ Runs the full suite, which CI also runs on Ubuntu and Windows with Node.js 22, 2
 ### Known limitations
 
 - Free-text real-world conditions remain manual-review items, even when accompanied by a tag predicate.
-- Ultra's conversion-based numeric checks can give different tier results than the query helper's stricter length rules for uncommon formats such as `width=1e3 m`. Shared-fixture coverage does not imply complete equivalence for every possible tag value.
 - `step_count` is checked as a number, not as a nonnegative whole number. Diamond traffic-sign values other than the listed examples are not verified as specific sign codes.
 
 ## License

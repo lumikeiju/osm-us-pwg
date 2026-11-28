@@ -18,6 +18,7 @@ const EXPECTED_OUTPUTS = [
   ["presets", "pwg_schema.xml"],
   ["styles", "pwg_schema.mapcss"],
   ["visualizations", "pwg_schema_tiers.ultra"],
+  ["visualizations", "pwg_schema_tiers_overpass.ultra"],
   ["visualizations", "pwg_schema_silver_readiness.ultra"],
 ]
   .map((parts) => path.join(...parts))
@@ -88,8 +89,13 @@ test("generates every checked-in asset without recreating schema documentation",
     [...new Set(generatorRuns.map((line) => line.split(" ")[0]))].sort(),
     generators
   );
-  assert.equal(generatorRuns.length, generators.length + 1);
+  assert.equal(generatorRuns.length, generators.length + 2);
   assert.ok(generatorRuns.includes("generate-ultra-visualization.js"));
+  assert.ok(
+    generatorRuns.includes(
+      "generate-ultra-visualization.js --provider overpass"
+    )
+  );
   assert.ok(
     generatorRuns.includes(
       "generate-ultra-visualization.js --mode readiness --targetTier silver"
@@ -113,6 +119,34 @@ test("generates every checked-in asset without recreating schema documentation",
       fs.readFileSync(path.join(root, file)).equals(firstRun.get(file)),
       `${file} changed when regenerated a second time`
     );
+  }
+});
+
+test("Overpass defaults to a separate output in both view modes", (t) => {
+  const root = createWorkspace(t);
+  const script = "generate-ultra-visualization.js";
+  for (const [view, args] of [
+    ["tiers", []],
+    ["silver_readiness", ["--mode", "readiness"]],
+  ]) {
+    const postpass = runScript(root, script, args);
+    assert.equal(postpass.status, 0, postpass.stderr);
+    const maps = path.join(root, "visualizations");
+    const defaultFile = path.join(maps, `pwg_schema_${view}.ultra`);
+    const original = normalizedContents(defaultFile);
+    assert.match(original, /\ntype: postpass\n/);
+
+    const overpass = runScript(root, script, [
+      ...args,
+      "--provider",
+      "overpass",
+    ]);
+    assert.equal(overpass.status, 0, overpass.stderr);
+    assert.match(
+      normalizedContents(path.join(maps, `pwg_schema_${view}_overpass.ultra`)),
+      /\ntype: overpass\n/
+    );
+    assert.equal(normalizedContents(defaultFile), original);
   }
 });
 
